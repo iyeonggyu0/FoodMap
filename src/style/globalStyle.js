@@ -8,6 +8,29 @@ const GlobalStyle = createGlobalStyle`
     @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Gothic+A1:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
+    :root {
+      /* 갈색 계열 */
+      --brown-light: #A47764;
+      --brown: #543C35;
+      --brown-dark: #746563;
+
+      /* 포인트 그린 */
+      --green-accent: #22C55E;
+
+      /* 회색 계열 */
+      --gray-0: #FFFFFF;
+      --gray-1: #F7F3F1;
+      --gray-2: #EDEDED;
+      --gray-3: #D5D5D5;
+      --gray-4: #A4A4A4;
+      --gray-5: #7B8694;
+      --gray-6: #49505A;
+
+      /* 남색 계열 */
+      --navy: #111827;
+    }
+
+
 
   ${reset}
   *,*::before, *::after{
@@ -64,6 +87,17 @@ const GlobalStyle = createGlobalStyle`
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .flexBetween{
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .flexBetweenCol{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
   }
 
 `;

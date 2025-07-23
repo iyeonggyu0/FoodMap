@@ -1,4 +1,24 @@
-const palette = {};
+const palette = {
+  // 갈색 계열
+  brownLight: "#A8735F",
+  brown: "#5C4036",
+  brownDark: "#776866",
+
+  // 포인트 그린
+  greenAccent: "#25D366",
+
+  // 회색 계열 (연한 → 진한 순서, n단위)
+  gray0: "#FFFFFF",
+  gray1: "#F7F3F1",
+  gray2: "#EDEDED",
+  gray3: "#D5D5D5",
+  gray4: "#A4A4A4",
+  gray5: "#7B8694",
+  gray6: "#49505A",
+
+  // 남색 계열
+  navy: "#0F1320",
+};
 
 const fontSize = {
   small: "0.75rem", // 12px
@@ -16,7 +36,7 @@ const fontWeight = {
   regular: "400",
   medium: "500",
   bold: "700",
-  extraBold: "900", // 900 추가
+  extraBold: "900",
 };
 
 const lineHeight = {
