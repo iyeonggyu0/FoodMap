@@ -1,7 +1,6 @@
 import BrownButtonCP from "../../_common/ButtonCP";
-import OutLienButtonCP from "../../_common/OutLineButtonCP";
+import OutLineButtonCP from "../../_common/OutLineButtonCP";
 import { MainPageBottomBannerCPMainStyle } from "./style";
-
 /**
  * 메인페이지 가장 하단부 베너
  */
@@ -15,7 +14,7 @@ const MainPageBottomBannerCP = () => {
           <BrownButtonCP color="--gray-0" fontColor="--gray-6">
             지도보기
           </BrownButtonCP>
-          <OutLienButtonCP>푸드트럭 제보하기</OutLienButtonCP>
+          <OutLineButtonCP borderColor="--gray-0">푸드트럭 제보하기</OutLineButtonCP>
         </div>
       </div>
     </MainPageBottomBannerCPMainStyle>

@@ -1,3 +1,4 @@
+import MainPageTitleCP from "../../components/MainPageCP/MainPageTitleCP";
 import MainPageBottomBannerCP from "../../components/MainPageCP/MainPageBottomBannerCP";
 import MainPageMethodCP from "../../components/MainPageCP/MainPageMethodCP";
 import MainPageMoreFunCP from "../../components/MainPageCP/MainPageMoreFunCP";
@@ -10,10 +11,10 @@ const MainPage = () => {
     <MainPageMainStyle>
       <MainLayOut>
         {/* 메인 타이틀 */}
-
+        <MainPageTitleCP />
 
         {/* 서비스 특징 */}
-        
+        {/* <MainPageFeatureCP /> */}
 
         {/* 이용 방법 */}
         <MainPageMethodCP />
