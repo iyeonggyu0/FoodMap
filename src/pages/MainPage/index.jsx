@@ -9,6 +9,12 @@ const MainPage = () => {
   return (
     <MainPageMainStyle>
       <MainLayOut>
+        {/* 메인 타이틀 */}
+
+
+        {/* 서비스 특징 */}
+        
+
         {/* 이용 방법 */}
         <MainPageMethodCP />
 
