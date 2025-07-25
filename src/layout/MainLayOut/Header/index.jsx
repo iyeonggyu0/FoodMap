@@ -1,3 +1,4 @@
+import BrownButtonCP from "../../../components/_common/ButtonCP";
 import { MainLayOutHeaderStyled } from "./style";
 
 const MainLayOutHeader = () => {
@@ -21,7 +22,9 @@ const MainLayOutHeader = () => {
             </a>
             {/* FIXME: 세션 여부 확인해서 조건부 표시 및 기능 생성 */}
             <li className="loginButton">로그인</li>
-            <li className="singInButton">회원가입</li>
+            <li className="singInButton">
+              <BrownButtonCP pcOnly="true">회원가입</BrownButtonCP>
+            </li>
           </ul>
         </nav>
       </div>

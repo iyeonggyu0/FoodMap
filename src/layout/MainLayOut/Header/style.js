@@ -41,13 +41,6 @@ export const MainLayOutHeaderStyled = styled.header`
 
   /* PC */
   @media screen and (min-width: 1024px) {
-    .singInButton {
-      background-color: var(--brown-light);
-      color: white;
-      padding: 8px 14px;
-      border-radius: 5px;
-    }
-
     & nav ul li {
       padding: 1rem 0.6rem;
     }

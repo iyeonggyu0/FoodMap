@@ -6,8 +6,8 @@ const MainLayOut = ({ children }) => {
     <div>
       <>
         <MainLayOutHeader />
-        {/* FIXME: 헤더 픽스 여부에 따라 스타일 조정 */}
-        <div style={{ paddingTop: "70px" }}>{children}</div>
+        {/* FIXME: 헤더 픽스 여부에 따라 스타일 조정  style={{ paddingTop: "70px" }}*/}
+        <div>{children}</div>
         <MainLayOutFooter />
       </>
     </div>
