@@ -4,6 +4,7 @@ import styled from "styled-components";
 export const MainLayOutHeaderStyled = styled.header`
   height: 70px;
   border-bottom: 1px solid var(--gray-3);
+  background-color: var(--gray-0);
 
   & > div {
     width: 75vw;
