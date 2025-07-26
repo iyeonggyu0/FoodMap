@@ -7,6 +7,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMap } from "@fortawesome/free-regular-svg-icons";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
+/**
+ * 메인 페이지 타이틀 컴포넌트
+ */
 const MainPageTitleCP = () => {
   return (
     <MainPageTitleCPMainStyle className="flexBetween">
@@ -34,16 +37,7 @@ const MainPageTitleCP = () => {
             icon={<FontAwesomeIcon icon={faMap} />}
             color="black"
             borderColor="--gray-3"></OutLineButtonCP>
-        </div>
-        {/* <div className="flexCenter">
-          <FontAwesomeIcon icon={faBell} className="icon" />
-        </div>
-        <p>실시간 알림</p>
-        <p>
-          찜한 푸드드럭의 위치 변경이나
-          <br />
-          새로운 소식을 즉시 받아보세요
-        </p> */}
+        </div>        
       </div>
     </MainPageTitleCPMainStyle>
   );

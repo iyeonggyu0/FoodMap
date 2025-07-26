@@ -38,6 +38,14 @@ export const MainPageTitleCPMainStyle = styled.main`
     font-size: 1rem;
   }
 
+  & > div > div > span:nth-child(1) {
+    width: 160px;
+  }
+    
+  & > div > div > span:nth-child(2) {
+    width: 200px;
+  } 
+
 
   @media screen and (max-width: 768px) {
     width: 90vw;

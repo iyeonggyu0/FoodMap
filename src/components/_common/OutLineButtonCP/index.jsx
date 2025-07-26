@@ -4,6 +4,8 @@ import { useMedia } from "../../../hooks/useMedia";
 const OutLienButtonCPStlye = styled.span`
   display: flex;
   align-items: center;
+  justify-content: center;
+  cursor: pointer;
   padding: ${({ pcOnly, media }) => (pcOnly ? (media ? "10px 14px" : "unset") : "10px 14px")};
   border-radius: ${({ pcOnly, media }) => (pcOnly ? (media ? "5px" : "unset") : "5px")};
   color: ${({ pcOnly, media, color }) => (pcOnly ? (media ? color : "black") : color)};

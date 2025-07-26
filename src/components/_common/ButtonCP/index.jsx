@@ -4,6 +4,8 @@ import { useMedia } from "../../../hooks/useMedia";
 const ButtonCPStyle = styled.span`
   display: flex;
   align-items: center;
+  justify-content: center;
+  cursor: pointer;
   background-color: ${({ pcOnly, media, color }) => (pcOnly ? (media ? `var(${color})` : "transparent") : `var(${color})`)};
   padding: ${({ pcOnly, media }) => (pcOnly ? (media ? "10px 14px" : "unset") : "10px 14px")};
   border-radius: ${({ pcOnly, media }) => (pcOnly ? (media ? "5px" : "unset") : "5px")};
