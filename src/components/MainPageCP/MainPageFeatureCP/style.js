@@ -2,8 +2,9 @@ import styled from "styled-components";
 
 export const MainPageFeatureCPMainStyle = styled.section`
   width: 100%;
+  margin: 6vh 0;
   height: auto;
-  padding: 3rem 0;
+  padding: 3rem 1rem;
   background-color: var(--gray-0);
   display: flex;
   justify-content: center;
@@ -36,6 +37,12 @@ export const MainPageFeatureCPMainStyle = styled.section`
     align-items: center;
     padding: 1.5rem; 
     gap: 1rem;
+    transition: all 0.3s ease-in-out;
+  }
+
+  & > div > div > div:hover {
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease-in-out;
   }
 
   & > div > div > div p:nth-child(2) {
@@ -45,6 +52,9 @@ export const MainPageFeatureCPMainStyle = styled.section`
   }
 
   & > div > div > div p:nth-child(3) {
+    display: flex;
+    wrap: wrap;
+    max-width: 400px;
     font-size: 1rem;
     font-weight: 400;
     color: var(--gray-4);
@@ -70,6 +80,16 @@ export const MainPageFeatureCPMainStyle = styled.section`
       flex: 1;
       width: 100%;
       text-align: center;
+    }
+    
+    & > div > div { /* card section container */
+      height: auto;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
     }
   }
 `;
