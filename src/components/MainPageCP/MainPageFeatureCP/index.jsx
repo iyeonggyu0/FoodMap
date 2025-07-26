@@ -1,11 +1,11 @@
 import { MainPageFeatureCPMainStyle } from "./style";
 
-import BrownButtonCP from "../../_common/ButtonCP";
-import OutLineButtonCP from "../../_common/OutLineButtonCP";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot, faStar, faBell } from "@fortawesome/free-solid-svg-icons";
 
+/**
+ * 메인 페이지 서비스 특징 섹션 컴포넌트
+ */
 const MainPageFeatureCP = () => {
   return (
     <MainPageFeatureCPMainStyle className="flexBetween">
@@ -53,8 +53,3 @@ const MainPageFeatureCP = () => {
   );
 };
 export default MainPageFeatureCP;
-/*
-          
-
-          
-          */

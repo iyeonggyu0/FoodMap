@@ -40,12 +40,26 @@ export const MainPageTitleCPMainStyle = styled.main`
 
   & > div > div > span:nth-child(1) {
     width: 160px;
+    transition: .3s;
+  }
+    
+  
+  & > div > div > span:nth-child(1):hover {
+    background-color: var(--brown);
+    cursor: pointer;
+    transition: .3s;
   }
     
   & > div > div > span:nth-child(2) {
     width: 200px;
+    transition: .3s;
   } 
 
+  & > div > div > span:nth-child(2):hover {
+    background-color: var(--gray-3);
+    cursor: pointer;
+    transition: .3s;
+  }
 
   @media screen and (max-width: 768px) {
     width: 90vw;
@@ -56,6 +70,14 @@ export const MainPageTitleCPMainStyle = styled.main`
       flex: 1;
       width: 100%;
       text-align: center;
+    }
+    
+    & > div > p:nth-child(1) {
+      font-size: 2.5rem;
+    }
+
+    & > div > p:nth-child(2) {
+      font-size: 1.2rem;
     }
   }
 `;
