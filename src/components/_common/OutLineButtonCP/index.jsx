@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useMedia } from "../../../hooks/useMedia";
 
-const OutLienButtonCPStlye = styled.span`
+const OutLineButtonCPStlye = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,16 +20,16 @@ const OutLienButtonCPStlye = styled.span`
  * @param {boolean} [pcOnly=false] PC에서만 배경을 유지 할 예정인지 (기본값: F)
  * @param {string} color 글자와 테두리 색을 정한다. (기본값: #FFF)
  * @param {string} borderColor 테두리 색을 정한다. (기본값: color와 동일)
- * @returns OutLienButtonCP 는 _common에 속하며, 해당 태그로 감싼 글자를 span으로 color의 테두리와 글자색을 만드는 css 적용
+ * @returns OutLineButtonCP 는 _common에 속하며, 해당 태그로 감싼 글자를 span으로 color의 테두리와 글자색을 만드는 css 적용
  */
 
-const OutLienButtonCP = ({ icon, children, pcOnly = false, color = "#FFF", borderColor }) => {
+const OutLineButtonCP = ({ icon, children, pcOnly = false, color = "#FFF", borderColor }) => {
   const isPc = useMedia().isPc;
   return (
-    <OutLienButtonCPStlye pcOnly={pcOnly} media={isPc} color={color} borderColor={borderColor}>
+    <OutLineButtonCPStlye pcOnly={pcOnly} media={isPc} color={color} borderColor={borderColor}>
       {icon && <span style={{ display: "inline-flex", alignItems: "center", marginRight: "0.5em" }}>{icon}</span>}
       {children}
-    </OutLienButtonCPStlye>
+    </OutLineButtonCPStlye>
   );
 };
-export default OutLienButtonCP;
+export default OutLineButtonCP;
