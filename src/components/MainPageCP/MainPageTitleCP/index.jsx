@@ -27,16 +27,14 @@ const MainPageTitleCP = () => {
         {/* btn + btn */}
         <div className="flexCenter">
           <BrownButtonCP
-            children={"지도에서 찾기"}
             backgroundColor="--brown-light"
             icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
             color="--brown-light"
-            fontColor="--gray-0"></BrownButtonCP>
+            fontColor="--gray-0">지도에서 찾기</BrownButtonCP>
           <OutLineButtonCP
-            children={"푸드트럭 등록하기"}
             icon={<FontAwesomeIcon icon={faMap} />}
             color="black"
-            borderColor="--gray-3"></OutLineButtonCP>
+            borderColor="--gray-3">푸드트럭 등록하기</OutLineButtonCP>
         </div>        
       </div>
     </MainPageTitleCPMainStyle>
