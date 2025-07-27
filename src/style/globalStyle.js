@@ -66,7 +66,7 @@ const GlobalStyle = createGlobalStyle`
 	  border-spacing: 0;
   }
   a, a:link, a:visited, a:hover, a:active{
-    color: black;
+    color: #202123;
     text-decoration: none;
   }
   -ms-overflow-style: block; /* IE and Edge */

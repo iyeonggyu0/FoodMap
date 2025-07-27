@@ -9,9 +9,10 @@ export const MainPageFeatureCPMainStyle = styled.section`
   display: flex;
   justify-content: center;
   align-items: center;
-  
 
   & > div {
+    width: 75vw;
+    max-width: 1440px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,7 +21,8 @@ export const MainPageFeatureCPMainStyle = styled.section`
     gap: 3rem 0;
   }
 
-  & > div > div { /* card section container */
+  & > div > div {
+    /* card section container */
     height: auto;
     margin: 0 auto;
     display: flex;
@@ -29,13 +31,14 @@ export const MainPageFeatureCPMainStyle = styled.section`
     gap: 2rem;
   }
 
-  & > div > div > div { /* card container */
+  & > div > div > div {
+    /* card container */
     border-radius: 8px;
     border: 1px solid var(--gray-2);
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1.5rem; 
+    padding: 1.5rem;
     gap: 1rem;
     transition: all 0.3s ease-in-out;
   }
@@ -60,7 +63,6 @@ export const MainPageFeatureCPMainStyle = styled.section`
     color: var(--gray-4);
   }
 
-
   & > div > p {
     font-size: 2rem;
     font-weight: 600;
@@ -81,8 +83,9 @@ export const MainPageFeatureCPMainStyle = styled.section`
       width: 100%;
       text-align: center;
     }
-    
-    & > div > div { /* card section container */
+
+    & > div > div {
+      /* card section container */
       height: auto;
       margin: 0 auto;
       display: flex;
