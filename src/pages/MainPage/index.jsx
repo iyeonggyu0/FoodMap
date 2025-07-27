@@ -1,6 +1,8 @@
-import MainPageBottomBannerCP from "../../components/MainPageCP/MainPageBottomBannerCP";
+import MainPageTitleCP from "../../components/MainPageCP/MainPageTitleCP";
+import MainPageFeatureCP from "../../components/MainPageCP/MainPageFeatureCP";
 import MainPageMethodCP from "../../components/MainPageCP/MainPageMethodCP";
 import MainPageMoreFunCP from "../../components/MainPageCP/MainPageMoreFunCP";
+import MainPageBottomBannerCP from "../../components/MainPageCP/MainPageBottomBannerCP";
 import MainLayOut from "../../layout/MainLayout";
 
 import { MainPageMainStyle } from "./style";
@@ -9,6 +11,12 @@ const MainPage = () => {
   return (
     <MainPageMainStyle>
       <MainLayOut>
+        {/* 메인 타이틀 */}
+        <MainPageTitleCP />
+
+        {/* 서비스 특징 */}
+        <MainPageFeatureCP />
+
         {/* 이용 방법 */}
         <MainPageMethodCP />
 
