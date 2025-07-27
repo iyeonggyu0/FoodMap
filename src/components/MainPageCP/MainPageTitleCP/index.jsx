@@ -21,23 +21,21 @@ const MainPageTitleCP = () => {
         </p>
         {/* subtitle */}
         <p>
-          실시간 위치 정보와 신뢰할 수 있는 리뷰로 <br />
-          내 주변 최고의 푸드트럭을 쉽고 빠르게 찾아보세요!
+          실시간 위치 정보와 신뢰할 수 있는 리뷰로 <br />내 주변 최고의 푸드트럭을 쉽고 빠르게 찾아보세요!
         </p>
         {/* btn + btn */}
         <div className="flexCenter">
-          <BrownButtonCP
-            children={"지도에서 찾기"}
-            backgroundColor="--brown-light"
-            icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
-            color="--brown-light"
-            fontColor="--gray-0"></BrownButtonCP>
-          <OutLineButtonCP
-            children={"푸드트럭 등록하기"}
-            icon={<FontAwesomeIcon icon={faMap} />}
-            color="black"
-            borderColor="--gray-3"></OutLineButtonCP>
-        </div>        
+          <a href="#">
+            <BrownButtonCP backgroundColor="--brown-light" icon={<FontAwesomeIcon icon={faMagnifyingGlass} />} color="--brown-light" fontColor="--gray-0">
+              지도에서 찾기
+            </BrownButtonCP>
+          </a>
+          <a href="/register">
+            <OutLineButtonCP icon={<FontAwesomeIcon icon={faMap} />} color="black" borderColor="--gray-3">
+              푸드트럭 등록하기
+            </OutLineButtonCP>
+          </a>
+        </div>
       </div>
     </MainPageTitleCPMainStyle>
   );

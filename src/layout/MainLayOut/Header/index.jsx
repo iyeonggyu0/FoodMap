@@ -6,8 +6,10 @@ const MainLayOutHeader = () => {
     <MainLayOutHeaderStyled>
       <div className="flexBetween">
         <div className="title-box">
-          <div>{/* logo */}</div>
-          <p>길맛로드</p>
+          <a href="/">
+            <div>{/* logo */}</div>
+            <p>길맛로드</p>
+          </a>
         </div>
         <nav>
           <ul className="flexBetween">

@@ -21,7 +21,7 @@ const GlobalStyle = createGlobalStyle`
 
       /* 회색 계열 */
       --gray-0: #FFFFFF;
-      --gray-1: #F7F3F1;
+      --gray-1: #f7f7f7ff;
       --gray-2: #EDEDED;
       --gray-3: #D5D5D5;
       --gray-4: #A4A4A4;
@@ -101,7 +101,11 @@ const GlobalStyle = createGlobalStyle`
     justify-content: space-between;
     flex-direction: column;
   }
-
+  
+  .flexCol{
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 export default GlobalStyle;
