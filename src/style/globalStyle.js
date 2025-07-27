@@ -41,7 +41,6 @@ const GlobalStyle = createGlobalStyle`
 	  border: 0;
     box-sizing: border-box;
     vertical-align: baseline;
-    color: #202123
   }
   article, aside, details, figcaption, figure, 
   footer, header, hgroup, menu, nav, section {
