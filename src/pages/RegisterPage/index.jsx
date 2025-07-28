@@ -1,4 +1,5 @@
 import { useCallback, useState, useRef } from "react";
+import DaumPostcode from "react-daum-postcode";
 import InputCP from "../../components/_common/InputCP";
 import SelectInputCP from "../../components/_common/SelectInputCP";
 import TextAreaInputCP from "../../components/_common/TextAreaInputCP";
@@ -14,6 +15,9 @@ import axios from "axios";
 import { encrypt } from "../../util/crypto";
 
 const RegisterPage = () => {
+  // 주소찾기 모달 상태 및 선택된 요일 인덱스
+  const [modalState, setModalState] = useState(false);
+  const [selectedScheduleIdx, setSelectedScheduleIdx] = useState(null);
   // 에러 span refs
   const nameErrorRef = useRef();
   const categoryErrorRef = useRef();
@@ -121,6 +125,24 @@ const RegisterPage = () => {
     alert("등록 신청이 완료되었습니다!");
 
     // FIXME: 로그인 세션 확인하기
+
+    console.table({
+      // 푸드트럭 이름
+      name: FTName,
+      // 푸드트럭 카테고리
+      category: FTCategory,
+      // 푸드트럭 카테고리
+      intro: FTIntro,
+      // 메뉴 리스트 (요일, 시간, 주소)
+      menu: menuList,
+      // 영업 일정
+      schedule: scheduleList,
+      // 사업자 등록번호
+      operatorNum: operatorNum,
+    });
+
+    console.table(menuList);
+    console.log(JSON.stringify(scheduleList, null, 2));
 
     // FIXME: api 주소 확인하기
     axios
@@ -328,6 +350,20 @@ const RegisterPage = () => {
     setScheduleList((prev) => prev.map((item, i) => (i === idx ? { ...item, [key]: value } : item)));
   };
 
+  // 주소찾기 버튼 클릭 시
+  const handleAddressSearch = (idx) => {
+    setSelectedScheduleIdx(idx);
+    setModalState(true);
+  };
+
+  // DaumPostcode 완료 시
+  const onCompletePost = (data) => {
+    setModalState(false);
+    if (selectedScheduleIdx !== null) {
+      setScheduleList((prev) => prev.map((item, i) => (i === selectedScheduleIdx ? { ...item, mapAddress: data.address } : item)));
+    }
+  };
+
   return (
     <MainLayOut>
       <RegisterPageMainStyle>
@@ -478,12 +514,14 @@ const RegisterPage = () => {
                   ex="Close (ex: 21)"
                   className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.close ? "error-input" : ""}
                 />
-                <OutLineButtonCP color="#A47764" borderColor="--brown-light" className={!item.holiday ? "disabled-input" : ""}>
-                  주소찾기
-                </OutLineButtonCP>
+                <div onClick={() => item.holiday && handleAddressSearch(idx)}>
+                  <OutLineButtonCP color="#A47764" borderColor="--brown-light" className={!item.holiday ? "disabled-input" : ""}>
+                    주소찾기
+                  </OutLineButtonCP>
+                </div>
                 <InputCP
                   value={item.mapAddress}
-                  onChangeHandler={(e) => handleScheduleChange(idx, "mapAddress", e.target.value)}
+                  // onChangeHandler={(e) => handleScheduleChange(idx, "mapAddress", e.target.value)}
                   ex="지도 상 주소"
                   className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.address ? "error-input" : ""}
                 />
@@ -529,6 +567,35 @@ const RegisterPage = () => {
             </div>
           </div>
         </section>
+        {/* 주소찾기 모달 */}
+        {modalState && (
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100vw",
+              height: "100vh",
+              background: "rgba(0,0,0,0.3)",
+              zIndex: 10000,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onClick={() => setModalState(false)}>
+            <div
+              style={{
+                background: "#fff",
+                borderRadius: "8px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+                padding: 0,
+                zIndex: 10001,
+              }}
+              onClick={(e) => e.stopPropagation()}>
+              <DaumPostcode style={{ width: 400, height: 500 }} onComplete={onCompletePost} />
+            </div>
+          </div>
+        )}
       </RegisterPageMainStyle>
     </MainLayOut>
     // TODO: 등록 신청버튼
