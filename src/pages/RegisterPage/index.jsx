@@ -126,24 +126,6 @@ const RegisterPage = () => {
 
     // FIXME: 로그인 세션 확인하기
 
-    console.table({
-      // 푸드트럭 이름
-      name: FTName,
-      // 푸드트럭 카테고리
-      category: FTCategory,
-      // 푸드트럭 카테고리
-      intro: FTIntro,
-      // 메뉴 리스트 (요일, 시간, 주소)
-      menu: menuList,
-      // 영업 일정
-      schedule: scheduleList,
-      // 사업자 등록번호
-      operatorNum: operatorNum,
-    });
-
-    console.table(menuList);
-    console.log(JSON.stringify(scheduleList, null, 2));
-
     // FIXME: api 주소 확인하기
     axios
       .post(
