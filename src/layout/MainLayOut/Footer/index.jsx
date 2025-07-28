@@ -56,7 +56,15 @@ const MainLayOutFooter = () => {
         </div>
         {/* 하단 */}
         <div className="bottom flexBetween flexHeightCenter">
-          <span>© 2025 길맛지도. All rights reserved.</span>
+          <span>
+            © 2025 길맛지도. All rights reserved.{" "}
+            <a href="/terms" target="_blank">
+              이용약관
+            </a>
+            <a href="/privacy-policy" target="_blank">
+              개인정보처리방침
+            </a>
+          </span>
           <a href="https://github.com/iyeonggyu0/FoodMap" className="icon">
             <FontAwesomeIcon icon={faGithub} />
           </a>

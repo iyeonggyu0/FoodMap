@@ -65,6 +65,11 @@ export const MainLayOutFooterStyled = styled.footer`
     height: 58px;
     border-top: 1px solid var(--gray-6);
   }
+  & > div .bottom > span > * {
+    padding-left: 1rem;
+    color: var(--gray-5);
+    cursor: pointer;
+  }
 
   /* GitHub 아이콘 */
   & .icon {

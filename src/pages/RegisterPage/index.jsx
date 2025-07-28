@@ -534,7 +534,14 @@ const RegisterPage = () => {
           <form className="terms flexHeightCenter">
             <input type="checkbox" id="terms" name="terms" />
             <label htmlFor="terms">
-              <a href="">이용약관</a> 및 <a href="">개인정보처리방침</a>에 동의합니다<span className="essential">*</span>
+              <a href="/terms" target="_blank" rel="noopener noreferrer">
+                이용약관
+              </a>{" "}
+              및{" "}
+              <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">
+                개인정보처리방침
+              </a>
+              에 동의합니다<span className="essential">*</span>
             </label>
           </form>
           <span
@@ -580,7 +587,6 @@ const RegisterPage = () => {
         )}
       </RegisterPageMainStyle>
     </MainLayOut>
-    // TODO: 등록 신청버튼
   );
 };
 export default RegisterPage;
