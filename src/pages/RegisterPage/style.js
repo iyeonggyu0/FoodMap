@@ -6,6 +6,19 @@ export const RegisterPageMainStyle = styled.main`
   padding: 3rem 0;
   background-color: var(--main-page-bg);
 
+  .axiosButton {
+    height: 3rem;
+    margin-top: 2rem;
+  }
+  .axiosButton > * {
+    height: 100%;
+  }
+
+  .disabled-input {
+    pointer-events: none !important;
+    opacity: 0.5;
+  }
+
   & span.essential {
     color: orange;
     padding-left: 0.2rem;
@@ -239,6 +252,10 @@ export const RegisterPageScheduleStyle = styled.div`
     & > div > form:nth-child(2),
     & > div > form:nth-child(4) {
       width: 40%;
+    }
+
+    & > div > form:nth-child(4) {
+      margin-right: 1rem;
     }
 
     /* 주소찾기 버튼 */

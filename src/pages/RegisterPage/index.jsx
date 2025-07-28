@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useRef } from "react";
 import InputCP from "../../components/_common/InputCP";
 import SelectInputCP from "../../components/_common/SelectInputCP";
 import TextAreaInputCP from "../../components/_common/TextAreaInputCP";
@@ -10,11 +10,177 @@ import OutLineButtonCP from "../../components/_common/OutLineButtonCP";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEraser, faPen } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
+import { encrypt } from "../../util/crypto";
 
 const RegisterPage = () => {
-  // FT 푸드트럭 약자
+  // 에러 span refs
+  const nameErrorRef = useRef();
+  const categoryErrorRef = useRef();
+  const introErrorRef = useRef();
+  const menuErrorRef = useRef();
+  const operatorNumErrorRef = useRef();
+  const termsErrorRef = useRef();
+  // 요일별 에러는 동적으로 관리
+  const [scheduleErrors, setScheduleErrors] = useState(Array(7).fill({ open: false, close: false, address: false }));
+  // 등록 신청 함수
+  const registerSubmitHandler = (e) => {
+    e.preventDefault();
+    let error = false;
+    let errorMsgs = [];
+    // 1. 푸드트럭 이름 2글자 이상
+    if (!FTName || FTName.length < 2) {
+      nameErrorRef.current.style.visibility = "visible";
+      errorMsgs.push("푸드트럭 이름은 2글자 이상 입력해야 합니다.");
+      error = true;
+    } else {
+      nameErrorRef.current.style.visibility = "hidden";
+    }
+    // 2. 카테고리 선택
+    if (!FTCategory) {
+      categoryErrorRef.current.style.visibility = "visible";
+      errorMsgs.push("카테고리를 선택하세요.");
+      error = true;
+    } else {
+      categoryErrorRef.current.style.visibility = "hidden";
+    }
+    // 3. 소개 20자 이상
+    if (!FTIntro || FTIntro.length < 20) {
+      introErrorRef.current.style.visibility = "visible";
+      errorMsgs.push("푸드트럭 소개는 20자 이상 입력해야 합니다.");
+      error = true;
+    } else {
+      introErrorRef.current.style.visibility = "hidden";
+    }
+    // 6. 메뉴 1개 이상
+    if (!menuList || menuList.length === 0) {
+      menuErrorRef.current.style.visibility = "visible";
+      errorMsgs.push("메뉴를 하나 이상 등록하세요.");
+      error = true;
+    } else {
+      menuErrorRef.current.style.visibility = "hidden";
+    }
+    // 7. 요일 중 하나라도 영업 체크, 체크된 요일의 데이터 검사
+    let hasOpenDay = false;
+    let newScheduleErrors = scheduleErrors.map(() => ({ open: false, close: false, address: false }));
+    scheduleList.forEach((item, idx) => {
+      if (item.holiday) {
+        hasOpenDay = true;
+        // 7-1. 오픈/클로즈 숫자 두자리
+        if (!/^\d{2}$/.test(item.start)) {
+          newScheduleErrors[idx].open = true;
+          errorMsgs.push(`${item.day}요일 오픈 시간은 두자리 숫자여야 합니다.`);
+          error = true;
+        }
+        if (!/^\d{2}$/.test(item.end)) {
+          newScheduleErrors[idx].close = true;
+          errorMsgs.push(`${item.day}요일 클로징 시간은 두자리 숫자여야 합니다.`);
+          error = true;
+        }
+        // 7-2. 클로징 >= 오픈
+        if (/^\d{2}$/.test(item.start) && /^\d{2}$/.test(item.end) && Number(item.end) < Number(item.start)) {
+          newScheduleErrors[idx].close = true;
+          errorMsgs.push(`${item.day}요일 클로징 시간은 오픈 시간보다 빠를 수 없습니다.`);
+          error = true;
+        }
+        // 7-3. 주소 10자 이상
+        if (!item.mapAddress || item.mapAddress.length < 10 || !item.userAddress || item.userAddress.length < 10) {
+          newScheduleErrors[idx].address = true;
+          errorMsgs.push(`${item.day}요일 주소는 10자 이상 입력해야 합니다.`);
+          error = true;
+        }
+      }
+    });
+    setScheduleErrors(newScheduleErrors);
+    if (!hasOpenDay) {
+      errorMsgs.push("요일 중 하나 이상 영업 체크가 필요합니다.");
+      error = true;
+    }
+    // 8. 사업자 등록번호
+    const operatorNum = document.querySelector('input[placeholder="000-00-00000"]')?.value || "";
+    if (!/^\d{3}-\d{2}-\d{5}$/.test(operatorNum)) {
+      operatorNumErrorRef.current.style.visibility = "visible";
+      errorMsgs.push("사업자 등록번호는 000-00-00000 형식이어야 합니다.");
+      error = true;
+    } else {
+      operatorNumErrorRef.current.style.visibility = "hidden";
+    }
+    // 9. 약관 동의
+    const termsChecked = document.getElementById("terms")?.checked;
+    if (!termsChecked) {
+      termsErrorRef.current.style.visibility = "visible";
+      errorMsgs.push("약관에 동의해야 합니다.");
+      error = true;
+    } else {
+      termsErrorRef.current.style.visibility = "hidden";
+    }
+    if (error) {
+      alert("입력값에 문제가 있습니다.");
+      return;
+    }
+    alert("등록 신청이 완료되었습니다!");
 
-  // 푸트드럭 이름
+    // FIXME: 로그인 세션 확인하기
+
+    // FIXME: api 주소 확인하기
+    axios
+      .post(
+        `${import.meta.env.VITE_API_URL}`,
+        encrypt({
+          // 푸드트럭 이름
+          name: FTName,
+          // 푸드트럭 카테고리
+          category: FTCategory,
+          // 푸드트럭 카테고리
+          intro: FTIntro,
+          // 메뉴 리스트 (요일, 시간, 주소)
+          menu: menuList,
+          // 영업 일정
+          schedule: scheduleList,
+          // 사업자 등록번호
+          operatorNum: operatorNum,
+        })
+      )
+      .then((res) => {
+        if (res.data.success) {
+          alert("푸드트럭 등록이 완료되었습니다!");
+          // 입력값 초기화
+          setFTName("");
+          setFTCategory("");
+          setFTIntro("");
+          setMenuList([]);
+          setScheduleList(
+            dayNames.map((day) => ({
+              day,
+              holiday: false,
+              start: "",
+              end: "",
+              mapAddress: "",
+              userAddress: "",
+            }))
+          );
+          setMenuName("");
+          setMenuPrice("");
+          setMenuInfo("");
+          setMenuNum("");
+          setMenuModify(false);
+          setEditMenuNum("");
+          setMenuList([]);
+          setMenuName("");
+          setMenuPrice("");
+          setMenuInfo("");
+          setMenuNum("");
+        } else {
+          alert("푸드트럭 등록에 실패했습니다. 다시 시도해주세요.");
+        }
+      })
+      .catch((err) => {
+        console.error("푸드트럭 등록 중 오류 발생:", err);
+        alert("푸드트럭 등록 중 오류가 발생했습니다. 다시 시도해주세요.");
+      });
+  };
+
+  // 푸드트럭 이름
   const [FTName, onChangeFTName, setFTName] = useInput("");
   // 푸드트럭 카테고리
   const [FTCategory, onChangeFTCategory, setFTCategory] = useInput("");
@@ -33,9 +199,6 @@ const RegisterPage = () => {
 
   // 푸드트럭 소개
   const [FTIntro, onChangeFTIntro, setFTIntro] = useInput("");
-
-  const [phNumber, onChangePhoneNumber, setPhoneNumber] = useInput("");
-  const [email, onChangeEmail, setEmail] = useInput("");
 
   const [menuList, setMenuList] = useState([]);
 
@@ -146,7 +309,7 @@ const RegisterPage = () => {
 
   /**
    * 운영 정보 상태를 요일별 객체 리스트로 관리
-   * day: 요일명, holiday: 휴일 여부, start: 시작시간, end: 종료시간, mapAddress: 지도상주소, userAddress: 안내주소
+   * day: 요일명, holiday: 휴일 여부, start: 시작시간, end: 종료시간, mapAddress: 지도상 주소, userAddress: 안내주소
    */
   const dayNames = ["월", "화", "수", "목", "금", "토", "일"];
   const [scheduleList, setScheduleList] = useState(
@@ -178,11 +341,15 @@ const RegisterPage = () => {
             <div className="col">
               <div>
                 <InputCP title="푸드트럭 이름" essential="true" value={FTName} ex="황금 잉어빵" onChangeHandler={onChangeFTName} />
-                <span className="nameError error">2글자 이상 입력하세요</span>
+                <span className="nameError error" ref={nameErrorRef}>
+                  2글자 이상 입력하세요
+                </span>
               </div>
               <div>
                 <SelectInputCP title="카테고리" essential="true" listData={FTCategoryList} onChangeHandler={onChangeFTCategory} />
-                <span className="categoryError error">카테고리를 선택하세요</span>
+                <span className="categoryError error" ref={categoryErrorRef}>
+                  카테고리를 선택하세요
+                </span>
               </div>
             </div>
             <div className="col-full">
@@ -196,18 +363,9 @@ const RegisterPage = () => {
                   maxRows={7}
                   minRows={5}
                 />
-                <span className="introError error">20자 이상 입력하세요</span>
-              </div>
-            </div>
-
-            <div className="col">
-              <div>
-                <InputCP title="연락처" essential="true" value={phNumber} ex="010-1234-5678" onChangeHandler={onChangePhoneNumber} />
-                <span className="nameError error">올바른 형식이 아닙니다.</span>
-              </div>
-              <div>
-                <InputCP title="이메일" essential="true" value={email} ex="your-email@email.com" onChangeHandler={onChangeEmail} />
-                <span className="nameError error">올바른 이메일을 입력하세요</span>
+                <span className="introError error" ref={introErrorRef}>
+                  20자 이상 입력하세요
+                </span>
               </div>
             </div>
           </div>
@@ -220,7 +378,7 @@ const RegisterPage = () => {
                   메뉴 리스트<span className="essential">*</span>
                 </p>
                 <div className={menuList.length === 0 ? "flexCenter" : "flexCol"}>
-                  {menuList.length === 0 && <p>메뉴를 등록 하세요</p>}
+                  {menuList.length === 0 && <p>메뉴를 등록하세요</p>}
                   {/* menuList를 num 오름차순으로 정렬하여 출력 */}
                   {menuList
                     .slice()
@@ -256,6 +414,9 @@ const RegisterPage = () => {
                       </div>
                     ))}
                 </div>
+                <span className="menuError error" ref={menuErrorRef}>
+                  메뉴를 하나 이상 등록하세요
+                </span>
               </div>
               <div className="menu-add">
                 <p>메뉴 등록</p>
@@ -263,7 +424,13 @@ const RegisterPage = () => {
                   <InputCP title="메뉴 이름" value={menuName} onChangeHandler={onChangeMenuName} essential="true" />
                   <InputCP title="가격" value={menuPrice} onChangeHandler={onChangeMenuPrice} essential="true" ex="숫자만 입력" />
                   <InputCP title="설명" value={menuInfo} onChangeHandler={onChangeMenuInfo} />
-                  <InputCP title="표시 순서" value={menuNum} onChangeHandler={onChangeMenuNum} essential="true" />
+                  <InputCP
+                    title="표시 순서"
+                    value={menuNum}
+                    onChangeHandler={onChangeMenuNum}
+                    essential="true"
+                    ex="숫자가 이어질 필요가 없습니다. 메뉴는 오름차순으로 표시됩니다."
+                  />
                 </div>
                 <div>
                   {/* 수정모드, 등록모드 버튼 구분 */}
@@ -296,14 +463,36 @@ const RegisterPage = () => {
                   />
                 </span>
 
-                <InputCP value={item.start} onChangeHandler={(v) => handleScheduleChange(idx, "start", v)} ex="Open (ex: 15)" />
-                <span style={{ textAlign: "center" }}>~</span>
-                <InputCP value={item.end} onChangeHandler={(v) => handleScheduleChange(idx, "end", v)} ex="Close (ex: 21)" />
-                <OutLineButtonCP color="#A47764" borderColor="--brown-light">
+                <InputCP
+                  value={item.start}
+                  onChangeHandler={(e) => handleScheduleChange(idx, "start", e.target.value)}
+                  ex="Open (ex: 15)"
+                  className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.open ? "error-input" : ""}
+                />
+                <span style={{ textAlign: "center" }} className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.open ? "error-input" : ""}>
+                  ~
+                </span>
+                <InputCP
+                  value={item.end}
+                  onChangeHandler={(e) => handleScheduleChange(idx, "end", e.target.value)}
+                  ex="Close (ex: 21)"
+                  className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.close ? "error-input" : ""}
+                />
+                <OutLineButtonCP color="#A47764" borderColor="--brown-light" className={!item.holiday ? "disabled-input" : ""}>
                   주소찾기
                 </OutLineButtonCP>
-                <InputCP value={item.mapAddress} onChangeHandler={(v) => handleScheduleChange(idx, "mapAddress", v)} ex="지도 상 주소" />
-                <InputCP value={item.userAddress} onChangeHandler={(v) => handleScheduleChange(idx, "userAddress", v)} ex="사용자 안내용 주소" />
+                <InputCP
+                  value={item.mapAddress}
+                  onChangeHandler={(e) => handleScheduleChange(idx, "mapAddress", e.target.value)}
+                  ex="지도 상 주소"
+                  className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.address ? "error-input" : ""}
+                />
+                <InputCP
+                  value={item.userAddress}
+                  onChangeHandler={(e) => handleScheduleChange(idx, "userAddress", e.target.value)}
+                  ex="사용자 안내용 주소"
+                  className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.address ? "error-input" : ""}
+                />
               </div>
             ))}
           </RegisterPageScheduleStyle>
@@ -311,8 +500,16 @@ const RegisterPage = () => {
             <h2>사업자 정보</h2>
             <div className="col-full">
               <InputCP title="사업자 등록번호" essential="true" ex="000-00-00000" />
+              <span className="operatorNumError error" ref={operatorNumErrorRef}>
+                형식이 올바르지 않습니다.
+              </span>
+              <span
+                className="termsError error"
+                ref={termsErrorRef}
+                style={{ display: "block", color: "red", fontSize: "0.9rem", margin: "0.5rem 0", visibility: "hidden" }}>
+                약관에 동의해야 합니다.
+              </span>
             </div>
-            <div></div>
           </div>
           <form className="terms flexHeightCenter">
             <input type="checkbox" id="terms" name="terms" />
@@ -320,12 +517,21 @@ const RegisterPage = () => {
               <a href="">이용약관</a> 및 <a href="">개인정보처리방침</a>에 동의합니다<span className="essential">*</span>
             </label>
           </form>
+          <span
+            className="termsError error"
+            ref={termsErrorRef}
+            style={{ display: "block", color: "red", fontSize: "0.9rem", margin: "0.5rem 0", visibility: "hidden" }}>
+            약관에 동의해야 합니다.
+          </span>
           <div className="col-full">
-            <ButtonCP>등록 신청</ButtonCP>
+            <div className="axiosButton" onClick={registerSubmitHandler}>
+              <ButtonCP>등록 신청</ButtonCP>
+            </div>
           </div>
         </section>
       </RegisterPageMainStyle>
     </MainLayOut>
+    // TODO: 등록 신청버튼
   );
 };
 export default RegisterPage;

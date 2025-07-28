@@ -45,14 +45,14 @@ const InputCPMainStyle = styled.form`
  * @returns {JSX.Element} 텍스트 입력 폼
  *
  */
-const InputCP = ({ title, essential = false, ex, pw = false, onChangeHandler, value }) => {
+const InputCP = ({ title, essential = false, ex, pw = false, onChangeHandler, value, className }) => {
   return (
     <InputCPMainStyle>
       <label htmlFor="InputCP">
         {title && title}
         {essential && <span className="essential">*</span>}
       </label>
-      <input type={pw ? "password" : "text"} id="InputCP" name="InputCP" onChange={onChangeHandler} placeholder={ex} value={value} />
+      <input type={pw ? "password" : "text"} id="InputCP" name="InputCP" onChange={onChangeHandler} placeholder={ex} value={value} className={className} />
     </InputCPMainStyle>
   );
 };
