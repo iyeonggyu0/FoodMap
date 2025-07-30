@@ -8,7 +8,7 @@ const PrivacyPolicyPage = () => {
         <div>
           <h1>개인정보 처리방침</h1>
           <p>
-            <strong>최종 업데이트:</strong> 2025년 7월 28일
+            <strong>최종 업데이트:</strong> 2025년 7월 30일
           </p>
 
           <section>
@@ -248,6 +248,18 @@ const PrivacyPolicyPage = () => {
           <section>
             <h2>제16조 (문의처)</h2>
             <p>본 개인정보 처리방침에 관한 문의는 아래 이메일로 연락해 주시기 바랍니다.</p>
+            <ul>
+              <li>이메일: iyeonggyu0@syuin.ac.kr</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>제17조 (제 3자 정보 제공 동의)</h2>
+            <p>
+              본 서비스는 사용자에게 서비스 정보를 SMS로 제공합니다.
+              <br />
+              이때 필수적으로 SMS 전송 플랫폼 '문자온'에 사용자의 연락처 정보가 전달됨을 명시합니다.
+            </p>
             <ul>
               <li>이메일: iyeonggyu0@syuin.ac.kr</li>
             </ul>

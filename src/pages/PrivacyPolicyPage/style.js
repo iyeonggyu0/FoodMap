@@ -6,6 +6,8 @@ export const PrivacyPolicyPageMainStyle = styled.main`
   padding: 3rem 0;
   background: #f9f9f9;
 
+  line-height: 160%;
+
   & > div {
     width: 75vw;
     max-width: 900px;

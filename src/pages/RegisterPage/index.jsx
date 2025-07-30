@@ -13,8 +13,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEraser, faPen } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { encrypt } from "../../util/crypto";
+import { useMedia } from "../../hooks/useMedia";
 
 const RegisterPage = () => {
+  const isPc = useMedia().isPc;
+
   // 주소찾기 모달 상태 및 선택된 요일 인덱스
   const [modalState, setModalState] = useState(false);
   const [selectedScheduleIdx, setSelectedScheduleIdx] = useState(null);
@@ -28,6 +31,13 @@ const RegisterPage = () => {
   // 요일별 에러는 동적으로 관리
   const [scheduleErrors, setScheduleErrors] = useState(Array(7).fill({ open: false, close: false, address: false }));
   // 등록 신청 함수
+  /**
+   * 푸드트럭 등록 신청을 처리하는 함수
+   * @param {Event} e - 폼 제출 이벤트 객체
+   * @returns {void}
+   * - 입력값 유효성 검사 후, 문제가 없으면 API로 데이터 전송
+   * - 성공 시 입력값 초기화, 실패 시 에러 안내
+   */
   const registerSubmitHandler = (e) => {
     e.preventDefault();
     let error = false;
@@ -260,7 +270,9 @@ const RegisterPage = () => {
 
   /**
    * 메뉴 수정 함수
-   * - 수정 버튼 클릭 시 menuList에서 해당 메뉴 정보 업데이트
+   * @returns {void}
+   * - 수정 중인 메뉴의 정보를 menuList에서 업데이트
+   * - 수정 성공 시 입력값 초기화 및 수정모드 해제
    */
   const menuEditHandler = useCallback(() => {
     if (!editMenuNum) return;
@@ -293,7 +305,10 @@ const RegisterPage = () => {
 
   /**
    * 메뉴 삭제 함수
-   * - faEraser 아이콘 클릭 시 해당 메뉴 삭제
+   * @param {string} num - 삭제할 메뉴의 표시 순서 번호
+   * @returns {void}
+   * - menuList에서 해당 번호의 메뉴 삭제
+   * - 수정모드에서 삭제한 메뉴가 현재 수정 중이면 수정모드 해제
    */
   const menuDeleteHandler = useCallback(
     (num) => {
@@ -327,18 +342,33 @@ const RegisterPage = () => {
     }))
   );
 
-  // 요일별 핸들러 생성
+  /**
+   * 요일별 운영 정보 변경 핸들러
+   * @param {number} idx - 변경할 요일의 인덱스
+   * @param {string} key - 변경할 속성명
+   * @param {any} value - 변경할 값
+   * @returns {void}
+   * - scheduleList의 특정 요일 객체의 key값을 value로 변경
+   */
   const handleScheduleChange = (idx, key, value) => {
     setScheduleList((prev) => prev.map((item, i) => (i === idx ? { ...item, [key]: value } : item)));
   };
 
-  // 주소찾기 버튼 클릭 시
+  /**
+   * 주소찾기 버튼 클릭 시 모달 오픈 및 선택 요일 인덱스 저장
+   * @param {number} idx - 선택한 요일의 인덱스
+   * @returns {void}
+   */
   const handleAddressSearch = (idx) => {
     setSelectedScheduleIdx(idx);
     setModalState(true);
   };
 
-  // DaumPostcode 완료 시
+  /**
+   * DaumPostcode에서 주소 선택 완료 시 해당 요일의 mapAddress 값 변경
+   * @param {object} data - DaumPostcode에서 전달받은 주소 데이터
+   * @returns {void}
+   */
   const onCompletePost = (data) => {
     setModalState(false);
     if (selectedScheduleIdx !== null) {
@@ -467,52 +497,78 @@ const RegisterPage = () => {
             </div>
           </RegisterPageMenuStyle>
           <RegisterPageScheduleStyle>
-            <h2>운영 정보</h2>
+            <h2>
+              운영 정보<span className="essential">*</span>
+            </h2>
             {/* 전체 요일 반복 출력 */}
             {scheduleList.map((item, idx) => (
               <div key={item.day} style={{ marginBottom: "2rem" }}>
-                <span>
-                  {item.day}&nbsp;&nbsp;
-                  <input
-                    type="checkbox"
-                    checked={item.holiday}
-                    onChange={(e) => handleScheduleChange(idx, "holiday", e.target.checked)}
-                    id={`holiday-${item.day}`}
+                <div>
+                  <span>
+                    {item.day}요일&nbsp;&nbsp;
+                    <input
+                      type="checkbox"
+                      checked={item.holiday}
+                      onChange={(e) => handleScheduleChange(idx, "holiday", e.target.checked)}
+                      id={`holiday-${item.day}`}
+                    />
+                  </span>
+                  {isPc && (
+                    <span
+                      style={{ textAlign: "center", visibility: "hidden" }}
+                      className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.open ? "error-input" : ""}>
+                      ~
+                    </span>
+                  )}
+                  <InputCP
+                    value={item.start}
+                    onChangeHandler={(e) => handleScheduleChange(idx, "start", e.target.value)}
+                    ex="영업 시작 시간 (ex: 15)"
+                    className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.open ? "error-input" : ""}
                   />
-                </span>
-
-                <InputCP
-                  value={item.start}
-                  onChangeHandler={(e) => handleScheduleChange(idx, "start", e.target.value)}
-                  ex="Open (ex: 15)"
-                  className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.open ? "error-input" : ""}
-                />
-                <span style={{ textAlign: "center" }} className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.open ? "error-input" : ""}>
-                  ~
-                </span>
-                <InputCP
-                  value={item.end}
-                  onChangeHandler={(e) => handleScheduleChange(idx, "end", e.target.value)}
-                  ex="Close (ex: 21)"
-                  className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.close ? "error-input" : ""}
-                />
-                <div onClick={() => item.holiday && handleAddressSearch(idx)}>
-                  <OutLineButtonCP color="#A47764" borderColor="--brown-light" className={!item.holiday ? "disabled-input" : ""}>
-                    주소찾기
-                  </OutLineButtonCP>
+                  <span style={{ textAlign: "center" }} className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.open ? "error-input" : ""}>
+                    ~
+                  </span>
+                  <InputCP
+                    value={item.end}
+                    onChangeHandler={(e) => handleScheduleChange(idx, "end", e.target.value)}
+                    ex="영업 종료 시간 (ex: 21)"
+                    className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.close ? "error-input" : ""}
+                  />
                 </div>
-                <InputCP
-                  value={item.mapAddress}
-                  // onChangeHandler={(e) => handleScheduleChange(idx, "mapAddress", e.target.value)}
-                  ex="지도 상 주소"
-                  className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.address ? "error-input" : ""}
-                />
-                <InputCP
-                  value={item.userAddress}
-                  onChangeHandler={(e) => handleScheduleChange(idx, "userAddress", e.target.value)}
-                  ex="사용자 안내용 주소"
-                  className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.address ? "error-input" : ""}
-                />
+                <div>
+                  <div onClick={() => item.holiday && handleAddressSearch(idx)}>
+                    <OutLineButtonCP color="#A47764" borderColor="--brown-light" className={!item.holiday ? "disabled-input" : ""}>
+                      주소찾기
+                    </OutLineButtonCP>
+                  </div>
+                  {isPc && (
+                    <span
+                      style={{ textAlign: "center", visibility: "hidden" }}
+                      className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.open ? "error-input" : ""}>
+                      ~
+                    </span>
+                  )}
+                  <InputCP
+                    value={item.mapAddress}
+                    // onChangeHandler={(e) => handleScheduleChange(idx, "mapAddress", e.target.value)}
+                    ex="지도 상 주소"
+                    className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.address ? "error-input" : ""}
+                  />
+                  {isPc && (
+                    <span
+                      style={{ textAlign: "center", visibility: "hidden" }}
+                      className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.open ? "error-input" : ""}>
+                      ~
+                    </span>
+                  )}
+                  <InputCP
+                    value={item.userAddress}
+                    onChangeHandler={(e) => handleScheduleChange(idx, "userAddress", e.target.value)}
+                    ex="사용자 안내용 주소"
+                    className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.address ? "error-input" : ""}
+                  />
+                </div>
               </div>
             ))}
           </RegisterPageScheduleStyle>
@@ -585,6 +641,13 @@ const RegisterPage = () => {
             </div>
           </div>
         )}
+        <div>
+          <h2>등록 안내사항</h2>
+          <p>ㆍ등록 신청 후 1~2일 내에 검토 결과를 알려드립니다.</p>
+          <p>ㆍ허위 정보 입력 시 서비스 이용이 제한될 수 있습니다.</p>
+          <p>ㆍ사업자등록증이 있는 경우 우선적으로 승인됩니다.</p>
+          <p>ㆍ문의사항은 Q&A 게시판으로 연락해주세요.</p>
+        </div>
       </RegisterPageMainStyle>
     </MainLayOut>
   );

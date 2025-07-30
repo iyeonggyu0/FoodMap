@@ -138,6 +138,30 @@ export const RegisterPageMainStyle = styled.main`
       margin-bottom: 1.6rem;
     }
   }
+
+  /* 안내사항 */
+  & > div:last-child {
+    width: 75vw;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 3rem 3rem;
+    background-color: var(--gray-0);
+    border-radius: 1rem;
+    border: 1px solid var(--gray-4);
+    margin-top: 3rem;
+  }
+
+  & > div:last-child > h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  & > div:last-child > p {
+    font-size: 1rem;
+    color: var(--gray-6);
+    margin-bottom: 1rem;
+  }
 `;
 
 export const RegisterPageMenuStyle = styled.div`
@@ -226,28 +250,29 @@ export const RegisterPageScheduleStyle = styled.div`
   width: 100%;
 
   @media screen and (max-width: 768px) {
-    & > div {
+    & > div > div {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
       gap: 1rem;
-      margin-bottom: 7vh !important;
+      margin-bottom: 3vh !important;
     }
 
-    & > div > * {
+    & > div > div > * {
       width: 100% !important;
     }
   }
+
   & > div {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 4vh !important;
+    margin-bottom: 3rem !important;
   }
 
   @media screen and (min-width: 769px) {
-    & > div {
-      gap: 0 0.4rem;
+    & > div > div {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
     }
 
     & label {
@@ -255,40 +280,23 @@ export const RegisterPageScheduleStyle = styled.div`
     }
 
     /* 요일 */
-    & > div > span:nth-child(1) {
-      width: 13%;
-    }
-
-    /* 시간 */
-    & > div > form:nth-child(2),
-    & > div > form:nth-child(4) {
-      width: 40%;
-    }
-
-    & > div > form:nth-child(4) {
-      margin-right: 1rem;
-    }
-
-    /* 주소찾기 버튼 */
-    & > div > div:nth-child(5) {
+    & > div > div > *:nth-child(1) {
       width: 20%;
-      height: 56px;
-      font-size: 0.8rem;
     }
 
-    & > div > div:nth-child(5) > span {
-      display: flex;
+    & > div > div:nth-child(2) > *:nth-child(1) > span {
       height: 56px;
       border-radius: 0.5rem;
     }
 
-    & > div > form:nth-child(6) {
-      pointer-events: none;
+    /* 요일 */
+    & > div > div > *:nth-child(3),
+    & > div > div > *:nth-child(5) {
+      width: 36%;
     }
-
-    & > div > form:nth-child(6),
-    & > div > form:nth-child(7) {
-      width: 60%;
+    & > div > div:nth-child(1) > *:nth-child(2),
+    & > div > div:nth-child(2) > *:nth-child(2),
+    & > div > div:nth-child(2) > *:nth-child(4) {
     }
   }
 `;
