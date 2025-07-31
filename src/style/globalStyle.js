@@ -14,7 +14,7 @@ const GlobalStyle = createGlobalStyle`
       --brown: #543C35;
       --brown-dark: #746563;
 
-      --main-page-bg: #F7F3F1;
+      --main-page-bg: #f6f4f3ff;
 
       /* 포인트 그린 */
       --green-accent: #22C55E;

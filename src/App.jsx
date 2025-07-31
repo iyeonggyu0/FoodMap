@@ -8,6 +8,9 @@ import MainPage from "./pages/MainPage";
 import RegisterPage from "./pages/RegisterPage";
 import TermsPage from "./pages/TermsPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import LoginPage from "./pages/LoginPage";
+import SignUpPage from "./pages/SignUpPage";
+// import PrivateRoute from "./util/privateRoute";
 
 function App() {
   return (
@@ -18,9 +21,16 @@ function App() {
         {/* 메인 */}
         <Route path="/" element={<MainPage />} />
 
+        {/* FIXME: 로그인 확인 기능 켜기 */}
+        {/* FIXME: <Route element={<PrivateRoute />}> */}
         {/* 푸드트럭 등록 */}
-        {/* FIXME: 로그인 확인 기능 만들기 */}
         <Route path="/register" element={<RegisterPage />} />
+        {/* FIXME: </Route> */}
+
+        {/* 로그인 페이지 */}
+        <Route path="/login" element={<LoginPage />} />
+        {/* 회원가입페이지 */}
+        <Route path="/sign-up" element={<SignUpPage />} />
 
         {/* 약관 */}
         <Route path="/terms" element={<TermsPage />} />

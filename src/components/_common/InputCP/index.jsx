@@ -6,7 +6,7 @@ const InputCPMainStyle = styled.form`
   flex-direction: column;
 
   & > label {
-    font-size: 1.1rem;
+    font-size: 1rem;
     margin-bottom: 0.5rem;
   }
 
@@ -52,7 +52,15 @@ const InputCP = ({ title, essential = false, ex, pw = false, onChangeHandler, va
         {title && title}
         {essential && <span className="essential">*</span>}
       </label>
-      <input type={pw ? "password" : "text"} id="InputCP" name="InputCP" onChange={onChangeHandler} placeholder={ex} value={value} className={className} />
+      <input
+        type={pw ? "password" : "text"}
+        id="InputCP"
+        name="InputCP"
+        onChange={onChangeHandler}
+        placeholder={ex || ""}
+        value={value}
+        className={className}
+      />
     </InputCPMainStyle>
   );
 };
