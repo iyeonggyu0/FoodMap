@@ -1,8 +1,16 @@
+import { useInput } from "../../hooks/useInput";
 import MainLayOut from "../../layout/MainLayout";
+
 import SimpleAccordionCP from "../../components/FaqPageCP/FaqPageAccordionCP";
-import { ContactSection, FaqPageMainStyle, Section } from "./style";
+import SelectInputCP from "../../components/_common/SelectInputCP";
+import TextAreaInputCP from "../../components/_common/TextAreaInputCP";
+import ButtonCP from "../../components/_common/ButtonCP";
+import OutLineButtonCP from "../../components/_common/OutLineButtonCP";
+
+import { ContactSection, FaqPageMainStyle, QNASection } from "./style";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment } from "@fortawesome/free-regular-svg-icons";
+import { faPhone, faEnvelope, faComments } from "@fortawesome/free-solid-svg-icons";
 
 /** FAQ question - answer 데이터
  * 각 섹션은 title과 items로 구성됨
@@ -93,7 +101,23 @@ const faqData = {
   }
 };
 
+
 const FaqPage = () => {
+
+  // 문의 유형 
+  const [AskCategory, onChangeAskCategory, setAskCategory] = useInput("");
+  // 문의 제목
+  const [AskTitle, onChangeAskTitle, setAskTitle] = useInput("");
+  // 문의 내용
+  const [AskContent, onChangeAskContent, setAskContent] = useInput("");
+
+  // 문의 유형 리스트
+  const AskCategoryList = [
+    { value: "일반", data: "일반 문의" },
+    { value: "기술", data: "기술 지원" },
+    { value: "계정", data: "계정 관련" },
+    { value: "기타", data: "기타 문의" },
+  ];
 
   return (
     <MainLayOut>
@@ -103,25 +127,93 @@ const FaqPage = () => {
           <p>자주 묻는 질문들을 확인해보세요. 원하는 답변을 찾지 못하셨다면 문의해주세요.</p>
         </section>
         {Object.entries(faqData).map(([key, section]) => (
-          <Section key={key}>
+          <QNASection key={key}>
             <div>
               <h2>{section.title}</h2>
               <SimpleAccordionCP items={section.items} />
             </div>
-          </Section>
+          </QNASection>
         ))}
-
-        <section>
-          <div className="flexBetweenCol">
-            <div className="titleWrapper">
-              <FontAwesomeIcon icon={faComment} className="icon" />
-              <h2>1:1 문의하기</h2>
+        <ContactSection>
+          {/* Contact Form Card */}
+          <section>
+            <div>
+              <div>
+                <FontAwesomeIcon icon={faComment} className="icon" />
+                <h2>1:1 문의하기</h2>
+              </div>
+              <p>궁금한 점이 있으신가요? 고객센터로 문의해주세요.</p>
             </div>
-            <p>답변을 찾지 못하셨나요? 직접 문의해주세요.</p>
-          </div>
-        </section>
 
+            <SelectInputCP
+              title="문의 유형"
+              essential="true"
+              listData={AskCategoryList}
+              onChangeHandler={onChangeAskCategory}
+            />
+            <TextAreaInputCP
+              title="제목"
+              essential="true"
+              ex="문의 제목을 입력해주세요"
+              onChangeHandler={onChangeAskTitle}
+              value={AskTitle}
+              maxRows={2}
+              minRows={1}
+            />
+            <TextAreaInputCP
+              title="내용"
+              essential="true"
+              ex="문의 내용을 자세히 작성해주세요"
+              onChangeHandler={onChangeAskContent}
+              value={AskContent}
+              maxRows={15}
+              minRows={5}
+            />
+            <ButtonCP>문의하기</ButtonCP>
 
+          </section>
+
+          {/* Contact Info Card*/}
+          <section>
+
+            <div>
+              <h2>고객지원 센터</h2>
+              <p>다양한 방법으로 문의하실 수 있습니다.</p>
+            </div>
+            <div>
+              <FontAwesomeIcon icon={faPhone} className="icon" />
+              <div>
+                <h3>전화 문의</h3>
+                <p>1234-5678</p>
+                <p>평일 9:00-18:00</p>
+              </div>
+            </div>
+            <div>
+              <FontAwesomeIcon icon={faEnvelope} className="icon" />
+              <div>
+                <h3>이메일 문의</h3>
+                <p>support@gilmatroad.com</p>
+                <p>24시간 접수 가능</p>
+              </div>
+            </div>
+            <div>
+              <FontAwesomeIcon icon={faComments} className="icon" />
+              <div>
+                <h3>카카오톡 문의</h3>
+                <p>@길맛로드</p>
+                <p>평일 9:00-18:00</p>
+              </div>
+            </div>
+            <section>
+              <h2>자주 이용하는 기능</h2>
+              {/* FIXME: 각 버튼에 라우팅 기능 추가 */}
+              <OutLineButtonCP color="black">지도에서 푸드트럭 찾기</OutLineButtonCP>
+              <OutLineButtonCP color="black">푸드트럭 등록하기</OutLineButtonCP>
+              <OutLineButtonCP color="black">마이페이지</OutLineButtonCP>
+
+            </section>
+          </section>
+        </ContactSection>
       </FaqPageMainStyle>
     </MainLayOut>
   );
