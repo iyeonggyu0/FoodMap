@@ -81,6 +81,7 @@ export const MainPageMethodCPStyle = styled.section`
     align-items: center;
     justify-content: space-between;
     gap: 0 1.6rem;
+    min-height: 4rem;
   }
 
   & > div:nth-child(2) > div > div:first-child {

@@ -1,4 +1,4 @@
-import MainLayOut from "../../layout/MainLayout";
+import MainLayOut from "../../layout/MainLayOut";
 import { PrivacyPolicyPageMainStyle } from "./style";
 
 const PrivacyPolicyPage = () => {

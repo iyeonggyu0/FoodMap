@@ -2,7 +2,7 @@ import axios from "axios";
 import ButtonCP from "../../components/_common/ButtonCP";
 import InputCP from "../../components/_common/InputCP";
 import { useInput } from "../../hooks/useInput";
-import MainLayOut from "../../layout/MainLayout";
+import MainLayOut from "../../layout/MainLayOut";
 import { LoginPageMainStyle } from "./style";
 import { encrypt, hash } from "../../util/crypto";
 import { useCallback } from "react";
@@ -20,7 +20,7 @@ const LoginPage = () => {
    * @returns {void} - 로그인 성공 시 알림을 띄우고, 로컬 스토리지에 사용자 정보를 저장하며, 메인 페이지로 리다이렉트
    */
   const onLoginHandler = useCallback(() => {
-    axios.post(`${import.meta.env.VITE_API_URL}/login`, encrypt({ id: id, pw: hash(pw) })).then((res) => {
+    axios.post(`${import.meta.env.VITE_API_URL}/login`, { id: id, pw: pw }).then((res) => {
       if (res.data.success) {
         alert("로그인 성공");
         setId("");

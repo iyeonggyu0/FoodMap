@@ -3,7 +3,7 @@ import MainPageFeatureCP from "../../components/MainPageCP/MainPageFeatureCP";
 import MainPageMethodCP from "../../components/MainPageCP/MainPageMethodCP";
 import MainPageMoreFunCP from "../../components/MainPageCP/MainPageMoreFunCP";
 import MainPageBottomBannerCP from "../../components/MainPageCP/MainPageBottomBannerCP";
-import MainLayOut from "../../layout/MainLayout";
+import MainLayOut from "../../layout/MainLayOut";
 
 import { MainPageMainStyle } from "./style";
 

@@ -4,7 +4,7 @@ import InputCP from "../../components/_common/InputCP";
 import SelectInputCP from "../../components/_common/SelectInputCP";
 import TextAreaInputCP from "../../components/_common/TextAreaInputCP";
 import { useInput } from "../../hooks/useInput";
-import MainLayOut from "../../layout/MainLayout";
+import MainLayOut from "../../layout/MainLayOut";
 import { RegisterPageMainStyle, RegisterPageMenuStyle, RegisterPageScheduleStyle } from "./style";
 import ButtonCP from "../../components/_common/ButtonCP";
 import OutLineButtonCP from "../../components/_common/OutLineButtonCP";

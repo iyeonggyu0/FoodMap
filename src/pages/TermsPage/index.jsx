@@ -1,4 +1,4 @@
-import MainLayOut from "../../layout/MainLayout";
+import MainLayOut from "../../layout/MainLayOut";
 import { TermsPageMainStyle } from "./style";
 
 const TermsPage = () => {
