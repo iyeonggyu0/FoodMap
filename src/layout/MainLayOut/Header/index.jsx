@@ -1,7 +1,13 @@
+import { useNavigate } from "react-router-dom";
 import BrownButtonCP from "../../../components/_common/ButtonCP";
+import { useLoginCheck } from "../../../hooks/useLoginCheck";
 import { MainLayOutHeaderStyled } from "./style";
 
 const MainLayOutHeader = () => {
+  const loginCheck = useLoginCheck();
+  const nav = useNavigate();
+
+  console.log(loginCheck);
   return (
     <MainLayOutHeaderStyled>
       <div className="flexBetween">
@@ -23,10 +29,25 @@ const MainLayOutHeader = () => {
               <li>FAQ</li>
             </a>
             {/* FIXME: 세션 여부 확인해서 조건부 표시 및 기능 생성 */}
-            <li className="loginButton">로그인</li>
-            <li className="singInButton">
-              <BrownButtonCP pcOnly="true">회원가입</BrownButtonCP>
-            </li>
+            {!loginCheck && (
+              <li className="loginButton" onClick={() => nav("/login")}>
+                로그인
+              </li>
+            )}
+            {!loginCheck && (
+              <li className="singInButton">
+                <BrownButtonCP pcOnly="true" onClick={() => nav("/sign-up")}>
+                  회원가입
+                </BrownButtonCP>
+              </li>
+            )}
+            {loginCheck && (
+              <li className="singInButton">
+                <BrownButtonCP pcOnly="true" onClick={() => nav("/my-page")}>
+                  마이페이지
+                </BrownButtonCP>
+              </li>
+            )}
           </ul>
         </nav>
       </div>

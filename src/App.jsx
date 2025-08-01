@@ -25,6 +25,7 @@ function App() {
         {/* FIXME: <Route element={<PrivateRoute />}> */}
         {/* 푸드트럭 등록 */}
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/my-page" element={<>마이페이지</>} />
         {/* FIXME: </Route> */}
 
         {/* 로그인 페이지 */}

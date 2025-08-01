@@ -6,8 +6,11 @@ import MainLayOut from "../../layout/MainLayOut";
 import { LoginPageMainStyle } from "./style";
 import { encrypt, hash } from "../../util/crypto";
 import { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
+  const nav = useNavigate();
+
   const [id, onChangeId, setId] = useInput("");
   const [pw, onChangePw, setPw] = useInput("");
 
@@ -25,7 +28,7 @@ const LoginPage = () => {
         alert("로그인 성공");
         setId("");
         setPw("");
-        localStorage.setItem("user", encrypt({ id: id, pw: hash(pw) }));
+        localStorage.setItem("user", { id: id, pw: pw });
         window.location.href = "/";
       } else {
         alert("로그인 실패: " + res.data.message);
@@ -44,6 +47,9 @@ const LoginPage = () => {
           </div>
           <div onClick={onLoginHandler}>
             <ButtonCP>로그인</ButtonCP>
+            <span className="signupLink" onClick={() => nav("/sign-up")}>
+              회원가입 바로가기
+            </span>
           </div>
         </section>
       </LoginPageMainStyle>

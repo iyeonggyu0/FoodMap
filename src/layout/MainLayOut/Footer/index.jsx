@@ -2,8 +2,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import { MainLayOutFooterStyled } from "./style";
+import { useNavigate } from "react-router-dom";
 
 const MainLayOutFooter = () => {
+  const nav = useNavigate();
   return (
     <MainLayOutFooterStyled className="flexBetweenCol">
       {/* 중앙 */}
@@ -25,14 +27,14 @@ const MainLayOutFooter = () => {
           <nav className="flexBetween list">
             <ul>
               <li className="ul-title">서비스</li>
-              <li>푸드트럭 지도</li>
-              <li>푸드트럭 등록</li>
-              <li>푸드트럭 제보</li>
+              <li onClick={() => nav("/map")}>푸드트럭 지도</li>
+              <li onClick={() => nav("/register")}>푸드트럭 등록</li>
+              <li onClick={() => nav("/report")}>푸드트럭 제보</li>
             </ul>
             <ul>
               <li className="ul-title">고객지원</li>
-              <li>FAQ</li>
-              <li>Q&A</li>
+              <li onClick={() => nav("/faq")}>FAQ</li>
+              <li onClick={() => nav("/qna")}>Q&A</li>
             </ul>
             <ul>
               <li className="ul-title">Front</li>

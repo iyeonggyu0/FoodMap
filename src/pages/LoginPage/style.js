@@ -11,7 +11,7 @@ export const LoginPageMainStyle = styled.main`
   & > section {
     margin-bottom: 2rem;
     width: 400px;
-    height: 400px;
+    height: 430px;
     padding: 4rem 3.5rem;
     border-radius: 1rem;
     border: 1px solid var(--brown-light);
@@ -25,14 +25,26 @@ export const LoginPageMainStyle = styled.main`
     text-align: center;
   }
 
-  & > section > div:last-child {
+  & > section > div:nth-child(3) > *:nth-child(1) {
     width: 100%;
     height: 3.5rem;
   }
 
-  & > section > div:last-child > span {
+  & > section > div:nth-child(3) > *:nth-child(1) span {
     height: 100%;
     display: flex;
     border-radius: 0.5rem;
+  }
+
+  & .signupLink {
+    display: inline-block !important;
+    height: unset !important;
+    width: 100% !important;
+    text-align: center !important;
+    font-size: 0.8rem !important;
+    color: var(--gray-5) !important;
+    margin-top: 1rem !important;
+    text-decoration: underline !important;
+    cursor: pointer !important;
   }
 `;
