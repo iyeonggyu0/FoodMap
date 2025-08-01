@@ -6,6 +6,7 @@ import ScrollToTop from "./hooks/useScrollTop";
 // 페이지 모음
 import MainPage from "./pages/MainPage";
 import RegisterPage from "./pages/RegisterPage";
+import FaqPage from "./pages/FaqPage";
 import TermsPage from "./pages/TermsPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import LoginPage from "./pages/LoginPage";
@@ -41,6 +42,9 @@ function App() {
         <Route path="/terms" element={<TermsPage />} />
         {/* 개인정보처리방침 */}
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+
+        {/* FAQ 페이지 */}
+        <Route path="/faq" element={<FaqPage />} />
       </Routes>
     </BrowserRouter>
   );
