@@ -6,6 +6,7 @@ import ScrollToTop from "./hooks/useScrollTop";
 // 페이지 모음
 import MainPage from "./pages/MainPage";
 import RegisterPage from "./pages/RegisterPage";
+import FaqPage from "./pages/FaqPage";
 
 function App() {
   return (
@@ -18,6 +19,9 @@ function App() {
 
         {/* 푸드트럭 등록 */}
         <Route path="/register" element={<RegisterPage />} />
+
+        {/* FAQ 페이지 */}
+        <Route path="/faq" element={<FaqPage />} />
       </Routes>
     </BrowserRouter>
   );
