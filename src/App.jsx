@@ -12,6 +12,7 @@ import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import MapPage from "./pages/MapPage";
 // import PrivateRoute from "./util/privateRoute";
+import FaqPage from "./pages/FaqPage";
 
 function App() {
   return (
@@ -41,6 +42,9 @@ function App() {
         <Route path="/terms" element={<TermsPage />} />
         {/* 개인정보처리방침 */}
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+
+        {/* FAQ 페이지 */}
+        <Route path="/faq" element={<FaqPage />} />
       </Routes>
     </BrowserRouter>
   );
