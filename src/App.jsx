@@ -10,6 +10,7 @@ import TermsPage from "./pages/TermsPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
+import MapPage from "./pages/MapPage";
 // import PrivateRoute from "./util/privateRoute";
 
 function App() {
@@ -27,6 +28,9 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/my-page" element={<>마이페이지</>} />
         {/* FIXME: </Route> */}
+
+        {/* 지도 페이지 */}
+        <Route path="/map" element={<MapPage />} />
 
         {/* 로그인 페이지 */}
         <Route path="/login" element={<LoginPage />} />

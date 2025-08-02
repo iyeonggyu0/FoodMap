@@ -6,6 +6,16 @@ export const MainLayOutHeaderStyled = styled.header`
   border-bottom: 1px solid var(--gray-3);
   background-color: var(--gray-0);
 
+  /* & .logo {
+    width: 50px;
+    height: 50px;
+    background-image: url("/image/logo/logo-1.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: inline-block;
+  } */
+
   & > div {
     width: 75vw;
     height: 100%;
