@@ -13,7 +13,6 @@ import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import MapPage from "./pages/MapPage";
 // import PrivateRoute from "./util/privateRoute";
-import FaqPage from "./pages/FaqPage";
 
 function App() {
   return (
