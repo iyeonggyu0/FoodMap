@@ -34,7 +34,7 @@ const MainLayOutFooter = () => {
             <ul>
               <li className="ul-title">고객지원</li>
               <li onClick={() => nav("/faq")}>FAQ</li>
-              <li onClick={() => nav("/qna")}>Q&A</li>
+              <li onClick={() => nav("/faq#qna")}>Q&A</li>
             </ul>
             <ul>
               <li className="ul-title">Front</li>

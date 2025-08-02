@@ -134,7 +134,7 @@ const FaqPage = () => {
             </div>
           </QNASection>
         ))}
-        <ContactSection>
+        <ContactSection id="qna">
           {/* Contact Form Card */}
           <section>
             <div>

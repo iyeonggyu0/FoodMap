@@ -19,16 +19,15 @@ const MainLayOutHeader = () => {
         </div>
         <nav>
           <ul className="flexBetween">
-            <a href="#">
+            <a href="/map">
               <li>지도</li>
             </a>
-            <a href="#">
+            <a href="/register">
               <li>등록하기</li>
             </a>
-            <a href="#">
+            <a href="/faq">
               <li>FAQ</li>
             </a>
-            {/* FIXME: 세션 여부 확인해서 조건부 표시 및 기능 생성 */}
             {!loginCheck && (
               <li className="loginButton" onClick={() => nav("/login")}>
                 로그인
