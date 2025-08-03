@@ -119,14 +119,18 @@ export const ContactSection = styled.section`
     color: var(--gray-6);
   }
   
-  & > section > form textarea{
+  & > section > div textarea{
     font-size: 1rem;
     padding: 1rem;
   }
 
-  & > section > form select {
+  & > section > div select {
     font-size: 1rem;
     padding: 1rem;
+  }
+
+  & > section > div > span {
+    color: red;
   }
 
   & > section > span {
