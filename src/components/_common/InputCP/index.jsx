@@ -30,6 +30,12 @@ const InputCPMainStyle = styled.form`
     border: 1px solid var(--brown-light);
     outline: none;
   }
+
+  & input:disabled {
+    background: #f5f5f5;
+    color: #aaa;
+    cursor: not-allowed;
+  }
 `;
 
 /**
@@ -45,9 +51,9 @@ const InputCPMainStyle = styled.form`
  * @returns {JSX.Element} 텍스트 입력 폼
  *
  */
-const InputCP = ({ title, essential = false, ex, pw = false, onChangeHandler, value, className }) => {
+const InputCP = ({ title, essential = false, ex, pw = false, onChangeHandler, value, className, lock = false }) => {
   return (
-    <InputCPMainStyle>
+    <InputCPMainStyle lock={lock}>
       <label htmlFor="InputCP">
         {title && title}
         {essential && <span className="essential">*</span>}
@@ -60,6 +66,7 @@ const InputCP = ({ title, essential = false, ex, pw = false, onChangeHandler, va
         placeholder={ex || ""}
         value={value}
         className={className}
+        disabled={lock}
       />
     </InputCPMainStyle>
   );

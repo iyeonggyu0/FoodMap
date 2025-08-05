@@ -9,8 +9,7 @@ const OutLineButtonCPStlye = styled.span`
   padding: ${({ pcOnly, media }) => (pcOnly ? (media ? "10px 14px" : "unset") : "10px 14px")};
   border-radius: ${({ pcOnly, media }) => (pcOnly ? (media ? "5px" : "unset") : "5px")};
   color: ${({ pcOnly, media, color }) => (pcOnly ? (media ? color : "black") : color)};
-  border: ${({ pcOnly, media }) => (pcOnly ? (media ? "1px" : "0px") : "1px")} solid 
-    ${({ borderColor, color }) => `var(${borderColor})` || `var(${color})`};
+  border: ${({ pcOnly, media }) => (pcOnly ? (media ? "1px" : "0px") : "1px")} solid ${({ borderColor, color }) => borderColor || color};
 `;
 
 /**
