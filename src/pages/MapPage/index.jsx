@@ -121,6 +121,19 @@ const MapPage = () => {
 
     // 기본 마커 사용 (커스텀 이미지 제거)
 
+    // 오늘의 holiday가 false인 푸드트럭을 후순위로 정렬
+    resultArr.sort((a, b) => {
+      const todayA = a.schedule.find((sch) => sch.day === dayMap[today]);
+      const todayB = b.schedule.find((sch) => sch.day === dayMap[today]);
+      // holiday가 false면 후순위
+      if (todayA && todayB) {
+        if (todayA.holiday === todayB.holiday) return 0;
+        if (todayA.holiday) return -1;
+        return 1;
+      }
+      return 0;
+    });
+
     // 데이터 배열 순회
     resultArr.forEach((item, idx) => {
       // 오늘 영업 중이며, 휴무가 아니고, 지도 주소가 있는 스케줄 찾기
@@ -150,16 +163,6 @@ const MapPage = () => {
 
             // 마커 클릭 이벤트 등록
             window.kakao.maps.event.addListener(marker, "click", function () {
-              // console.log("=== 푸드트럭 정보 ===");
-              // console.log("이름:", item.name);
-              // console.log("카테고리:", item.category);
-              // console.log("소개:", item.intro);
-              // console.log("거리:", Math.round(distance) + "m");
-              // console.log("좌표:", { lat, lng });
-              // console.log("오늘 영업시간:", todaySchedule.start + "시 ~ " + todaySchedule.end + "시");
-              // console.log("주소:", todaySchedule.userAddress);
-              // console.log("메뉴:", item.menu);
-              // console.log("==================");
               onChangeMapGPS({ lat, lng });
               setDetails({
                 name: item.name,
@@ -167,6 +170,8 @@ const MapPage = () => {
                 intro: item.intro,
                 schedule: item.schedule,
                 menu: item.menu,
+                review: item.review,
+                truckId: item.truckId, // 푸드트럭 ID 추가
               });
               setOnDetails(true);
             });
@@ -174,8 +179,16 @@ const MapPage = () => {
         }
         pending++;
         if (pending === total) {
-          console.log("Map", resultArr);
-          setFtData(resultArr);
+          // 거리순 정렬(holiday 우선순위는 이미 반영됨)
+          const sortedArr = [...resultArr].sort((a, b) => {
+            // 둘 다 distance가 있으면 거리순, 아니면 그대로
+            if (typeof a.distance === "number" && typeof b.distance === "number") {
+              return a.distance - b.distance;
+            }
+            return 0;
+          });
+          console.log("Map", sortedArr);
+          setFtData(sortedArr);
         }
       });
     });
@@ -209,9 +222,11 @@ const MapPage = () => {
       intro: data.intro, // 소개
       schedule: data.schedule, // 영업 스케줄
       menu: data.menu, // 메뉴 목록
+      review: data.review, // 리뷰 목록
+      truckId: data.truckId, // 푸드트럭 ID (추가된 부분)
     });
     setOnDetails(true); // 상세 정보 창 표시
-    onChangeMapGPS(data.coords); // 상세 정보 창 열 때 지도 위치 이동
+    onChangeMapGPS({ lat: data.coords.lat, lng: data.coords.lng });
   }, []);
 
   return (
@@ -223,7 +238,6 @@ const MapPage = () => {
           onChangeFilter={onChangeFilter}
           categoryList={categoryList}
           ftData={ftData}
-          onChangeMapGPS={onChangeMapGPS}
           onClickRelay={onClickRelay}
           onDeleteDetails={onDeleteDetails}
           onSetDetails={onSetDetails}
@@ -233,7 +247,7 @@ const MapPage = () => {
       )}
       {isMedia.isMobile && <div>isMobile View</div>}
       {/* 지도 */}
-      <div id="map" style={{ width: "100%", height: "100vh" }}></div>
+      <div id="map" style={{ position: "absolute", right: "0px", width: "calc(100vw - min(26vw, 460px))", height: "100vh" }}></div>
     </MapPageMainStyle>
   );
 };

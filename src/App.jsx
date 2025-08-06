@@ -32,6 +32,7 @@ function App() {
 
         {/* 지도 페이지 */}
         <Route path="/map" element={<MapPage />} />
+        <Route path="/foodtruck/:id" element={<>푸드트럭페이지</>} />
 
         {/* 로그인 페이지 */}
         <Route path="/login" element={<LoginPage />} />

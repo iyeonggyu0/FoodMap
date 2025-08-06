@@ -1,7 +1,11 @@
 import styled from "styled-components";
+import ButtonCP from "../../../_common/ButtonCP";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar } from "@fortawesome/free-solid-svg-icons";
 
 const FTListMainStyled = styled.li`
   padding: 1.6rem 0;
+  padding-right: 12px;
   border-bottom: 1px solid var(--gray-2);
   cursor: pointer;
 
@@ -12,7 +16,7 @@ const FTListMainStyled = styled.li`
   & > p:nth-child(1) > span:nth-child(1) {
     padding: 0.4rem 0;
     font-weight: 600;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
   }
 
   & > p:nth-child(1) > span:nth-child(2) {
@@ -29,24 +33,30 @@ const FTListMainStyled = styled.li`
   & > p:nth-child(2) {
     color: var(--gray-5);
     font-size: 0.75rem;
+    line-height: 1.5;
   }
 
   & > p:nth-child(3) {
     color: var(--gray-5);
-    font-size: 0.9rem;
+    font-size: 0.75rem;
     margin-top: 1rem;
   }
   & > p:nth-child(4) {
     color: var(--gray-5);
-    font-size: 0.9rem;
-    margin-top: 0.3rem;
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  & .icon {
+    padding-right: 0.5rem;
+    color: orange;
   }
 `;
 
 const FTList = ({ data }) => {
   // 오늘 요일 확인
-  const today = new Date().getDay(); // 0:일~6:토
-  const dayMap = ["일", "월", "화", "수", "목", "금", "토"];
+  const today = (new Date().getDay() + 6) % 7; // 0:월~6:일
+  const dayMap = ["월", "화", "수", "목", "금", "토", "일"];
   const todayKorean = dayMap[today];
 
   // 오늘 요일에 해당하는 스케줄 찾기
@@ -91,9 +101,16 @@ const FTList = ({ data }) => {
     }
   };
 
+  const avgRating = () => {
+    if (data.review && data.review.length > 0) {
+      const totalRating = data.review.reduce((sum, review) => sum + review.rating, 0);
+      return (totalRating / data.review.length).toFixed(1); // 소수점 첫째 자리까지
+    }
+    return "리뷰 없음";
+  };
+
   const businessInfo = getBusinessStatus();
 
-  console.log(data);
   return (
     <FTListMainStyled>
       <p className="flexBetween">
@@ -104,8 +121,13 @@ const FTList = ({ data }) => {
       </p>
       <p className="intro">{data.intro}</p>
       <p>{data.schedule[today].userAddress}</p>
-      <p>
-        {data.schedule[today].start}시 ~ {data.schedule[today].end}시
+      <p className="flexBetween">
+        <span>
+          {data.schedule[today].start}시 ~ {data.schedule[today].end}시
+        </span>
+        <span>
+          <FontAwesomeIcon icon={faStar} className="icon" /> {avgRating() || "리뷰 없음"}
+        </span>
       </p>
     </FTListMainStyled>
   );
