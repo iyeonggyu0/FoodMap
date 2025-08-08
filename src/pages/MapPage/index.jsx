@@ -6,6 +6,7 @@ import { MapPageMainStyle } from "./style";
 import { useInput } from "../../hooks/useInput";
 import axios from "axios";
 import { ftDummyListData } from "../../_dummyData/ftDummyListData";
+import MobileCP from "../../components/MapPageCP/MobileCP";
 
 const MapPage = () => {
   const isMedia = useMedia("");
@@ -16,10 +17,10 @@ const MapPage = () => {
   const [details, setDetails] = useState([]);
   const [onDetails, setOnDetails] = useState(false);
 
-  useEffect(() => {
+  const onChangeFilterFun = useCallback(() => {
     // FIXME: 임시데이터 사용
     // axios
-    //   .get(`${import.meta.env.VITE_API_URL}/map/ft/${filter}`)
+    //   .get(`${import.meta.env.VITE_API_URL}/map/ft/${encodeURIComponent(filter)}`)
     //   .then((res) => {
     //     if (res.data) {
     //       onChangeFtData(res.data);
@@ -31,7 +32,14 @@ const MapPage = () => {
     //     console.error("Error fetching data:", err);
     //   });
     onChangeFtData(ftDummyListData);
+  });
 
+  useEffect(() => {
+    onChangeFilterFun();
+  }, [filter]);
+
+  useEffect(() => {
+    onChangeFilterFun();
     // 카카오맵 스크립트가 로드되어 있는지 확인
     if (!window.kakao || !window.kakao.maps) return;
     const container = document.getElementById("map");
@@ -58,8 +66,24 @@ const MapPage = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          center = new window.kakao.maps.LatLng(position.coords.latitude, position.coords.longitude);
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          const center = new window.kakao.maps.LatLng(lat, lng);
           createMap(center);
+
+          // 커스텀 마커 이미지 설정
+          const imageSrc = "/img/myLocation.png"; // public 폴더 기준 경로
+          const imageSize = new window.kakao.maps.Size(30, 43);
+          const imageOption = { offset: new window.kakao.maps.Point(27, 69) };
+          const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
+
+          // 내 위치 마커 생성 및 지도에 표시
+          const marker = new window.kakao.maps.Marker({
+            position: center,
+            image: markerImage,
+            title: "내 위치",
+          });
+          marker.setMap(mapRef.current);
         },
         () => {
           createMap(center);
@@ -245,9 +269,23 @@ const MapPage = () => {
           onDetails={onDetails}
         />
       )}
-      {isMedia.isMobile && <div>isMobile View</div>}
+      {isMedia.isMobile && (
+        <MobileCP
+          currentLocationButton={currentLocationButton}
+          filter={filter}
+          onChangeFilter={onChangeFilter}
+          categoryList={categoryList}
+          ftData={ftData}
+          onClickRelay={onClickRelay}
+          onDeleteDetails={onDeleteDetails}
+          onSetDetails={onSetDetails}
+          details={details}
+          onDetails={onDetails}
+        />
+      )}
       {/* 지도 */}
-      <div id="map" style={{ position: "absolute", right: "0px", width: "calc(100vw - min(26vw, 460px))", height: "100vh" }}></div>
+      {isMedia.isPc && <div id="map" style={{ position: "absolute", right: "0px", width: "calc(100vw - min(26vw, 460px))", height: "100vh" }}></div>}
+      {isMedia.isMobile && <div id="map" style={{ position: "absolute", right: "0px", width: "100vw", height: "100vh" }}></div>}
     </MapPageMainStyle>
   );
 };

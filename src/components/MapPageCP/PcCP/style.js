@@ -152,7 +152,7 @@ export const PcCpDetailsStyle = styled.section`
   left: calc(min(26vw, 460px));
   /* left: max(17.5vw, 460px); */
   z-index: 998;
-  padding: 3rem 1.8rem;
+  padding: 2rem 1.8rem;
   overflow-y: scroll;
 
   /* 스크롤바 숨기기 (크로스 브라우징) */

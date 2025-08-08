@@ -1,6 +1,11 @@
 import styled from "styled-components";
 
 export const MapPageMainStyle = styled.main`
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+
   & > #map {
     width: 100vw;
     height: 100vh;
