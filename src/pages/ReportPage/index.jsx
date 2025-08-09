@@ -58,7 +58,7 @@ const ReportPage = () => {
     }
 
     // FIXME : 위치 정보 유효값 검사 추가
-    
+
     // . 약관 동의
     const termsChecked = document.getElementById("terms")?.checked;
     if (!termsChecked) {
@@ -72,7 +72,7 @@ const ReportPage = () => {
       alert("입력값에 문제가 있습니다.");
       return;
     }
-    alert("제보가 완료되었습니다!");
+    alert("제보가 완료되었습니다.");
 
     // FIXME: 로그인 세션 확인하기
 
@@ -141,10 +141,19 @@ const ReportPage = () => {
   const FTCategoryList = [
     { value: "분식", data: "분식 (어묵, 떡볶이, 순대)" },
     { value: "간식", data: "간식 (붕어빵, 타코야끼, 크레페, 츄러스, 와플)" },
-    { value: "튀김", data: "튀김 (감자튀김, 치즈볼, 오징어튀김, 새우튀김, 치킨)" },
+    {
+      value: "튀김",
+      data: "튀김 (감자튀김, 치즈볼, 오징어튀김, 새우튀김, 치킨)",
+    },
     { value: "꼬치", data: "꼬치 (닭꼬치, 소시지꼬치)" },
-    { value: "샌드위치/토스트", data: "샌드위치/토스트 (샌드위치, 토스트, 버거)" },
-    { value: "디저트/음료", data: "디저트/음료 (아이스크림, 커피, 음료, 팥빙수)" },
+    {
+      value: "샌드위치/토스트",
+      data: "샌드위치/토스트 (샌드위치, 토스트, 버거)",
+    },
+    {
+      value: "디저트/음료",
+      data: "디저트/음료 (아이스크림, 커피, 음료, 팥빙수)",
+    },
     { value: "식사", data: "식사 (덮밥, 초밥)" },
     { value: "기타", data: "기타" },
   ];
@@ -203,7 +212,17 @@ const ReportPage = () => {
     setMenuPrice("");
     setMenuInfo("");
     setMenuNum("");
-  }, [menuName, menuPrice, menuInfo, menuNum, menuList, setMenuName, setMenuPrice, setMenuInfo, setMenuNum]);
+  }, [
+    menuName,
+    menuPrice,
+    menuInfo,
+    menuNum,
+    menuList,
+    setMenuName,
+    setMenuPrice,
+    setMenuInfo,
+    setMenuNum,
+  ]);
 
   /**
    * 메뉴 수정 함수
@@ -224,12 +243,26 @@ const ReportPage = () => {
       return;
     }
     // menuNum 중복 체크 (수정 중인 메뉴 제외)
-    if (menuList.some((menu) => menu.num === menuNum && menu.num !== editMenuNum)) {
+    if (
+      menuList.some((menu) => menu.num === menuNum && menu.num !== editMenuNum)
+    ) {
       alert("이미 해당 번호에 메뉴가 존재합니다.");
       return;
     }
     // menuList에서 해당 메뉴 정보 수정
-    setMenuList((prev) => prev.map((menu) => (menu.num === editMenuNum ? { ...menu, name: menuName, price: menuPrice, info: menuInfo, num: menuNum } : menu)));
+    setMenuList((prev) =>
+      prev.map((menu) =>
+        menu.num === editMenuNum
+          ? {
+              ...menu,
+              name: menuName,
+              price: menuPrice,
+              info: menuInfo,
+              num: menuNum,
+            }
+          : menu
+      )
+    );
     alert("메뉴가 수정되었습니다!");
     // 입력값 초기화 및 수정모드 해제
     setMenuName("");
@@ -275,13 +308,24 @@ const ReportPage = () => {
           <div>
             <div className="col">
               <div>
-                <InputCP title="푸드트럭 이름" essential="true" value={FTName} ex="황금 잉어빵" onChangeHandler={onChangeFTName} />
+                <InputCP
+                  title="푸드트럭 이름"
+                  essential="true"
+                  value={FTName}
+                  ex="황금 잉어빵"
+                  onChangeHandler={onChangeFTName}
+                />
                 <span className="nameError error" ref={nameErrorRef}>
                   2글자 이상 입력하세요
                 </span>
               </div>
               <div>
-                <SelectInputCP title="카테고리" essential="true" listData={FTCategoryList} onChangeHandler={onChangeFTCategory} />
+                <SelectInputCP
+                  title="카테고리"
+                  essential="true"
+                  listData={FTCategoryList}
+                  onChangeHandler={onChangeFTCategory}
+                />
                 <span className="categoryError error" ref={categoryErrorRef}>
                   카테고리를 선택하세요
                 </span>
@@ -312,7 +356,9 @@ const ReportPage = () => {
                 <p>
                   메뉴 리스트<span className="essential">*</span>
                 </p>
-                <div className={menuList.length === 0 ? "flexCenter" : "flexCol"}>
+                <div
+                  className={menuList.length === 0 ? "flexCenter" : "flexCol"}
+                >
                   {menuList.length === 0 && <p>메뉴를 등록하세요</p>}
                   {/* menuList를 num 오름차순으로 정렬하여 출력 */}
                   {menuList
@@ -324,7 +370,9 @@ const ReportPage = () => {
                           <p className="flexBetween">
                             <span>{menu.num}.</span>
                             <span>{menu.name}</span>
-                            <span>({Number(menu.price).toLocaleString()}원)</span>
+                            <span>
+                              ({Number(menu.price).toLocaleString()}원)
+                            </span>
                           </p>
                           <p className="flexBetween icon">
                             {/* 수정 아이콘 클릭 시 해당 메뉴 정보로 input값 세팅 및 수정모드 진입 */}
@@ -337,10 +385,14 @@ const ReportPage = () => {
                                 setMenuPrice(menu.price);
                                 setMenuInfo(menu.info);
                                 setMenuNum(menu.num);
-                              }}>
+                              }}
+                            >
                               <FontAwesomeIcon icon={faPen} />
                             </span>
-                            <span style={{ cursor: "pointer" }} onClick={() => menuDeleteHandler(menu.num)}>
+                            <span
+                              style={{ cursor: "pointer" }}
+                              onClick={() => menuDeleteHandler(menu.num)}
+                            >
                               <FontAwesomeIcon icon={faEraser} />
                             </span>
                           </p>
@@ -356,9 +408,24 @@ const ReportPage = () => {
               <div className="menu-add">
                 <p>메뉴 등록</p>
                 <div>
-                  <InputCP title="메뉴 이름" value={menuName} onChangeHandler={onChangeMenuName} essential="true" />
-                  <InputCP title="가격" value={menuPrice} onChangeHandler={onChangeMenuPrice} essential="true" ex="숫자만 입력" />
-                  <InputCP title="설명" value={menuInfo} onChangeHandler={onChangeMenuInfo} />
+                  <InputCP
+                    title="메뉴 이름"
+                    value={menuName}
+                    onChangeHandler={onChangeMenuName}
+                    essential="true"
+                  />
+                  <InputCP
+                    title="가격"
+                    value={menuPrice}
+                    onChangeHandler={onChangeMenuPrice}
+                    essential="true"
+                    ex="숫자만 입력"
+                  />
+                  <InputCP
+                    title="설명"
+                    value={menuInfo}
+                    onChangeHandler={onChangeMenuInfo}
+                  />
                   <InputCP
                     title="표시 순서"
                     value={menuNum}
