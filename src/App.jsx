@@ -12,6 +12,7 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import MapPage from "./pages/MapPage";
+import Error404Page from "./pages/Error404Page";
 // import PrivateRoute from "./util/privateRoute";
 
 function App() {
@@ -27,12 +28,12 @@ function App() {
         {/* FIXME: <Route element={<PrivateRoute />}> */}
         {/* 푸드트럭 등록 */}
         <Route path="/register" element={<RegisterPage />} />
+        {/* 마이페이지에 알림설정/찜/리뷰 (수정/삭제) 기능 넣기 */}
         <Route path="/my-page" element={<>마이페이지</>} />
         {/* FIXME: </Route> */}
 
         {/* 지도 페이지 */}
         <Route path="/map" element={<MapPage />} />
-        <Route path="/foodtruck/:id" element={<>푸드트럭페이지</>} />
 
         {/* 로그인 페이지 */}
         <Route path="/login" element={<LoginPage />} />
@@ -46,6 +47,9 @@ function App() {
 
         {/* FAQ 페이지 */}
         <Route path="/faq" element={<FaqPage />} />
+
+        {/* 404 페이지 */}
+        <Route path="*" element={<Error404Page />} />
       </Routes>
     </BrowserRouter>
   );

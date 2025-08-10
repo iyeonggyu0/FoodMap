@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import ButtonCP from "../../../_common/ButtonCP";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { faHeart, faStar } from "@fortawesome/free-solid-svg-icons";
 
 const FTListMainStyled = styled.li`
   padding: 1.6rem 0;
@@ -53,7 +53,7 @@ const FTListMainStyled = styled.li`
   }
 `;
 
-const FTList = ({ data }) => {
+const FTList = ({ data, isLogin }) => {
   // 오늘 요일 확인
   const today = (new Date().getDay() + 6) % 7; // 0:월~6:일
   const dayMap = ["월", "화", "수", "목", "금", "토", "일"];
@@ -125,7 +125,13 @@ const FTList = ({ data }) => {
         <span>
           {data.schedule[today].start}시 ~ {data.schedule[today].end}시
         </span>
+
         <span>
+          {isLogin && data.like && (
+            <span style={{ color: "#e1645b", paddingRight: "0.5rem" }}>
+              <FontAwesomeIcon icon={faHeart} />
+            </span>
+          )}
           <FontAwesomeIcon icon={faStar} className="icon" /> {avgRating() || "리뷰 없음"}
         </span>
       </p>

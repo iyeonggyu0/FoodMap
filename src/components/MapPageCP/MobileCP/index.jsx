@@ -1,13 +1,39 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MobileCPButtonStyle, MobileCPMainStyle } from "./style";
-import { faArrowRotateRight, faBars, faHouse, faImage, faLocationCrosshairs, faPen, faStar, faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRotateRight,
+  faBars,
+  faHeart,
+  faHouse,
+  faImage,
+  faLocationCrosshairs,
+  faPen,
+  faStar,
+  faXmark,
+  faBell as faBellSolid,
+} from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
-import FTList from "../PcCP/FTList";
+import FTList from "../_common/FTList";
+import { faBell as faBellRegular } from "@fortawesome/free-regular-svg-icons";
 
 import TextareaAutosize from "react-textarea-autosize";
+import PcReviewCP from "../_common/ReviewCP";
 
-const MobileCP = ({ currentLocationButton, ftData, onClickRelay, onDeleteDetails, onSetDetails, details, onDetails }) => {
+const MobileCP = ({
+  currentLocationButton,
+  ftData,
+  onClickRelay,
+  onDeleteDetails,
+  onSetDetails,
+  details,
+  onDetails,
+  onDeleteLike,
+  onAddLike,
+  onDeleteSms,
+  onAddSms,
+  isLogin,
+}) => {
   const nav = useNavigate();
   const [onFTList, setOnFTList] = useState(false);
   const [isOnDetails, setIsOnDetails] = useState(false);
@@ -41,11 +67,17 @@ const MobileCP = ({ currentLocationButton, ftData, onClickRelay, onDeleteDetails
   const today = (new Date().getDay() + 6) % 7; // 0:월~6:일
 
   const detailAvgRating = useCallback(() => {
-    if (details.review && details.review.length > 0) {
+    if (details.review && details.review?.length > 0) {
       const totalRating = details.review.reduce((acc, review) => acc + review.rating, 0);
-      return (totalRating / details.review.length).toFixed(1); // 소수점 첫째 자리까지
+      return (totalRating / details.review?.length).toFixed(1); // 소수점 첫째 자리까지
     }
   }, [details]);
+
+  const [onReview, setOnReview] = useState(false);
+
+  const offReviewClick = () => {
+    setOnReview(false);
+  };
 
   return (
     <MobileCPMainStyle>
@@ -65,10 +97,12 @@ const MobileCP = ({ currentLocationButton, ftData, onClickRelay, onDeleteDetails
         <div className="menu flexCenter" onClick={onFTListTrueHandler}>
           <FontAwesomeIcon icon={faBars} />
         </div>
+
+        {onReview && <PcReviewCP offReviewClick={offReviewClick} isLogin={isLogin} details={details} />}
       </MobileCPButtonStyle>
       {/* 리스트 */}
 
-      <section className="ftList flexCol" style={{ top: onFTList ? "calc(100vh - 40vh)" : "100vh" }}>
+      <section className="ftList flexCol" style={{ top: onFTList && !onReview ? "calc(100vh - 40vh)" : "100vh" }}>
         <h3 className="flexBetween">
           <span>푸드트럭 목록</span>
           <FontAwesomeIcon icon={faXmark} onClick={onFalseHandler} />
@@ -90,9 +124,10 @@ const MobileCP = ({ currentLocationButton, ftData, onClickRelay, onDeleteDetails
                       coords: item.coords,
                       review: item.review, // 리뷰 목록
                       truckId: item.truckId, // 푸드트럭 ID (추가된 부분)
+                      like: item.like, // 찜 여부 (추가된 부분)
                     });
                   }}>
-                  <FTList data={item} />
+                  <FTList data={item} isLogin={isLogin} />
                 </div>
               ))}
         </ul>
@@ -100,7 +135,7 @@ const MobileCP = ({ currentLocationButton, ftData, onClickRelay, onDeleteDetails
 
       {/* 상세정보 */}
 
-      <section className="ftDetails flexCol" style={{ top: onDetails ? "calc(100vh - 40vh)" : "100vh" }}>
+      <section className="ftDetails flexCol" style={{ top: onDetails && !onReview ? "calc(100vh - 40vh)" : "100vh" }}>
         <h3 className="flexBetween">
           <span>푸드트럭 정보</span> <FontAwesomeIcon icon={faXmark} onClick={onDeleteDetails} />
         </h3>
@@ -134,9 +169,22 @@ const MobileCP = ({ currentLocationButton, ftData, onClickRelay, onDeleteDetails
             </div>
             <p className="flexBetween category review">
               <span className="category">{details.category}</span>
-              <a href="#review" className="flexCenter">
-                <FontAwesomeIcon icon={faStar} className="icon" /> {detailAvgRating() || "리뷰 없음"}
-              </a>
+              <span className="flexBetween">
+                <FontAwesomeIcon
+                  icon={faHeart}
+                  style={{ marginRight: "1rem", color: details.like ? "#e1645b" : "lightgray", cursor: "pointer" }}
+                  onClick={() => {
+                    if (details.like) {
+                      onDeleteLike(details.truckId);
+                    } else {
+                      onAddLike(details.truckId);
+                    }
+                  }}
+                />
+                <a href="#review" className="flexCenter">
+                  <FontAwesomeIcon icon={faStar} className="icon" /> {detailAvgRating() || "리뷰 없음"}
+                </a>
+              </span>
             </p>
           </section>
         )}
@@ -164,7 +212,16 @@ const MobileCP = ({ currentLocationButton, ftData, onClickRelay, onDeleteDetails
           <section className="schedule">
             <ul className="schedule">
               {details.schedule.slice().map((schedule, index) => (
-                <li key={index} style={{ color: !schedule.holiday ? "#e1645b" : index === today ? "var(--green-accent)" : "" }}>
+                <li
+                  key={index}
+                  style={{
+                    color: !schedule.holiday ? "#e1645b" : index === today ? "var(--green-accent)" : "",
+                  }}>
+                  <span>
+                    {!schedule.holiday ? <FontAwesomeIcon icon={faBellRegular} onClick={onAddSms} style={{ visibility: "hidden" }} /> : ""}
+                    {!schedule.sms && schedule.holiday && <FontAwesomeIcon icon={faBellRegular} onClick={onAddSms} style={{ cursor: "pointer" }} />}
+                    {schedule.sms && schedule.holiday && <FontAwesomeIcon icon={faBellSolid} onClick={onDeleteSms} style={{ cursor: "pointer" }} />}
+                  </span>
                   <span>{schedule.day}요일</span>
                   <span>{!schedule.holiday ? "휴일" : `${schedule.start}시 ~ ${schedule.end}시`}</span>
                   <span>{!schedule.holiday ? "" : `${schedule.userAddress}`}</span>
@@ -178,16 +235,20 @@ const MobileCP = ({ currentLocationButton, ftData, onClickRelay, onDeleteDetails
           <section className="review">
             <h3 id="review" className="flexBetween">
               리뷰
-              <a href={`/foodtruck/${details.truckId}`} style={{ fontSize: "0.9rem", color: "var(--gray-5)" }}>
+              <span
+                onClick={() => {
+                  setOnReview(true);
+                }}
+                style={{ fontSize: "0.9rem", color: "var(--gray-5)" }}>
                 <FontAwesomeIcon icon={faPen} />
-              </a>
+              </span>
             </h3>
-            {details.review.length === 0 && (
+            {details.review?.length === 0 && (
               <div style={{ textAlign: "center", padding: "1rem" }}>
                 <p>리뷰가 없습니다.</p>
               </div>
             )}
-            {details.review.length > 0 && (
+            {details.review?.length > 0 && (
               <ul style={{ borderTop: "1px solid var(--gray-2)" }}>
                 {details.review.slice().map((review, index) => (
                   <li key={index} className="reviewItem">

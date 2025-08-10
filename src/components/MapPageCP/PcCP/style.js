@@ -246,7 +246,7 @@ export const PcCpDetailsStyle = styled.section`
       font-weight: 600;
     }
 
-    & > li > span:nth-child(3) {
+    & > li > span:nth-child(4) {
       flex: 1;
       text-align: center;
     }

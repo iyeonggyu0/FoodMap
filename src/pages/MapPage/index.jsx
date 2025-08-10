@@ -7,6 +7,7 @@ import { useInput } from "../../hooks/useInput";
 import axios from "axios";
 import { ftDummyListData } from "../../_dummyData/ftDummyListData";
 import MobileCP from "../../components/MapPageCP/MobileCP";
+import { useLoginCheck } from "../../hooks/useLoginCheck";
 
 const MapPage = () => {
   const isMedia = useMedia("");
@@ -16,6 +17,66 @@ const MapPage = () => {
   const [filter, onChangeFilter, setFilter] = useInput("");
   const [details, setDetails] = useState([]);
   const [onDetails, setOnDetails] = useState(false);
+
+  // 로그인 상태 확인
+  // FIXME: const isLogin = useLoginCheck();
+  const isLogin = true; // FIXME: 임시로 true로 설정, useLoginCheck 훅 사용 예정
+
+  const onDeleteLike = useCallback((ftId) => {
+    if (!isLogin) return alert("로그인 후 이용해주세요.");
+
+    if (!ftId) {
+      console.error("푸드트럭 ID가 없습니다.");
+      return;
+    }
+
+    axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/like/${ftId}`, { withCredentials: true }).catch((err) => {
+      console.error("취소 실패:", err);
+      alert("취소에 실패했습니다.");
+    });
+  });
+
+  const onAddLike = useCallback((ftId) => {
+    if (!isLogin) return alert("로그인 후 이용해주세요.");
+
+    if (!ftId) {
+      console.error("푸드트럭 ID가 없습니다.");
+      return;
+    }
+
+    axios.post(`${import.meta.env.VITE_API_URL}/map/ft/like`, { ftId }, { withCredentials: true }).catch((err) => {
+      console.error("찜하기 실패:", err);
+      alert("찜하기에 실패했습니다.");
+    });
+  }, []);
+
+  const onDeleteSms = useCallback((ftId, day) => {
+    if (!isLogin) return alert("로그인 후 이용해주세요.");
+
+    if (!ftId || !day) {
+      console.error("푸드트럭 ID 또는 요일이 없습니다.");
+      return;
+    }
+
+    axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/sms/${ftId}/${day}`, { withCredentials: true }).catch((err) => {
+      console.error("알림 취소 실패:", err);
+      alert("알림 취소에 실패했습니다.");
+    });
+  });
+
+  const onAddSms = useCallback((ftId, day) => {
+    if (!isLogin) return alert("로그인 후 이용해주세요.");
+
+    if (!ftId || !day) {
+      console.error("푸드트럭 ID 또는 요일이 없습니다.");
+      return;
+    }
+
+    axios.post(`${import.meta.env.VITE_API_URL}/map/ft/sms`, { ftId, day }, { withCredentials: true }).catch((err) => {
+      console.error("알림 등록 실패:", err);
+      alert("알림 등록에 실패했습니다.");
+    });
+  }, []);
 
   const onChangeFilterFun = useCallback(() => {
     // FIXME: 임시데이터 사용
@@ -196,6 +257,7 @@ const MapPage = () => {
                 menu: item.menu,
                 review: item.review,
                 truckId: item.truckId, // 푸드트럭 ID 추가
+                like: item.like, // 찜 여부 추가
               });
               setOnDetails(true);
             });
@@ -248,6 +310,7 @@ const MapPage = () => {
       menu: data.menu, // 메뉴 목록
       review: data.review, // 리뷰 목록
       truckId: data.truckId, // 푸드트럭 ID (추가된 부분)
+      like: data.like, // 찜 여부 (추가된 부분)
     });
     setOnDetails(true); // 상세 정보 창 표시
     onChangeMapGPS({ lat: data.coords.lat, lng: data.coords.lng });
@@ -267,6 +330,11 @@ const MapPage = () => {
           onSetDetails={onSetDetails}
           details={details}
           onDetails={onDetails}
+          onDeleteLike={onDeleteLike}
+          onAddLike={onAddLike}
+          onDeleteSms={onDeleteSms}
+          onAddSms={onAddSms}
+          isLogin={isLogin}
         />
       )}
       {isMedia.isMobile && (
@@ -281,6 +349,11 @@ const MapPage = () => {
           onSetDetails={onSetDetails}
           details={details}
           onDetails={onDetails}
+          onDeleteLike={onDeleteLike}
+          onAddLike={onAddLike}
+          onDeleteSms={onDeleteSms}
+          onAddSms={onAddSms}
+          isLogin={isLogin}
         />
       )}
       {/* 지도 */}

@@ -3,6 +3,7 @@ export const ftDummyListData = [
     truckId: "175204",
     name: "오남 핫도그",
     category: "간식",
+    like: true,
     review: [
       { nickName: "핫도그매니아", content: "치즈가 쭉 늘어나서 좋아요.", rating: 4.0 },
       { nickName: "감자덕후", content: "감자핫도그가 바삭해요!", rating: 4.5 },
@@ -20,6 +21,7 @@ export const ftDummyListData = [
         end: "20",
         mapAddress: "경기 남양주시 오남읍 진건오남로522번길 11-1 지산파크빌상가",
         userAddress: "오남초등학교 앞",
+        sms: false,
       },
       {
         day: "화",
@@ -28,6 +30,7 @@ export const ftDummyListData = [
         end: "20",
         mapAddress: "경기 남양주시 오남읍 진건오남로522번길 11-1 지산파크빌상가",
         userAddress: "오남초등학교 앞",
+        sms: true,
       },
       {
         day: "수",
@@ -36,6 +39,7 @@ export const ftDummyListData = [
         end: "20",
         mapAddress: "경기 남양주시 오남읍 진건오남로522번길 11-1 지산파크빌상가",
         userAddress: "오남초등학교 앞",
+        sms: false,
       },
       {
         day: "목",
@@ -44,6 +48,7 @@ export const ftDummyListData = [
         end: "20",
         mapAddress: "경기 남양주시 오남읍 진건오남로522번길 11-1 지산파크빌상가",
         userAddress: "오남초등학교 앞",
+        sms: true,
       },
       {
         day: "금",
@@ -52,6 +57,7 @@ export const ftDummyListData = [
         end: "20",
         mapAddress: "경기 남양주시 오남읍 진건오남로522번길 11-1 지산파크빌상가",
         userAddress: "오남초등학교 앞",
+        sms: true,
       },
       {
         day: "토",
@@ -60,6 +66,7 @@ export const ftDummyListData = [
         end: "20",
         mapAddress: "경기 남양주시 오남읍 진건오남로522번길 11-1 지산파크빌상가",
         userAddress: "오남초등학교 앞",
+        sms: true,
       },
       {
         day: "일",
@@ -68,6 +75,7 @@ export const ftDummyListData = [
         end: "20",
         mapAddress: "경기 남양주시 오남읍 진건오남로522번길 11-1 지산파크빌상가",
         userAddress: "오남초등학교 앞",
+        sms: true,
       },
     ],
   },
@@ -75,6 +83,7 @@ export const ftDummyListData = [
     truckId: "357902",
     name: "오남 군고구마",
     category: "간식",
+    like: false,
     review: [
       { nickName: "고구마매니아", content: "군고구마가 달콤하고 촉촉해요.", rating: 4.5 },
       { nickName: "겨울간식러", content: "겨울에 딱이에요!", rating: 4.0 },
@@ -95,6 +104,7 @@ export const ftDummyListData = [
     truckId: "930217",
     name: "진건 떡볶이",
     category: "분식",
+    like: false,
     review: [
       { nickName: "떡볶이짱", content: "매콤달콤해서 자주 먹어요.", rating: 5.0 },
       { nickName: "튀김러버", content: "튀김이 바삭해요.", rating: 4.5 },
@@ -118,6 +128,7 @@ export const ftDummyListData = [
     truckId: "604381",
     name: "오남 닭꼬치",
     category: "구이",
+    like: false,
     review: [
       { nickName: "닭꼬치러버", content: "불향이 진짜 좋아요!", rating: 4.5 },
       { nickName: "소스장인", content: "소스가 다양해서 골라먹는 재미가 있어요.", rating: 4.0 },
@@ -141,6 +152,7 @@ export const ftDummyListData = [
     truckId: "218765",
     name: "진건 크레페",
     category: "디저트",
+    like: false,
     review: [
       { nickName: "디저트홀릭", content: "딸기크레페가 상큼해요.", rating: 4.5 },
       { nickName: "초코러버", content: "바나나크레페도 맛있어요!", rating: 4.0 },
@@ -164,6 +176,7 @@ export const ftDummyListData = [
     truckId: "482913",
     name: "황금 잉어빵",
     category: "간식",
+    like: false,
     review: [
       { nickName: "맛집러", content: "붕어빵이 정말 맛있어요!", rating: 4.5 },
       { nickName: "간식왕", content: "슈크림이 듬뿍 들어있어요.", rating: 5.0 },
@@ -192,19 +205,20 @@ export const ftDummyListData = [
       { nickName: "아이스크림러버", content: "바닐라맛이 진해요.", rating: 4.5 },
       { nickName: "토핑덕후", content: "토핑이 다양해서 좋아요.", rating: 4.0 },
     ],
+    like: true,
     intro: "다양한 맛의 아이스크림과 토핑을 즐길 수 있습니다.",
     menu: [
       { name: "바닐라", price: "2500", info: "기본 바닐라맛", num: "1" },
       { name: "초코", price: "2500", info: "진한 초코맛", num: "2" },
     ],
     schedule: [
-      { day: "월", holiday: true, start: "12", end: "18", mapAddress: "경기 남양주시 오남읍 양지로 57", userAddress: "진건초등학교 앞" },
-      { day: "화", holiday: true, start: "12", end: "18", mapAddress: "경기 남양주시 오남읍 양지로 57", userAddress: "진건초등학교 앞" },
-      { day: "수", holiday: true, start: "12", end: "18", mapAddress: "경기 남양주시 오남읍 양지로 57", userAddress: "진건초등학교 앞" },
-      { day: "목", holiday: true, start: "12", end: "18", mapAddress: "경기 남양주시 오남읍 양지로 57", userAddress: "진건초등학교 앞" },
-      { day: "금", holiday: false, start: "12", end: "18", mapAddress: "경기 남양주시 오남읍 양지로 57", userAddress: "진건초등학교 앞" },
-      { day: "토", holiday: false, start: "12", end: "18", mapAddress: "경기 남양주시 오남읍 양지로 57", userAddress: "진건초등학교 앞" },
-      { day: "일", holiday: false, start: "12", end: "18", mapAddress: "경기 남양주시 오남읍 양지로 57", userAddress: "진건초등학교 앞" },
+      { day: "월", holiday: true, start: "12", end: "18", sms: true, mapAddress: "경기 남양주시 오남읍 양지로 57", userAddress: "진건초등학교 앞" },
+      { day: "화", holiday: true, start: "12", end: "18", sms: true, mapAddress: "경기 남양주시 오남읍 양지로 57", userAddress: "진건초등학교 앞" },
+      { day: "수", holiday: true, start: "12", end: "18", sms: true, mapAddress: "경기 남양주시 오남읍 양지로 57", userAddress: "진건초등학교 앞" },
+      { day: "목", holiday: true, start: "12", end: "18", sms: true, mapAddress: "경기 남양주시 오남읍 양지로 57", userAddress: "진건초등학교 앞" },
+      { day: "금", holiday: false, start: "12", end: "18", sms: false, mapAddress: "경기 남양주시 오남읍 양지로 57", userAddress: "진건초등학교 앞" },
+      { day: "토", holiday: false, start: "12", end: "18", sms: false, mapAddress: "경기 남양주시 오남읍 양지로 57", userAddress: "진건초등학교 앞" },
+      { day: "일", holiday: false, start: "12", end: "18", sms: false, mapAddress: "경기 남양주시 오남읍 양지로 57", userAddress: "진건초등학교 앞" },
     ],
   },
 
@@ -212,6 +226,7 @@ export const ftDummyListData = [
     truckId: "294650",
     name: "진건 소떡소떡",
     category: "간식",
+    like: false,
     review: [
       { nickName: "소떡러버", content: "소떡소떡이 쫄깃하고 소스가 맛있어요.", rating: 4.5 },
       { nickName: "매콤단짠", content: "매콤달콤해서 계속 생각나요.", rating: 4.0 },
@@ -229,8 +244,10 @@ export const ftDummyListData = [
     ],
   },
   {
+    truckId: "294613",
     name: "오남 옥수수",
     category: "간식",
+    like: false,
     review: [
       { nickName: "옥수수매니아", content: "옥수수가 달콤하고 고소해요.", rating: 4.0 },
       { nickName: "간식러버", content: "국산 옥수수라서 믿고 먹어요.", rating: 3.5 },
@@ -251,6 +268,7 @@ export const ftDummyListData = [
     truckId: "561478",
     name: "오남 타코야끼",
     category: "간식",
+    like: false,
     review: [
       { nickName: "타코야끼매니아", content: "문어가 쫄깃해요.", rating: 4.0 },
       { nickName: "소스맛집", content: "특제소스가 정말 맛있어요!", rating: 4.5 },

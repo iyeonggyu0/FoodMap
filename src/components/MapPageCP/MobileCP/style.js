@@ -136,7 +136,7 @@ export const MobileCPMainStyle = styled.section`
       font-weight: 600;
     }
 
-    & ul > li > span:nth-child(3) {
+    & ul > li > span:nth-child(4) {
       flex: 1;
       text-align: center;
     }

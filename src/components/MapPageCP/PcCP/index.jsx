@@ -1,26 +1,45 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRotateRight, faHouse, faLocationCrosshairs, faMagnifyingGlass, faPen, faStar, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRotateRight, faHeart, faHouse, faLocationCrosshairs, faPen, faStar, faXmark, faBell as faBellSolid } from "@fortawesome/free-solid-svg-icons";
 import TextareaAutosize from "react-textarea-autosize";
 
 import { useNavigate } from "react-router-dom";
 import { PcCpButtonStyled, PcCpDetailsStyle, PcCpMainStyled } from "./style";
-import FTList from "./FTList";
-import { faImage } from "@fortawesome/free-regular-svg-icons";
-import { useCallback, useEffect } from "react";
+import FTList from "../_common/FTList";
+import { faBell as faBellRegular, faImage } from "@fortawesome/free-regular-svg-icons";
+import { useCallback, useEffect, useState } from "react";
+import PcReviewCP from "../_common/ReviewCP";
 
 /**
  * @param currentLocationButton 현재 위치 버튼 클릭 시 실행되는 함수
  * @returns
  */
-const PcCP = ({ currentLocationButton, filter, onChangeFilter, categoryList, ftData, onClickRelay, onDeleteDetails, onSetDetails, details, onDetails }) => {
+const PcCP = ({
+  currentLocationButton,
+  filter,
+  onChangeFilter,
+  categoryList,
+  ftData,
+  onClickRelay,
+  onDeleteDetails,
+  onSetDetails,
+  details,
+  onDetails,
+  onDeleteLike,
+  onAddLike,
+  onDeleteSms,
+  onAddSms,
+  isLogin,
+}) => {
   const nav = useNavigate();
 
   const today = (new Date().getDay() + 6) % 7; // 0:월~6:일
 
+  const [onReview, setOnReview] = useState(false);
+
   const detailAvgRating = useCallback(() => {
-    if (details.review && details.review.length > 0) {
+    if (details.review && details.review?.length > 0) {
       const totalRating = details.review.reduce((acc, review) => acc + review.rating, 0);
-      return (totalRating / details.review.length).toFixed(1); // 소수점 첫째 자리까지
+      return (totalRating / details.review?.length).toFixed(1); // 소수점 첫째 자리까지
     }
   }, [details]);
 
@@ -29,9 +48,14 @@ const PcCP = ({ currentLocationButton, filter, onChangeFilter, categoryList, ftD
     if (detailsElement) {
       detailsElement.scrollTop = 0; // 내부 스크롤을 맨 위로 이동
     }
+    setOnReview(false);
   }, [details]);
 
   console.log("PcCP details", details);
+
+  const offReviewClick = () => {
+    setOnReview(false);
+  };
 
   return (
     <PcCpMainStyled>
@@ -48,6 +72,7 @@ const PcCP = ({ currentLocationButton, filter, onChangeFilter, categoryList, ftD
         <div className="relay flexCenter" onClick={onClickRelay}>
           <FontAwesomeIcon icon={faArrowRotateRight} />
         </div>
+        {onReview && <PcReviewCP offReviewClick={offReviewClick} isLogin={isLogin} details={details} />}
       </PcCpButtonStyled>
 
       {/* 사이드 메뉴 */}
@@ -86,9 +111,10 @@ const PcCP = ({ currentLocationButton, filter, onChangeFilter, categoryList, ftD
                         coords: item.coords,
                         review: item.review, // 리뷰 목록
                         truckId: item.truckId, // 푸드트럭 ID (추가된 부분)
+                        like: item.like, // 찜 여부 (추가된 부분)
                       });
                     }}>
-                    <FTList data={item} />
+                    <FTList data={item} isLogin={isLogin} />
                   </div>
                 ))}
           </ul>
@@ -112,15 +138,38 @@ const PcCP = ({ currentLocationButton, filter, onChangeFilter, categoryList, ftD
           </div>
           <p className="flexBetween category review">
             <span className="category">{details.category}</span>
-            <a href="#review" className="flexCenter">
-              <FontAwesomeIcon icon={faStar} className="icon" /> {detailAvgRating() || "리뷰 없음"}
-            </a>
+            <span className="flexBetween">
+              <FontAwesomeIcon
+                icon={faHeart}
+                style={{ marginRight: "1rem", color: details.like ? "#e1645b" : "lightgray", cursor: "pointer" }}
+                onClick={() => {
+                  if (details.like) {
+                    onDeleteLike(details.truckId);
+                  } else {
+                    onAddLike(details.truckId);
+                  }
+                }}
+              />
+
+              <a href="#review" className="flexCenter">
+                <FontAwesomeIcon icon={faStar} className="icon" /> {detailAvgRating() || "리뷰 없음"}
+              </a>
+            </span>
           </p>
           <div className="marginTop"></div>
           <h3>요일별 위치</h3>
           <ul className="schedule">
             {details.schedule.slice().map((schedule, index) => (
-              <li key={index} style={{ color: !schedule.holiday ? "#e1645b" : index === today ? "var(--green-accent)" : "" }}>
+              <li
+                key={index}
+                style={{
+                  color: !schedule.holiday ? "#e1645b" : index === today ? "var(--green-accent)" : "",
+                }}>
+                <span>
+                  {!schedule.holiday ? <FontAwesomeIcon icon={faBellRegular} onClick={onAddSms} style={{ visibility: "hidden" }} /> : ""}
+                  {!schedule.sms && schedule.holiday && <FontAwesomeIcon icon={faBellRegular} onClick={onAddSms} style={{ cursor: "pointer" }} />}
+                  {schedule.sms && schedule.holiday && <FontAwesomeIcon icon={faBellSolid} onClick={onDeleteSms} style={{ cursor: "pointer" }} />}
+                </span>
                 <span>{schedule.day}요일</span>
                 <span>{!schedule.holiday ? "휴일" : `${schedule.start}시 ~ ${schedule.end}시`}</span>
                 <span>{!schedule.holiday ? "" : `${schedule.userAddress}`}</span>
@@ -149,16 +198,16 @@ const PcCP = ({ currentLocationButton, filter, onChangeFilter, categoryList, ftD
 
           <h3 id="review" className="flexBetween">
             리뷰
-            <a href={`/foodtruck/${details.truckId}`} style={{ fontSize: "0.9rem", color: "var(--gray-5)" }}>
+            <span onClick={() => setOnReview(true)} style={{ fontSize: "0.9rem", color: "var(--gray-5)", cursor: "pointer" }}>
               <FontAwesomeIcon icon={faPen} />
-            </a>
+            </span>
           </h3>
-          {details.review.length === 0 && (
+          {details.review?.length === 0 && (
             <div style={{ textAlign: "center", padding: "1rem" }}>
               <p>리뷰가 없습니다.</p>
             </div>
           )}
-          {details.review.length > 0 && (
+          {details.review?.length > 0 && (
             <ul style={{ borderTop: "1px solid var(--gray-2)" }}>
               {details.review.slice().map((review, index) => (
                 <li key={index} className="reviewItem">
