@@ -97,7 +97,7 @@ const FTList = ({ data, isLogin }) => {
     } else if (currentMinutes >= startMinutes && currentMinutes <= endMinutes) {
       return { status: "영업중", color: "#5dcd61" };
     } else {
-      return { status: "영업종료", color: "#e1645b" };
+      return { status: "영업종료", color: "var(--red)" };
     }
   };
 
@@ -128,7 +128,7 @@ const FTList = ({ data, isLogin }) => {
 
         <span>
           {isLogin && data.like && (
-            <span style={{ color: "#e1645b", paddingRight: "0.5rem" }}>
+            <span style={{ color: "var(--red)", paddingRight: "0.5rem" }}>
               <FontAwesomeIcon icon={faHeart} />
             </span>
           )}

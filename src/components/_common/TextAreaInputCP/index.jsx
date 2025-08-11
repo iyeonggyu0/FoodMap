@@ -40,6 +40,10 @@ const TextAreaInputCPMainStyle = styled.form`
     border: 1px solid var(--brown-light);
     outline: none;
   }
+
+  & * {
+    font-family: "Noto Sans KR", sans-serif;
+  }
 `;
 
 /**
@@ -51,15 +55,24 @@ const TextAreaInputCPMainStyle = styled.form`
  * @param {string} value - 입력값
  * @param {number} maxRows - 최대 행 수
  * @param {number} minRows - 최소 행 수
+ * @param {boolean} lock - 입력 잠금 여부
  */
-const TextAreaInputCP = ({ title = "이름을 입력하세요", essential = false, ex, onChangeHandler, value, maxRows, minRows }) => {
+const TextAreaInputCP = ({ title = "이름을 입력하세요", essential = false, ex, onChangeHandler, value, maxRows, minRows, lock = false }) => {
   return (
     <TextAreaInputCPMainStyle>
       <label htmlFor="InputCP">
         {title}
         {essential && <span className="essential">*</span>}
       </label>
-      <TextareaAutosize minRows={minRows} maxRows={maxRows} value={value} placeholder={ex} onChange={onChangeHandler} />
+      <TextareaAutosize
+        minRows={minRows}
+        maxRows={maxRows}
+        value={value}
+        placeholder={ex}
+        onChange={onChangeHandler}
+        disabled={lock}
+        style={lock ? { backgroundColor: "#f5f5f5", cursor: "not-allowed" } : {}}
+      />
     </TextAreaInputCPMainStyle>
   );
 };

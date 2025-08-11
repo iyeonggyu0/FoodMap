@@ -172,7 +172,7 @@ const MobileCP = ({
               <span className="flexBetween">
                 <FontAwesomeIcon
                   icon={faHeart}
-                  style={{ marginRight: "1rem", color: details.like ? "#e1645b" : "lightgray", cursor: "pointer" }}
+                  style={{ marginRight: "1rem", color: details.like ? "var(--red)" : "lightgray", cursor: "pointer" }}
                   onClick={() => {
                     if (details.like) {
                       onDeleteLike(details.truckId);
@@ -215,7 +215,7 @@ const MobileCP = ({
                 <li
                   key={index}
                   style={{
-                    color: !schedule.holiday ? "#e1645b" : index === today ? "var(--green-accent)" : "",
+                    color: !schedule.holiday ? "var(--red)" : index === today ? "var(--green-accent)" : "",
                   }}>
                   <span>
                     {!schedule.holiday ? <FontAwesomeIcon icon={faBellRegular} onClick={onAddSms} style={{ visibility: "hidden" }} /> : ""}

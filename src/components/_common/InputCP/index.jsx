@@ -48,6 +48,7 @@ const InputCPMainStyle = styled.form`
  * @param {boolean} pw - 비밀번호 입력 여부
  * @param {function} onChangeHandler - 입력 값 변경 핸들러
  * @param {string} value - input의 현재 값
+ * @param {boolean} lock - 입력 잠금 여부
  * @returns {JSX.Element} 텍스트 입력 폼
  *
  */

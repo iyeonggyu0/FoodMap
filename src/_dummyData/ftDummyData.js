@@ -2,6 +2,7 @@ export const ftDummyData = {
   truckId: "175204",
   name: "오남 핫도그",
   category: "간식",
+  operatorNum: "123-45-67890",
   review: [
     { nickName: "핫도그매니아", content: "치즈가 쭉 늘어나서 좋아요.", rating: 4.0 },
     { nickName: "감자덕후", content: "감자핫도그가 바삭해요!", rating: 4.5 },

@@ -141,7 +141,7 @@ const PcCP = ({
             <span className="flexBetween">
               <FontAwesomeIcon
                 icon={faHeart}
-                style={{ marginRight: "1rem", color: details.like ? "#e1645b" : "lightgray", cursor: "pointer" }}
+                style={{ marginRight: "1rem", color: details.like ? "var(--red)" : "lightgray", cursor: "pointer" }}
                 onClick={() => {
                   if (details.like) {
                     onDeleteLike(details.truckId);
@@ -163,12 +163,16 @@ const PcCP = ({
               <li
                 key={index}
                 style={{
-                  color: !schedule.holiday ? "#e1645b" : index === today ? "var(--green-accent)" : "",
+                  color: !schedule.holiday ? "var(--red)" : index === today ? "var(--green-accent)" : "",
                 }}>
                 <span>
-                  {!schedule.holiday ? <FontAwesomeIcon icon={faBellRegular} onClick={onAddSms} style={{ visibility: "hidden" }} /> : ""}
-                  {!schedule.sms && schedule.holiday && <FontAwesomeIcon icon={faBellRegular} onClick={onAddSms} style={{ cursor: "pointer" }} />}
-                  {schedule.sms && schedule.holiday && <FontAwesomeIcon icon={faBellSolid} onClick={onDeleteSms} style={{ cursor: "pointer" }} />}
+                  {!schedule.holiday ? <FontAwesomeIcon icon={faBellRegular} style={{ visibility: "hidden" }} /> : ""}
+                  {!schedule.sms && schedule.holiday && (
+                    <FontAwesomeIcon icon={faBellRegular} onClick={() => onAddSms(details.truckId, schedule.day)} style={{ cursor: "pointer" }} />
+                  )}
+                  {schedule.sms && schedule.holiday && (
+                    <FontAwesomeIcon icon={faBellSolid} onClick={() => onDeleteSms(details.truckId, schedule.day)} style={{ cursor: "pointer" }} />
+                  )}
                 </span>
                 <span>{schedule.day}요일</span>
                 <span>{!schedule.holiday ? "휴일" : `${schedule.start}시 ~ ${schedule.end}시`}</span>

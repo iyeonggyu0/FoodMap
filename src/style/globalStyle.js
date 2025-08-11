@@ -30,6 +30,9 @@ const GlobalStyle = createGlobalStyle`
 
       /* 남색 계열 */
       --navy: #111827;
+
+      --red: #e1645b;
+      --red-dark: #c74940ff;
     }
 
 
