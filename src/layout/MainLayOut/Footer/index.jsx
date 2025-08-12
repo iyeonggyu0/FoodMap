@@ -55,7 +55,7 @@ const MainLayOutFooter = () => {
             </ul>
           </nav>
         </div>
-        {/* 하단 */}
+        {/* 하단   */}
         <div className="bottom flexBetween flexHeightCenter">
           <span>
             © 2025 길맛지도. All rights reserved.{" "}
