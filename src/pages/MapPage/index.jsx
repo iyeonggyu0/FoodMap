@@ -121,7 +121,6 @@ const MapPage = () => {
         mapRef.current.addOverlay(marker);
       }
       // 지도가 생성된 후에 마커 추가 함수 실행
-      onChangeFtData(ftDummyListData);
     };
 
     if (navigator.geolocation) {

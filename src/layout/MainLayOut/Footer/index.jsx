@@ -29,7 +29,6 @@ const MainLayOutFooter = () => {
               <li className="ul-title">서비스</li>
               <li onClick={() => nav("/map")}>푸드트럭 지도</li>
               <li onClick={() => nav("/register")}>푸드트럭 등록</li>
-              <li onClick={() => nav("/report")}>푸드트럭 제보</li>
             </ul>
             <ul>
               <li className="ul-title">고객지원</li>
@@ -38,19 +37,19 @@ const MainLayOutFooter = () => {
             </ul>
             <ul>
               <li className="ul-title">Front</li>
-              <a href="">
+              <a href="https://github.com/iyeonggyu0">
                 <li>이영규</li>
               </a>
-              <a href="">
+              <a href="https://github.com/iyeonggyu0">
                 <li>박정우</li>
               </a>
             </ul>
             <ul>
               <li className="ul-title">Back</li>
-              <a href="">
+              <a href="https://github.com/iyeonggyu0">
                 <li>왕종휘</li>
               </a>
-              <a href="">
+              <a href="https://github.com/iyeonggyu0">
                 <li>정혜빈</li>
               </a>
             </ul>

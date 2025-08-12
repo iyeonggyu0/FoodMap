@@ -2,8 +2,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { faShop, faMagnifyingGlass, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { MainPageMethodCPMainStyle, MainPageMethodCPStyle } from "./style";
+import { useNavigate } from "react-router-dom";
 
 const MainPageMethodCP = () => {
+  const nav = useNavigate();
   return (
     <MainPageMethodCPMainStyle>
       <div>
@@ -58,7 +60,7 @@ const MainPageMethodCP = () => {
             </div>
           </div>
           <div className="flexCenter">
-            <FontAwesomeIcon icon={faMagnifyingGlass} />
+            <FontAwesomeIcon icon={faMagnifyingGlass} onClick={() => nav("/map")} />
             <p>지금 바로 찾기</p>
           </div>
         </MainPageMethodCPStyle>
@@ -105,7 +107,7 @@ const MainPageMethodCP = () => {
               </div>
             </div>
           </div>
-          <div className="flexCenter">
+          <div className="flexCenter" onClick={() => nav("/register")}>
             <FontAwesomeIcon icon={faPlus} />
             <p>푸드트럭 등록하기</p>
           </div>

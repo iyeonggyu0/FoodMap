@@ -25,7 +25,7 @@ const MainPageTitleCP = () => {
         </p>
         {/* btn + btn */}
         <div className="flexCenter">
-          <a href="#">
+          <a href="/map">
             <BrownButtonCP backgroundColor="--brown-light" icon={<FontAwesomeIcon icon={faMagnifyingGlass} />} color="--brown-light" fontColor="--gray-0">
               지도에서 찾기
             </BrownButtonCP>
