@@ -105,7 +105,6 @@ const faqData = {
   },
 };
 
-// FIXME: 문의하기 함수 만들기, 문의하기에 연락처or이메일 남기는 input 추가
 const FaqPage = () => {
   // 문의 유형 입력값 상태 관리
   const [askCategory, onChangeAskCategory, setAskCategory] = useInput("");

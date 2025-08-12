@@ -35,7 +35,6 @@ export const SignUpPageMainStyle = styled.main`
   & .error {
     font-size: 0.8rem;
     color: red;
-    visibility: hidden;
   }
 
   & > section > div > div:last-child {

@@ -1,11 +1,9 @@
-import { useNavigate } from "react-router-dom";
 import BrownButtonCP from "../../../components/_common/ButtonCP";
 import { useLoginCheck } from "../../../hooks/useLoginCheck";
 import { MainLayOutHeaderStyled } from "./style";
 
 const MainLayOutHeader = () => {
   const loginCheck = useLoginCheck();
-  const nav = useNavigate();
 
   console.log(loginCheck);
   return (
@@ -29,22 +27,22 @@ const MainLayOutHeader = () => {
               <li>FAQ</li>
             </a>
             {!loginCheck && (
-              <li className="loginButton" onClick={() => nav("/login")}>
-                로그인
-              </li>
+              <a href="/login">
+                <li className="loginButton">로그인</li>
+              </a>
             )}
             {!loginCheck && (
               <li className="singInButton">
-                <BrownButtonCP pcOnly="true" onClick={() => nav("/sign-up")}>
-                  회원가입
-                </BrownButtonCP>
+                <a href="/sign-up">
+                  <BrownButtonCP pcOnly="true">회원가입</BrownButtonCP>
+                </a>
               </li>
             )}
             {loginCheck && (
               <li className="singInButton">
-                <BrownButtonCP pcOnly="true" onClick={() => nav("/my-page")}>
-                  마이페이지
-                </BrownButtonCP>
+                <a href="/my-page">
+                  <BrownButtonCP pcOnly="true">마이페이지</BrownButtonCP>
+                </a>
               </li>
             )}
           </ul>

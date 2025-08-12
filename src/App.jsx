@@ -12,6 +12,8 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import MapPage from "./pages/MapPage";
+import Error404Page from "./pages/Error404Page";
+import MyPage from "./pages/MyPage";
 // import PrivateRoute from "./util/privateRoute";
 import ReportPage from "./pages/ReportPage";
 
@@ -25,11 +27,12 @@ function App() {
         <Route path="/" element={<MainPage />} />
 
         {/* FIXME: 로그인 확인 기능 켜기 */}
-        {/* FIXME: <Route element={<PrivateRoute />}> */}
-        {/* 푸드트럭 등록 */}
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/my-page" element={<>마이페이지</>} />
-        {/* FIXME: </Route> */}
+        <Route element={<PrivateRoute />}>
+          {/* 푸드트럭 등록 */}
+          <Route path="/register" element={<RegisterPage />} />
+          {/* 마이페이지에 알림설정/찜/리뷰 (수정/삭제) 기능 넣기 */}
+          <Route path="/my-page" element={<MyPage />} />
+        </Route>
 
         {/* 지도 페이지 */}
         <Route path="/map" element={<MapPage />} />
@@ -49,6 +52,9 @@ function App() {
 
         {/* 푸드트럭 제보 */}
         <Route path="/report" element={<ReportPage />} />
+
+        {/* 404 페이지 */}
+        <Route path="*" element={<Error404Page />} />
       </Routes>
     </BrowserRouter>
   );

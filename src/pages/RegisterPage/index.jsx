@@ -12,7 +12,6 @@ import OutLineButtonCP from "../../components/_common/OutLineButtonCP";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEraser, faPen } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import { encrypt } from "../../util/crypto";
 import { useMedia } from "../../hooks/useMedia";
 
 const RegisterPage = () => {
@@ -134,27 +133,22 @@ const RegisterPage = () => {
     }
     alert("등록 신청이 완료되었습니다!");
 
-    // FIXME: 로그인 세션 확인하기
-
     // FIXME: api 주소 확인하기
     axios
-      .post(
-        `${import.meta.env.VITE_API_URL}`,
-        encrypt({
-          // 푸드트럭 이름
-          name: FTName,
-          // 푸드트럭 카테고리
-          category: FTCategory,
-          // 푸드트럭 카테고리
-          intro: FTIntro,
-          // 메뉴 리스트 (요일, 시간, 주소)
-          menu: menuList,
-          // 영업 일정
-          schedule: scheduleList,
-          // 사업자 등록번호
-          operatorNum: operatorNum,
-        })
-      )
+      .post(`${import.meta.env.VITE_API_URL}`, {
+        // 푸드트럭 이름
+        name: FTName,
+        // 푸드트럭 카테고리
+        category: FTCategory,
+        // 푸드트럭 카테고리
+        intro: FTIntro,
+        // 메뉴 리스트 (요일, 시간, 주소)
+        menu: menuList,
+        // 영업 일정
+        schedule: scheduleList,
+        // 사업자 등록번호
+        operatorNum: operatorNum,
+      })
       .then((res) => {
         if (res.data.success) {
           alert("푸드트럭 등록이 완료되었습니다!");
@@ -652,9 +646,7 @@ const RegisterPage = () => {
         )}
         <div>
           <h2>등록 안내사항</h2>
-          <p>ㆍ등록 신청 후 1~2일 내에 검토 결과를 알려드립니다.</p>
           <p>ㆍ허위 정보 입력 시 서비스 이용이 제한될 수 있습니다.</p>
-          <p>ㆍ사업자등록증이 있는 경우 우선적으로 승인됩니다.</p>
           <p>ㆍ문의사항은 Q&A 게시판으로 연락해주세요.</p>
         </div>
       </RegisterPageMainStyle>
