@@ -26,12 +26,12 @@ function App() {
         <Route path="/" element={<MainPage />} />
 
         {/* FIXME: 로그인 확인 기능 켜기 */}
-        {/* FIXME: <Route element={<PrivateRoute />}> */}
-        {/* 푸드트럭 등록 */}
-        <Route path="/register" element={<RegisterPage />} />
-        {/* 마이페이지에 알림설정/찜/리뷰 (수정/삭제) 기능 넣기 */}
-        <Route path="/my-page" element={<MyPage />} />
-        {/* FIXME: </Route> */}
+        <Route element={<PrivateRoute />}>
+          {/* 푸드트럭 등록 */}
+          <Route path="/register" element={<RegisterPage />} />
+          {/* 마이페이지에 알림설정/찜/리뷰 (수정/삭제) 기능 넣기 */}
+          <Route path="/my-page" element={<MyPage />} />
+        </Route>
 
         {/* 지도 페이지 */}
         <Route path="/map" element={<MapPage />} />

@@ -133,8 +133,6 @@ const RegisterPage = () => {
     }
     alert("등록 신청이 완료되었습니다!");
 
-    // FIXME: 로그인 세션 확인하기
-
     // FIXME: api 주소 확인하기
     axios
       .post(`${import.meta.env.VITE_API_URL}`, {

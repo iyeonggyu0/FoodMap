@@ -16,27 +16,24 @@ const MyLikeCP = () => {
 
   useEffect(() => {
     // 찜 목록을 불러오는 API 호출
-    // FIXME:
-    // axios
-    //   .get(`${import.meta.env.VITE_API_URL}/ft/like`)
-    //   .then((res) => {
-    //     if (res.data.success) {
-    //       setFtList(res.data.ftList);
-    //     } else {
-    //       console.error("찜 목록 로드 실패:", res.data.message);
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.error("찜 목록 로드 중 오류 발생:", err);
-    //     alert("찜 목록을 불러오는 데 실패했습니다.");
-    //   });
-    // FIXME:
-    setFtList(ftDummyListData); // 초기화
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/ft/like`)
+      .then((res) => {
+        if (res.data.success) {
+          setFtList(res.data.ftList);
+        } else {
+          console.error("찜 목록 로드 실패:", res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.error("찜 목록 로드 중 오류 발생:", err);
+        alert("찜 목록을 불러오는 데 실패했습니다.");
+      });
+    // setFtList(ftDummyListData); // 초기화
   }, []);
 
-  // FIXME:
-  // const isLogin = useLoginCheck();
-  const isLogin = true; // 로그인 상태 확인 (임시)
+  const isLogin = useLoginCheck();
+  // const isLogin = true; // 로그인 상태 확인 (임시)
 
   // 오늘 요일 확인
   const today = (new Date().getDay() + 6) % 7; // 0:월~6:일

@@ -145,21 +145,22 @@ const MyReviewCP = () => {
   const [reviewList, setReviewList] = useState([]); // 리뷰 목록 상태
 
   useEffect(() => {
-    // axios.get(`${import.meta.env.VITE_API_URL}/user/review`)
-    //   .then((res) => {
-    //     if (res.data.success) {
-    //       // 리뷰 목록을 상태에 저장
-    //       setReviewList(res.data.reviews);
-    //     } else {
-    //       console.error("리뷰 목록 로드 실패:", res.data.message);
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.error("리뷰 목록 로드 중 오류 발생:", err);
-    //     alert("리뷰 목록을 불러오는 데 실패했습니다.");
-    //   });
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/user/review`)
+      .then((res) => {
+        if (res.data.success) {
+          // 리뷰 목록을 상태에 저장
+          setReviewList(res.data.reviews);
+        } else {
+          console.error("리뷰 목록 로드 실패:", res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.error("리뷰 목록 로드 중 오류 발생:", err);
+        alert("리뷰 목록을 불러오는 데 실패했습니다.");
+      });
     //FIXME:
-    setReviewList(reviewDummyData); // 초기화 (임시)
+    // setReviewList(reviewDummyData); // 초기화 (임시)
   }, []);
 
   return (

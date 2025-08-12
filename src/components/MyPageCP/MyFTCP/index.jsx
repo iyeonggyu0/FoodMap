@@ -134,48 +134,47 @@ const MyFTCP = () => {
 
     // FIXME: 로그인 세션 확인하기
 
-    // FIXME: api 주소 확인하기
-    // axios
-    //   .put(`${import.meta.env.VITE_API_URL}/user/foodtruck`, {
-    //     // 푸드트럭 이름
-    //     name: FTName,
-    //     // 푸드트럭 카테고리
-    //     category: FTCategory,
-    //     // 푸드트럭 소개
-    //     intro: FTIntro,
-    //     // 메뉴 리스트
-    //     menu: menuList,
-    //     // 영업 일정
-    //     schedule: scheduleList,
-    //     // 사업자 등록번호
-    //     operatorNum: operatorNum,
-    //   })
-    //   .then((res) => {
-    //     if (res.data.success) {
-    //       alert("푸드트럭 정보가 수정되었습니다!");
-    //       // 페이지 새로고침으로 최신 데이터 반영
-    //       window.location.reload();
-    //     } else {
-    //       alert("푸드트럭 정보 수정에 실패했습니다. 다시 시도해주세요.");
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.error("푸드트럭 정보 수정 중 오류 발생:", err);
-    //     alert("푸드트럭 정보 수정 중 오류가 발생했습니다. 다시 시도해주세요.");
-    //   });
+    axios
+      .put(`${import.meta.env.VITE_API_URL}/user/foodtruck`, {
+        // 푸드트럭 이름
+        name: FTName,
+        // 푸드트럭 카테고리
+        category: FTCategory,
+        // 푸드트럭 소개
+        intro: FTIntro,
+        // 메뉴 리스트
+        menu: menuList,
+        // 영업 일정
+        schedule: scheduleList,
+        // 사업자 등록번호
+        operatorNum: operatorNum,
+      })
+      .then((res) => {
+        if (res.data.success) {
+          alert("푸드트럭 정보가 수정되었습니다!");
+          // 페이지 새로고침으로 최신 데이터 반영
+          window.location.reload();
+        } else {
+          alert("푸드트럭 정보 수정에 실패했습니다. 다시 시도해주세요.");
+        }
+      })
+      .catch((err) => {
+        console.error("푸드트럭 정보 수정 중 오류 발생:", err);
+        alert("푸드트럭 정보 수정 중 오류가 발생했습니다. 다시 시도해주세요.");
+      });
 
     // FIXME: API 비활성화 상태에서 성공 시뮬레이션
-    console.log("수정 데이터:", {
-      name: FTName,
-      category: FTCategory,
-      intro: FTIntro,
-      menu: menuList,
-      schedule: scheduleList,
-      operatorNum: operatorNum,
-    });
-    setTimeout(() => {
-      alert("푸드트럭 정보가 수정되었습니다! (임시)");
-    }, 500);
+    // console.log("수정 데이터:", {
+    //   name: FTName,
+    //   category: FTCategory,
+    //   intro: FTIntro,
+    //   menu: menuList,
+    //   schedule: scheduleList,
+    //   operatorNum: operatorNum,
+    // });
+    // setTimeout(() => {
+    //   alert("푸드트럭 정보가 수정되었습니다! (임시)");
+    // }, 500);
   };
 
   // 푸드트럭 이름

@@ -19,8 +19,8 @@ const MapPage = () => {
   const [onDetails, setOnDetails] = useState(false);
 
   // 로그인 상태 확인
-  // FIXME: const isLogin = useLoginCheck();
-  const isLogin = true; // FIXME: 임시로 true로 설정, useLoginCheck 훅 사용 예정
+  const isLogin = useLoginCheck();
+  // const isLogin = true; // FIXME: 임시로 true로 설정, useLoginCheck 훅 사용 예정
 
   const onDeleteLike = useCallback((ftId) => {
     if (!isLogin) return alert("로그인 후 이용해주세요.");
@@ -80,19 +80,19 @@ const MapPage = () => {
 
   const onChangeFilterFun = useCallback(() => {
     // FIXME: 임시데이터 사용
-    // axios
-    //   .get(`${import.meta.env.VITE_API_URL}/map/ft/${encodeURIComponent(filter)}`)
-    //   .then((res) => {
-    //     if (res.data) {
-    //       onChangeFtData(res.data);
-    //     } else {
-    //       console.error("No data received from API");
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.error("Error fetching data:", err);
-    //   });
-    onChangeFtData(ftDummyListData);
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/map/ft/${encodeURIComponent(filter)}`)
+      .then((res) => {
+        if (res.data) {
+          onChangeFtData(res.data);
+        } else {
+          console.error("No data received from API");
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching data:", err);
+      });
+    // onChangeFtData(ftDummyListData);
   });
 
   useEffect(() => {

@@ -102,7 +102,6 @@ const faqData = {
   },
 };
 
-// FIXME: 문의하기 함수 만들기, 문의하기에 연락처or이메일 남기는 input 추가
 const FaqPage = () => {
   // 문의 유형
   const [AskCategory, onChangeAskCategory, setAskCategory] = useInput("");
@@ -199,7 +198,6 @@ const FaqPage = () => {
             </div>
             <section>
               <h2>자주 이용하는 기능</h2>
-              {/* FIXME: 각 버튼에 라우팅 기능 추가 */}
               <OutLineButtonCP color="black">지도에서 푸드트럭 찾기</OutLineButtonCP>
               <OutLineButtonCP color="black">푸드트럭 등록하기</OutLineButtonCP>
               <OutLineButtonCP color="black">마이페이지</OutLineButtonCP>

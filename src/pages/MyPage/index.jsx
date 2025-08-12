@@ -21,21 +21,21 @@ const MyPage = () => {
   useEffect(() => {
     // 사용자 정보를 불러오는 API 호출
     // FIXME:
-    // axios
-    //   .get(`${import.meta.env.VITE_API_URL}/user/info`)
-    //   .then((res) => {
-    //     if (res.data.success) {
-    //       setUserData(res.data.user);
-    //     } else {
-    //       console.error("사용자 정보 로드 실패:", res.data.message);
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.error("사용자 정보 로드 중 오류 발생:", err);
-    //     alert("사용자 정보를 불러오는 데 실패했습니다.");
-    //   });
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/user/info`)
+      .then((res) => {
+        if (res.data.success) {
+          setUserData(res.data.user);
+        } else {
+          console.error("사용자 정보 로드 실패:", res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.error("사용자 정보 로드 중 오류 발생:", err);
+        alert("사용자 정보를 불러오는 데 실패했습니다.");
+      });
     // FIXME:
-    setUserData(userDummyData);
+    // setUserData(userDummyData);
 
     if (isPc) {
       setOnMenu(true);
