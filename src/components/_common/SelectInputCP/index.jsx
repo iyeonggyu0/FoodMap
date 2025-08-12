@@ -70,7 +70,7 @@ const SelectInputCP = ({ title = "이름을 입력하세요", essential = false,
       </label>
       <div className="select-wrapper">
         <select onChange={onChangeHandler}>
-          <option value="" disabled>
+          <option value="" selected disabled>
             선택하세요
           </option>
           {Array.isArray(listData) &&

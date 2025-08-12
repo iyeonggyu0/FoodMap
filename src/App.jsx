@@ -13,6 +13,7 @@ import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import MapPage from "./pages/MapPage";
 // import PrivateRoute from "./util/privateRoute";
+import ReportPage from "./pages/ReportPage";
 
 function App() {
   return (
@@ -43,8 +44,11 @@ function App() {
         {/* 개인정보처리방침 */}
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
 
-        {/* FAQ 페이지 */}
+        {/* FAQ */}
         <Route path="/faq" element={<FaqPage />} />
+
+        {/* 푸드트럭 제보 */}
+        <Route path="/report" element={<ReportPage />} />
       </Routes>
     </BrowserRouter>
   );

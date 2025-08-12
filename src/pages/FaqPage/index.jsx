@@ -1,4 +1,7 @@
+import { Link } from "react-router-dom";
+import { useState } from "react";
 import { useInput } from "../../hooks/useInput";
+import axios from "axios";
 import MainLayOut from "../../layout/MainLayOut";
 
 import SimpleAccordionCP from "../../components/FaqPageCP/FaqPageAccordionCP";
@@ -104,20 +107,91 @@ const faqData = {
 
 // FIXME: 문의하기 함수 만들기, 문의하기에 연락처or이메일 남기는 input 추가
 const FaqPage = () => {
-  // 문의 유형
-  const [AskCategory, onChangeAskCategory, setAskCategory] = useInput("");
-  // 문의 제목
-  const [AskTitle, onChangeAskTitle, setAskTitle] = useInput("");
-  // 문의 내용
-  const [AskContent, onChangeAskContent, setAskContent] = useInput("");
+  // 문의 유형 입력값 상태 관리
+  const [askCategory, onChangeAskCategory, setAskCategory] = useInput("");
+  // 문의 제목 입력값 상태 관리
+  const [askTitle, onChangeAskTitle, setAskTitle] = useInput("");
+  // 문의 내용 입력값 상태 관리
+  const [askContent, onChangeAskContent, setAskContent] = useInput("");
+  // 연락처 입력값 상태 관리
+  const [askContact, onChangeAskContact, setAskContact] = useInput("");
+
+  // 각 입력값별 에러 상태 관리
+  const [askCategoryError, setAskCategoryError] = useState(false);
+  const [askTitleError, setAskTitleError] = useState(false);
+  const [askContentError, setAskContentError] = useState(false);
+  const [askContactError, setAskContactError] = useState(false);
 
   // 문의 유형 리스트
-  const AskCategoryList = [
-    { value: "일반", data: "일반 문의" },
-    { value: "기술", data: "기술 지원" },
-    { value: "계정", data: "계정 관련" },
-    { value: "기타", data: "기타 문의" },
+  const askCategoryList = [
+    { value: "general", data: "일반 문의" },
+    { value: "technical", data: "기술 지원" },
+    { value: "account", data: "계정 관련" },
+    { value: "other", data: "기타 문의" },
   ];
+
+  // 문의하기 폼 유효성 검사 함수
+  const validateInquiryForm = async () => {
+    let valid = true;
+    // 문의 유형: 필수
+    if (!askCategory) {
+      setAskCategoryError(true);
+      valid = false;
+    } else {
+      setAskCategoryError(false);
+    }
+    // 문의 제목: 2~20자
+    if (askTitle.length < 2 || askTitle.length > 20) {
+      setAskTitleError(true);
+      valid = false;
+    } else {
+      setAskTitleError(false);
+    }
+    // 문의 내용: 필수
+    if (!askContent) {
+      setAskContentError(true);
+      valid = false;
+    } else {
+      setAskContentError(false);
+    }
+    // 연락처: 전화번호-숫자만, 9~11자 / 이메일 - 간단한 정규식
+    function isValidContact(value) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const phoneRegex = /^\d{9,11}$/;
+      return emailRegex.test(value) || phoneRegex.test(value);
+    }
+    if (!isValidContact(askContact)) {
+      setAskContactError(true);
+      valid = false;
+    } else {
+      setAskContactError(false);
+    }
+
+    // 모든 유효성 검사 통과 시 문의 접수
+    if (valid) {
+      try {
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/faq`, {
+          askCategory,
+          askTitle,
+          askContent,
+          askContact,
+        });
+
+        if (res.data.success) {
+          alert("문의가 성공적으로 접수되었습니다!");
+          setAskCategory("");
+          setAskTitle("");
+          setAskContent("");
+          setAskContact("");
+        } else {
+          alert("문의 접수에 실패했습니다. 다시 시도해주세요.");
+        }
+      } catch (error) {
+        console.error("문의 전송 오류: ", error);
+        alert("서버 오류가 발생했습니다.");
+      }
+    }
+  };
 
   return (
     <MainLayOut>
@@ -145,26 +219,47 @@ const FaqPage = () => {
               <p>궁금한 점이 있으신가요? 고객센터로 문의해주세요.</p>
             </div>
 
-            <SelectInputCP title="문의 유형" essential="true" listData={AskCategoryList} onChangeHandler={onChangeAskCategory} />
-            <TextAreaInputCP
-              title="제목"
-              essential="true"
-              ex="문의 제목을 입력해주세요"
-              onChangeHandler={onChangeAskTitle}
-              value={AskTitle}
-              maxRows={2}
-              minRows={1}
-            />
-            <TextAreaInputCP
-              title="내용"
-              essential="true"
-              ex="문의 내용을 자세히 작성해주세요"
-              onChangeHandler={onChangeAskContent}
-              value={AskContent}
-              maxRows={15}
-              minRows={5}
-            />
-            <ButtonCP>문의하기</ButtonCP>
+            <div className="col">
+              <SelectInputCP title="문의 유형" essential="true" listData={askCategoryList} onChangeHandler={onChangeAskCategory} />
+              {askCategoryError && <span className="error askCategoryError">문의 유형을 선택하세요.</span>}
+            </div>
+            <div className="col">
+              <TextAreaInputCP
+                title="제목"
+                essential="true"
+                ex="문의 제목을 입력해주세요"
+                onChangeHandler={onChangeAskTitle}
+                value={askTitle}
+                maxRows={2}
+                minRows={1}
+              />
+              {askTitleError && <span className="error askTitleError">제목은 2자 이상 20자 이하로 입력해야 합니다.</span>}
+            </div>
+            <div className="col">
+              <TextAreaInputCP
+                title="내용"
+                essential="true"
+                ex="문의 내용을 자세히 작성해주세요"
+                onChangeHandler={onChangeAskContent}
+                value={askContent}
+                maxRows={15}
+                minRows={5}
+              />
+              {askContentError && <span className="error askContentError">문의 내용을 작성해주세요.</span>}
+            </div>
+            <div className="col">
+              <TextAreaInputCP
+                title="연락처"
+                essential="true"
+                ex="회신받을 이메일 또는 전화번호를 입력해주세요"
+                onChangeHandler={onChangeAskContact}
+                value={askContact}
+                maxRows={2}
+                minRows={1}
+              />
+              {askContactError && <span className="error askContactError">이메일 형식 또는 전화번호 형식이 올바르지 않습니다.</span>}
+            </div>
+            <ButtonCP onClick={validateInquiryForm}>문의하기</ButtonCP>
           </section>
 
           {/* Contact Info Card*/}
@@ -199,10 +294,15 @@ const FaqPage = () => {
             </div>
             <section>
               <h2>자주 이용하는 기능</h2>
-              {/* FIXME: 각 버튼에 라우팅 기능 추가 */}
-              <OutLineButtonCP color="black">지도에서 푸드트럭 찾기</OutLineButtonCP>
-              <OutLineButtonCP color="black">푸드트럭 등록하기</OutLineButtonCP>
-              <OutLineButtonCP color="black">마이페이지</OutLineButtonCP>
+              <OutLineButtonCP color="black">
+                <Link to="/map">지도에서 푸드트럭 찾기</Link>
+              </OutLineButtonCP>
+              <OutLineButtonCP color="black">
+                <Link to="/register">푸드트럭 등록하기</Link>
+              </OutLineButtonCP>
+              <OutLineButtonCP color="black">
+                <Link to="/my-page">마이페이지</Link>
+              </OutLineButtonCP>
             </section>
           </section>
         </ContactSection>
