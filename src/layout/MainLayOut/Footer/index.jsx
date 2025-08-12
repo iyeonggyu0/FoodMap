@@ -40,16 +40,16 @@ const MainLayOutFooter = () => {
               <a href="https://github.com/iyeonggyu0">
                 <li>이영규</li>
               </a>
-              <a href="https://github.com/iyeonggyu0">
+              <a href="https://github.com/Tim3208">
                 <li>박정우</li>
               </a>
             </ul>
             <ul>
               <li className="ul-title">Back</li>
-              <a href="https://github.com/iyeonggyu0">
+              <a href="https://github.com/Wangjonghui">
                 <li>왕종휘</li>
               </a>
-              <a href="https://github.com/iyeonggyu0">
+              <a href="https://github.com/jhbid04">
                 <li>정혜빈</li>
               </a>
             </ul>
