@@ -12,7 +12,7 @@ export function useLoginCheck() {
     let isMounted = true;
     const checkLogin = async () => {
       try {
-        const res = await axios.get("/login/check", { withCredentials: true });
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/login/check`, { withCredentials: true });
         if (isMounted) setIsLoginCheck(!!res.data.loggedIn);
       } catch (err) {
         if (isMounted) setIsLoginCheck(false);

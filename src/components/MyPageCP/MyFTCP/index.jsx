@@ -368,45 +368,49 @@ const MyFTCP = () => {
    * - 현재는 API가 동작하지 않으므로 더미 데이터로 대체
    */
   useEffect(() => {
-    // axios.get(`${import.meta.env.VITE_API_URL}/user/foodtruck`)
-    //   .then((res) => {
-    //     if (res.data.success) {
-    //       const data = res.data.data;
-    //       setFTName(data.name);
-    //       setFTCategory(data.category);
-    //       setFTIntro(data.intro);
-    //       setMenuList(data.menu || []);
-    //       setScheduleList(data.schedule || dayNames.map((day) => ({
-    //         day,
-    //         holiday: false,
-    //         start: "",
-    //         end: "",
-    //         mapAddress: "",
-    //         userAddress: "",
-    //       })));
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.error("푸드트럭 정보 로딩 중 오류:", err);
-    //   });
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/user/foodtruck`)
+      .then((res) => {
+        if (res.data.success) {
+          const data = res.data.data;
+          setFTName(data.name);
+          setFTCategory(data.category);
+          setFTIntro(data.intro);
+          setMenuList(data.menu || []);
+          setScheduleList(
+            data.schedule ||
+              dayNames.map((day) => ({
+                day,
+                holiday: false,
+                start: "",
+                end: "",
+                mapAddress: "",
+                userAddress: "",
+              }))
+          );
+        }
+      })
+      .catch((err) => {
+        console.error("푸드트럭 정보 로딩 중 오류:", err);
+      });
 
     // 임시 더미 데이터 설정
-    setFTName(ftDummyData.name);
-    setFTCategory(ftDummyData.category);
-    setFTIntro(ftDummyData.intro);
-    setOperatorNum(ftDummyData.operatorNum || "");
-    setMenuList(ftDummyData.menu || []);
-    setScheduleList(
-      ftDummyData.schedule ||
-        dayNames.map((day) => ({
-          day,
-          holiday: false,
-          start: "",
-          end: "",
-          mapAddress: "",
-          userAddress: "",
-        }))
-    );
+    // setFTName(ftDummyData.name);
+    // setFTCategory(ftDummyData.category);
+    // setFTIntro(ftDummyData.intro);
+    // setOperatorNum(ftDummyData.operatorNum || "");
+    // setMenuList(ftDummyData.menu || []);
+    // setScheduleList(
+    //   ftDummyData.schedule ||
+    //     dayNames.map((day) => ({
+    //       day,
+    //       holiday: false,
+    //       start: "",
+    //       end: "",
+    //       mapAddress: "",
+    //       userAddress: "",
+    //     }))
+    // );
   }, [setFTName, setFTCategory, setFTIntro, setOperatorNum, dayNames]);
 
   return (
