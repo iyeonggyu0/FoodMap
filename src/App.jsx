@@ -18,6 +18,7 @@ import PrivateRoute from "./util/privateRoute.jsx";
 // import ReportPage from "./pages/ReportPage";
 
 function App() {
+  console.log(import.meta.env.VITE_API_URL);
   return (
     <BrowserRouter>
       <GlobalStyle />
