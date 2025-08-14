@@ -169,12 +169,16 @@ const FaqPage = () => {
     // 모든 유효성 검사 통과 시 문의 접수
     if (valid) {
       try {
-        const res = await axios.post(`${import.meta.env.VITE_API_URL}/faq`, {
-          askCategory,
-          askTitle,
-          askContent,
-          askContact,
-        });
+        const res = await axios.post(
+          `${import.meta.env.VITE_API_URL}/faq`,
+          {
+            askCategory,
+            askTitle,
+            askContent,
+            askContact,
+          },
+          { withCredentials: true }
+        );
 
         if (res.data.success) {
           alert("문의가 성공적으로 접수되었습니다!");

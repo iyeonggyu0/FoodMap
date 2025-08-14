@@ -17,7 +17,7 @@ const MyLikeCP = () => {
   useEffect(() => {
     // 찜 목록을 불러오는 API 호출
     axios
-      .get(`${import.meta.env.VITE_API_URL}/ft/like`)
+      .get(`${import.meta.env.VITE_API_URL}/ft/like`, { withCredentials: true })
       .then((res) => {
         if (res.data.success) {
           setFtList(res.data.ftList);

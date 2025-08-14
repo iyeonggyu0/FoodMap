@@ -135,20 +135,24 @@ const MyFTCP = () => {
     // FIXME: 로그인 세션 확인하기
 
     axios
-      .put(`${import.meta.env.VITE_API_URL}/user/foodtruck`, {
-        // 푸드트럭 이름
-        name: FTName,
-        // 푸드트럭 카테고리
-        category: FTCategory,
-        // 푸드트럭 소개
-        intro: FTIntro,
-        // 메뉴 리스트
-        menu: menuList,
-        // 영업 일정
-        schedule: scheduleList,
-        // 사업자 등록번호
-        operatorNum: operatorNum,
-      })
+      .put(
+        `${import.meta.env.VITE_API_URL}/user/foodtruck`,
+        {
+          // 푸드트럭 이름
+          name: FTName,
+          // 푸드트럭 카테고리
+          category: FTCategory,
+          // 푸드트럭 소개
+          intro: FTIntro,
+          // 메뉴 리스트
+          menu: menuList,
+          // 영업 일정
+          schedule: scheduleList,
+          // 사업자 등록번호
+          operatorNum: operatorNum,
+        },
+        { withCredentials: true }
+      )
       .then((res) => {
         if (res.data.success) {
           alert("푸드트럭 정보가 수정되었습니다!");
@@ -369,7 +373,7 @@ const MyFTCP = () => {
    */
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/user/foodtruck`)
+      .get(`${import.meta.env.VITE_API_URL}/user/foodtruck`, { withCredentials: true })
       .then((res) => {
         if (res.data.success) {
           const data = res.data.data;

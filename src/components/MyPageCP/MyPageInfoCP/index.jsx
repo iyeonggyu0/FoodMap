@@ -51,7 +51,7 @@ const MyPageInfoCP = ({ userData }) => {
     } else {
       setPhoneError(false);
       try {
-        const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/sms/send`, { phone });
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/sms/send`, { phone }, { withCredentials: true });
         if (res.data.success) {
           alert("인증번호가 발송되었습니다.");
           setIsCertificationSent(true);
@@ -83,7 +83,7 @@ const MyPageInfoCP = ({ userData }) => {
 
       // 인증번호 확인 로직
       try {
-        const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/sms/verify`, { phone, certification });
+        const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/sms/verify`, { phone, certification }, { withCredentials: true });
         if (res.data.success) {
           setCertificationError(false);
           alert("전화번호가 변경되었습니다.");
@@ -123,7 +123,7 @@ const MyPageInfoCP = ({ userData }) => {
     }
     if (valid) {
       axios
-        .put(`${import.meta.env.VITE_API_URL}/user/password`, { password })
+        .put(`${import.meta.env.VITE_API_URL}/user/password`, { password }, { withCredentials: true })
         .then((res) => {
           if (res.data.success) {
             alert("비밀번호가 변경되었습니다.");
@@ -164,7 +164,7 @@ const MyPageInfoCP = ({ userData }) => {
     // 모든 유효성 검사 통과 시 회원가입 처리
     if (valid) {
       axios
-        .put(`${import.meta.env.VITE_API_URL}/user/nickname`, { nickname: nickName })
+        .put(`${import.meta.env.VITE_API_URL}/user/nickname`, { nickname: nickName }, { withCredentials: true })
         .then((res) => {
           if (res.data.success) {
             alert("닉네임이 변경되었습니다.");
@@ -187,8 +187,8 @@ const MyPageInfoCP = ({ userData }) => {
    */
   const onSecession = () => {
     if (window.confirm("정말로 회원탈퇴를 하시겠습니까?")) {
-      axios
-        .delete(`${import.meta.env.VITE_API_URL}/user/secession`)
+      , { withCredentials: true }
+        .delete(`${import.meta.env.VITE_API_URL}/user/secession`, { withCredentials: true })
         .then((res) => {
           if (res.data.success) {
             alert("회원탈퇴가 완료되었습니다.");

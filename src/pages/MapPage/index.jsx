@@ -81,7 +81,7 @@ const MapPage = () => {
   const onChangeFilterFun = useCallback(() => {
     // FIXME: 임시데이터 사용
     axios
-      .get(`${import.meta.env.VITE_API_URL}/map/ft/${encodeURIComponent(filter)}`)
+      .get(`${import.meta.env.VITE_API_URL}/map/ft/${encodeURIComponent(filter)}`, { withCredentials: true })
       .then((res) => {
         if (res.data) {
           onChangeFtData(res.data);

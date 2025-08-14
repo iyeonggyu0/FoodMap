@@ -38,6 +38,7 @@ const ApiTestPage = () => {
 
       const response = await axios.post(`${baseURL}/login`, params, {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        withCredentials: true,
       });
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
@@ -64,7 +65,7 @@ const ApiTestPage = () => {
     const apiName = "logout";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.get(`${baseURL}/logout`);
+      const response = await axios.get(`${baseURL}/logout`, { withCredentials: true });
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
@@ -91,6 +92,7 @@ const ApiTestPage = () => {
 
       const response = await axios.post(`${baseURL}/member`, params, {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        withCredentials: true,
       });
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
@@ -113,6 +115,7 @@ const ApiTestPage = () => {
 
       const response = await axios.post(`${baseURL}/api/sms/send`, params, {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        withCredentials: true,
       });
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
@@ -132,6 +135,7 @@ const ApiTestPage = () => {
 
       const response = await axios.post(`${baseURL}/api/sms/verify`, params, {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        withCredentials: true,
       });
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
@@ -145,10 +149,14 @@ const ApiTestPage = () => {
     const apiName = "smsVerifyMypage";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.put(`${baseURL}/api/sms/verify`, {
-        phone: "01012345678",
-        certification: "123456",
-      });
+      const response = await axios.put(
+        `${baseURL}/api/sms/verify`,
+        {
+          phone: "01012345678",
+          certification: "123456",
+        },
+        { withCredentials: true }
+      );
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
@@ -165,7 +173,7 @@ const ApiTestPage = () => {
     const apiName = "userInfo";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.get(`${baseURL}/user/info`);
+      const response = await axios.get(`${baseURL}/user/info`, { withCredentials: true });
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
@@ -178,9 +186,13 @@ const ApiTestPage = () => {
     const apiName = "passwordChange";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.put(`${baseURL}/user/password`, {
-        password: "newpassword123",
-      });
+      const response = await axios.put(
+        `${baseURL}/user/password`,
+        {
+          password: "newpassword123",
+        },
+        { withCredentials: true }
+      );
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
@@ -193,9 +205,13 @@ const ApiTestPage = () => {
     const apiName = "nicknameChange";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.put(`${baseURL}/user/nickname`, {
-        nickname: "새닉네임",
-      });
+      const response = await axios.put(
+        `${baseURL}/user/nickname`,
+        {
+          nickname: "새닉네임",
+        },
+        { withCredentials: true }
+      );
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
@@ -208,7 +224,7 @@ const ApiTestPage = () => {
     const apiName = "userSecession";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.delete(`${baseURL}/user/secession`);
+      const response = await axios.delete(`${baseURL}/user/secession`, { withCredentials: true });
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
@@ -225,7 +241,7 @@ const ApiTestPage = () => {
     const apiName = "foodtruckGet";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.get(`${baseURL}/user/foodtruck`);
+      const response = await axios.get(`${baseURL}/user/foodtruck`, { withCredentials: true });
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
@@ -238,30 +254,34 @@ const ApiTestPage = () => {
     const apiName = "foodtruckUpdate";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.put(`${baseURL}/user/foodtruck`, {
-        name: "맛있는 푸드트럭",
-        category: "분식",
-        intro: "맛있는 음식을 제공합니다",
-        operatorNum: "123-45-67890",
-        menu: [
-          {
-            name: "떡볶이",
-            price: "4000",
-            info: "매콤달콤한 떡볶이",
-            num: "1",
-          },
-        ],
-        schedule: [
-          {
-            day: "월",
-            holiday: false,
-            start: "10:00",
-            end: "20:00",
-            mapAddress: "서울시 강남구",
-            userAddress: "강남역 근처",
-          },
-        ],
-      });
+      const response = await axios.put(
+        `${baseURL}/user/foodtruck`,
+        {
+          name: "맛있는 푸드트럭",
+          category: "분식",
+          intro: "맛있는 음식을 제공합니다",
+          operatorNum: "123-45-67890",
+          menu: [
+            {
+              name: "떡볶이",
+              price: "4000",
+              info: "매콤달콤한 떡볶이",
+              num: "1",
+            },
+          ],
+          schedule: [
+            {
+              day: "월",
+              holiday: false,
+              start: "10:00",
+              end: "20:00",
+              mapAddress: "서울시 강남구",
+              userAddress: "강남역 근처",
+            },
+          ],
+        },
+        { withCredentials: true }
+      );
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
@@ -279,7 +299,7 @@ const ApiTestPage = () => {
     setLoadingState(apiName, true);
     try {
       const filter = "분식"; // 테스트용 필터
-      const response = await axios.get(`${baseURL}/map/ft/${encodeURIComponent(filter)}`);
+      const response = await axios.get(`${baseURL}/map/ft/${encodeURIComponent(filter)}`, { withCredentials: true });
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
@@ -329,7 +349,7 @@ const ApiTestPage = () => {
     const apiName = "likeList";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.get(`${baseURL}/ft/like`);
+      const response = await axios.get(`${baseURL}/ft/like`, { withCredentials: true });
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
@@ -385,11 +405,15 @@ const ApiTestPage = () => {
     const apiName = "reviewCreate";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.post(`${baseURL}/review`, {
-        content: "맛있었습니다!",
-        rating: 5,
-        ftId: "test-foodtruck-id",
-      });
+      const response = await axios.post(
+        `${baseURL}/review`,
+        {
+          content: "맛있었습니다!",
+          rating: 5,
+          ftId: "test-foodtruck-id",
+        },
+        { withCredentials: true }
+      );
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
@@ -402,7 +426,7 @@ const ApiTestPage = () => {
     const apiName = "reviewList";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.get(`${baseURL}/user/review`);
+      const response = await axios.get(`${baseURL}/user/review`, { withCredentials: true });
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
@@ -415,11 +439,15 @@ const ApiTestPage = () => {
     const apiName = "reviewUpdate";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.put(`${baseURL}/review`, {
-        id: "test-review-id",
-        content: "수정된 리뷰 내용입니다.",
-        rating: 4,
-      });
+      const response = await axios.put(
+        `${baseURL}/review`,
+        {
+          id: "test-review-id",
+          content: "수정된 리뷰 내용입니다.",
+          rating: 4,
+        },
+        { withCredentials: true }
+      );
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
@@ -433,7 +461,7 @@ const ApiTestPage = () => {
     setLoadingState(apiName, true);
     try {
       const reviewId = "test-review-id";
-      const response = await axios.delete(`${baseURL}/review/${reviewId}`);
+      const response = await axios.delete(`${baseURL}/review/${reviewId}`, { withCredentials: true });
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
@@ -450,12 +478,16 @@ const ApiTestPage = () => {
     const apiName = "faqCreate";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.post(`${baseURL}/faq`, {
-        askCategory: "기타",
-        askTitle: "테스트 문의",
-        askContent: "테스트 문의 내용입니다.",
-        askContact: "test@example.com",
-      });
+      const response = await axios.post(
+        `${baseURL}/faq`,
+        {
+          askCategory: "기타",
+          askTitle: "테스트 문의",
+          askContent: "테스트 문의 내용입니다.",
+          askContact: "test@example.com",
+        },
+        { withCredentials: true }
+      );
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
