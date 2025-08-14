@@ -22,8 +22,12 @@ const LoginPage = () => {
    * @api pw {string} - 사용자가 입력한 PW (SHA-256 해시값)
    * @returns {void} - 로그인 성공 시 알림을 띄우고, 로컬 스토리지에 사용자 정보를 저장하며, 메인 페이지로 리다이렉트
    */
-  const onLoginHandler = useCallback(() => {
-    axios.post(`${import.meta.env.VITE_API_URL}/login`, { username: id, password: pw }).then((res) => {
+  const onLoginHandler = useCallback(async () => {
+    try {
+      const params = new URLSearchParams();
+      params.append("username", id);
+      params.append("password", pw);
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/login`, params, { headers: { "Content-Type": "application/x-www-form-urlencoded" } });
       if (res.data.success) {
         alert("로그인 성공");
         setId("");
@@ -32,7 +36,9 @@ const LoginPage = () => {
       } else {
         alert("로그인 실패: " + res.data.message);
       }
-    });
+    } catch (err) {
+      alert("로그인 요청 실패: " + (err.response?.data?.message || err.message));
+    }
   }, [id, pw]);
 
   return (

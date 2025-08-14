@@ -146,7 +146,7 @@ const SignUpPage = () => {
     // 모든 유효성 검사 통과 시 회원가입 처리
     if (valid) {
       axios
-        .post(`${import.meta.env.VITE_API_URL}/signup`, {
+        .post(`${import.meta.env.VITE_API_URL}/member`, {
           username: username,
           password: password,
           nickname: nickname,
