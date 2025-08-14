@@ -51,7 +51,7 @@
 ### 2.1 인증번호 발송 API
 
 - **API 형식**: POST
-- **API 주소**: `/certification/send`
+- **API 주소**: `/api/sms/send`
 - **컴포넌트/페이지**:
   - SignUpPage (src/pages/SignUpPage/index.jsx)
   - MyPageInfoCP (src/components/MyPageCP/MyPageInfoCP/index.jsx)
@@ -72,7 +72,7 @@
 ### 2.2 인증번호 확인 API
 
 - **API 형식**: POST (SignUpPage) / PUT (MyPageInfoCP)
-- **API 주소**: `/certification/check`
+- **API 주소**: `/api/sms/verify`
 - **컴포넌트/페이지**:
   - SignUpPage (src/pages/SignUpPage/index.jsx)
   - MyPageInfoCP (src/components/MyPageCP/MyPageInfoCP/index.jsx)

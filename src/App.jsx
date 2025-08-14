@@ -15,6 +15,7 @@ import MapPage from "./pages/MapPage";
 import Error404Page from "./pages/Error404Page";
 import MyPage from "./pages/MyPage";
 import PrivateRoute from "./util/privateRoute.jsx";
+import ApiTestPage from "./ApiTestPage.jsx";
 // import ReportPage from "./pages/ReportPage";
 
 function App() {
@@ -52,6 +53,8 @@ function App() {
 
         {/* 푸드트럭 제보 */}
         {/* <Route path="/report" element={<ReportPage />} /> */}
+
+        <Route path="/test" element={<ApiTestPage />} />
 
         {/* 404 페이지 */}
         <Route path="*" element={<Error404Page />} />

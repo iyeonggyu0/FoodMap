@@ -52,7 +52,7 @@ const SignUpPage = () => {
     } else {
       setPhoneError(false);
       try {
-        const res = await axios.post(`${import.meta.env.VITE_API_URL}/certification/send`, { phone });
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/sms/send`, { phone });
         if (res.data.success) {
           alert("인증번호가 발송되었습니다.");
           setIsCertificationSent(true);
@@ -131,7 +131,7 @@ const SignUpPage = () => {
 
     // 인증번호 확인 로직
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/certification/check`, { phone, certification });
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/sms/verify`, { phone, code: certification });
       if (res.data.success) {
         setCertificationError(false);
         valid = false;
@@ -147,12 +147,12 @@ const SignUpPage = () => {
     if (valid) {
       axios
         .post(`${import.meta.env.VITE_API_URL}/signup`, {
-          username,
-          password,
-          email,
-          nickname,
-          role,
-          phone,
+          username: username,
+          password: password,
+          nickname: nickname,
+          email: email,
+          role: role,
+          phone: phone,
         })
         .then((res) => {
           if (res.data.success) {

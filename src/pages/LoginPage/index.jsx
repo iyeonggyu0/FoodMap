@@ -23,12 +23,11 @@ const LoginPage = () => {
    * @returns {void} - 로그인 성공 시 알림을 띄우고, 로컬 스토리지에 사용자 정보를 저장하며, 메인 페이지로 리다이렉트
    */
   const onLoginHandler = useCallback(() => {
-    axios.post(`${import.meta.env.VITE_API_URL}/login`, { id: id, pw: pw }).then((res) => {
+    axios.post(`${import.meta.env.VITE_API_URL}/login`, { username: id, password: pw }).then((res) => {
       if (res.data.success) {
         alert("로그인 성공");
         setId("");
         setPw("");
-        localStorage.setItem("user", { id: id, pw: pw });
         window.location.href = "/";
       } else {
         alert("로그인 실패: " + res.data.message);
