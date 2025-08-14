@@ -33,8 +33,8 @@ const ApiTestPage = () => {
     setLoadingState(apiName, true);
     try {
       const params = new URLSearchParams();
-      params.append("username", "testuser123");
-      params.append("password", "testpass123");
+      params.append("username", "testuser456");
+      params.append("password", "testpass456");
 
       const response = await axios.post(`${baseURL}/login`, params, {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
