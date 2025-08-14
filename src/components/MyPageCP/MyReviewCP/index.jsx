@@ -35,7 +35,7 @@ const MyReviewCPDiv = ({ rv }) => {
     }
 
     axios
-      .put(`${import.meta.env.VITE_API_URL}/review`, { id: rv.id, content, rating })
+      .put(`${import.meta.env.VITE_API_URL}/review`, { id: rv.id, content, rating }, { withCredentials: true })
       .then((res) => {
         if (res.data.success) {
           alert("리뷰가 수정되었습니다.");
@@ -55,7 +55,7 @@ const MyReviewCPDiv = ({ rv }) => {
   const onDeleteReview = () => {
     if (window.confirm("리뷰를 삭제하시겠습니까?")) {
       axios
-        .delete(`${import.meta.env.VITE_API_URL}/review/${rv.id}`)
+        .delete(`${import.meta.env.VITE_API_URL}/review/${rv.id}`, { withCredentials: true })
         .then((res) => {
           if (res.data.success) {
             alert("리뷰가 삭제되었습니다.");
@@ -146,7 +146,7 @@ const MyReviewCP = () => {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/user/review`)
+      .get(`${import.meta.env.VITE_API_URL}/user/review`, { withCredentials: true })
       .then((res) => {
         if (res.data.success) {
           // 리뷰 목록을 상태에 저장

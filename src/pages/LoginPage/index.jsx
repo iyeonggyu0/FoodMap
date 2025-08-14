@@ -27,20 +27,18 @@ const LoginPage = () => {
       const params = new URLSearchParams();
       params.append("username", id);
       params.append("password", pw);
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/login`,
-        params,
-        { headers: { "Content-Type": "application/x-www-form-urlencoded" } },
-        { withCredentials: true }
-      );
-      if (res.data.success) {
-        alert("로그인 성공");
-        setId("");
-        setPw("");
-        window.location.href = "/";
-      } else {
-        alert("로그인 실패: " + res.data.message);
-      }
+      await axios
+        .post(`${import.meta.env.VITE_API_URL}/login`, params, { headers: { "Content-Type": "application/x-www-form-urlencoded" } }, { withCredentials: true })
+        .then((res) => {
+          if (res.data) {
+            alert("로그인 성공");
+            setId("");
+            setPw("");
+            window.location.href = "/";
+          } else {
+            alert("로그인 실패: " + res.data.message);
+          }
+        });
     } catch (err) {
       alert("로그인 요청 실패: " + (err.response?.data?.message || err.message));
     }
