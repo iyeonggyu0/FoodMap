@@ -32,9 +32,12 @@ const ApiTestPage = () => {
     const apiName = "login";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.post(`${baseURL}/login`, {
-        username: "testuser123",
-        password: "testpass123",
+      const params = new URLSearchParams();
+      params.append("username", "testuser123");
+      params.append("password", "testpass123");
+
+      const response = await axios.post(`${baseURL}/login`, params, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
       });
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
@@ -78,13 +81,16 @@ const ApiTestPage = () => {
     const apiName = "signup";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.post(`${baseURL}/signup`, {
-        username: "testuser456",
-        password: "testpass456",
-        nickname: "테스트유저",
-        email: "test@example.com",
-        role: "user",
-        phone: "01012345678",
+      const params = new URLSearchParams();
+      params.append("username", "testuser456");
+      params.append("password", "testpass456");
+      params.append("nickname", "테스트유저");
+      params.append("email", "test@example.com");
+      params.append("role", "user");
+      params.append("phone", "01012345678");
+
+      const response = await axios.post(`${baseURL}/signup`, params, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
       });
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
@@ -102,8 +108,11 @@ const ApiTestPage = () => {
     const apiName = "smsSend";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.post(`${baseURL}/api/sms/send`, {
-        phone: "01012345678",
+      const params = new URLSearchParams();
+      params.append("phone", "01012345678");
+
+      const response = await axios.post(`${baseURL}/api/sms/send`, params, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
       });
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
@@ -117,9 +126,12 @@ const ApiTestPage = () => {
     const apiName = "smsVerifySignup";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.post(`${baseURL}/api/sms/verify`, {
-        phone: "01012345678",
-        code: "123456",
+      const params = new URLSearchParams();
+      params.append("phone", "01012345678");
+      params.append("code", "123456");
+
+      const response = await axios.post(`${baseURL}/api/sms/verify`, params, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
       });
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
@@ -496,6 +508,15 @@ const ApiTestPage = () => {
         <br />총 {Object.keys(results).length > 0 ? Object.keys(results).length : "23"}개의 실제 사용 중인 API
       </div>
 
+      <div style={{ marginBottom: "20px", padding: "15px", backgroundColor: "#fff3cd", borderRadius: "4px", border: "1px solid #ffeaa7" }}>
+        <h3 style={{ color: "#856404", margin: "0 0 10px 0" }}>🔧 Spring Security 호환성 수정</h3>
+        <p style={{ margin: "0", color: "#856404" }}>
+          <strong>로그인, 회원가입, SMS 인증</strong> API들은 Spring Security의 기본 설정에 맞춰
+          <code style={{ backgroundColor: "#f8f9fa", padding: "2px 4px", borderRadius: "3px" }}>application/x-www-form-urlencoded</code>
+          형식으로 요청을 보내도록 수정되었습니다.
+        </p>
+      </div>
+
       {/* 1. 사용자 인증 관련 API */}
       <section style={{ marginBottom: "30px" }}>
         <h2>🔐 1. 사용자 인증 관련 API</h2>
@@ -504,6 +525,8 @@ const ApiTestPage = () => {
           <h3>1.1 로그인 API</h3>
           <p>
             <strong>POST /login</strong> (LoginPage.jsx에서 발견)
+            <br />
+            <span style={{ fontSize: "12px", color: "#6c757d" }}>📋 form-urlencoded: username, password</span>
           </p>
           <button style={loading.login ? disabledButtonStyle : buttonStyle} onClick={testLogin} disabled={loading.login}>
             {loading.login ? "로딩중..." : "로그인 테스트"}
@@ -542,6 +565,8 @@ const ApiTestPage = () => {
           <h3>2.1 회원가입 API</h3>
           <p>
             <strong>POST /signup</strong> (SignUpPage.jsx에서 발견)
+            <br />
+            <span style={{ fontSize: "12px", color: "#6c757d" }}>📋 form-urlencoded: username, password, nickname, email, role, phone</span>
           </p>
           <button style={loading.signup ? disabledButtonStyle : buttonStyle} onClick={testSignup} disabled={loading.signup}>
             {loading.signup ? "로딩중..." : "회원가입 테스트"}
@@ -558,6 +583,8 @@ const ApiTestPage = () => {
           <h3>3.1 SMS 발송 API</h3>
           <p>
             <strong>POST /api/sms/send</strong> (SignUpPage.jsx, MyPageInfoCP.jsx에서 발견)
+            <br />
+            <span style={{ fontSize: "12px", color: "#6c757d" }}>📋 form-urlencoded: phone</span>
           </p>
           <button style={loading.smsSend ? disabledButtonStyle : buttonStyle} onClick={testSmsSend} disabled={loading.smsSend}>
             {loading.smsSend ? "로딩중..." : "SMS 발송 테스트"}
@@ -569,6 +596,8 @@ const ApiTestPage = () => {
           <h3>3.2 SMS 인증 확인 API (회원가입)</h3>
           <p>
             <strong>POST /api/sms/verify</strong> (SignUpPage.jsx에서 발견)
+            <br />
+            <span style={{ fontSize: "12px", color: "#6c757d" }}>📋 form-urlencoded: phone, code</span>
           </p>
           <button style={loading.smsVerifySignup ? disabledButtonStyle : buttonStyle} onClick={testSmsVerifySignup} disabled={loading.smsVerifySignup}>
             {loading.smsVerifySignup ? "로딩중..." : "SMS 인증 테스트 (회원가입)"}
