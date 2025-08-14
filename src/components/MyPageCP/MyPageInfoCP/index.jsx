@@ -187,7 +187,7 @@ const MyPageInfoCP = ({ userData }) => {
    */
   const onSecession = () => {
     if (window.confirm("정말로 회원탈퇴를 하시겠습니까?")) {
-      , { withCredentials: true }
+      axios
         .delete(`${import.meta.env.VITE_API_URL}/user/secession`, { withCredentials: true })
         .then((res) => {
           if (res.data.success) {
