@@ -145,14 +145,16 @@ const SignUpPage = () => {
 
     // 모든 유효성 검사 통과 시 회원가입 처리
     if (valid) {
+      const params = new URLSearchParams();
+      params.append("username", username);
+      params.append("password", password);
+      params.append("nickname", nickname);
+      params.append("email", email);
+      params.append("role", role);
+      params.append("phone", phone);
       axios
-        .post(`${import.meta.env.VITE_API_URL}/member`, {
-          username: username,
-          password: password,
-          nickname: nickname,
-          email: email,
-          role: role,
-          phone: phone,
+        .post(`${import.meta.env.VITE_API_URL}/member`, params, {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
         })
         .then((res) => {
           if (res.data.success) {
