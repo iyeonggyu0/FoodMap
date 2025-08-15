@@ -45,7 +45,7 @@ const MyPage = () => {
   const onLogoutClick = () => {
     // 로그아웃 API 호출
     axios
-      .get(`${import.meta.env.VITE_API_URL}/logout`, { withCredentials: true })
+      .post(`${import.meta.env.VITE_API_URL}/logout`, { withCredentials: true })
       .then((res) => {
         if (res.data.success) {
           alert("로그아웃 되었습니다.");

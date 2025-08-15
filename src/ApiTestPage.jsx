@@ -69,7 +69,7 @@ const ApiTestPage = () => {
     const apiName = "logout";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.get(`${baseURL}/logout`, { withCredentials: true });
+      const response = await axios.post(`${baseURL}/logout`, { withCredentials: true });
       console.log("[logout] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
@@ -628,7 +628,7 @@ const ApiTestPage = () => {
         <div style={{ marginBottom: "20px" }}>
           <h3>1.3 로그아웃 API</h3>
           <p>
-            <strong>GET /logout</strong> (MyPage.jsx에서 발견)
+            <strong>POST /logout</strong> (MyPage.jsx에서 발견)
           </p>
           <button style={loading.logout ? disabledButtonStyle : buttonStyle} onClick={testLogout} disabled={loading.logout}>
             {loading.logout ? "로딩중..." : "로그아웃 테스트"}
