@@ -161,7 +161,7 @@ const ApiTestPage = () => {
     const apiName = "smsVerifyMypage";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.put(
+      const response = await axios.post(
         `${baseURL}/api/sms/verify`,
         {
           phone: "01012345678",

@@ -27,6 +27,7 @@ const RegisterPage = () => {
   const menuErrorRef = useRef();
   const operatorNumErrorRef = useRef();
   const termsErrorRef = useRef();
+
   // 요일별 에러는 동적으로 관리
   const [scheduleErrors, setScheduleErrors] = useState(Array(7).fill({ open: false, close: false, address: false }));
   // 등록 신청 함수
@@ -145,11 +146,13 @@ const RegisterPage = () => {
           // 푸드트럭 카테고리
           intro: FTIntro,
           // 메뉴 리스트 (요일, 시간, 주소)
-          menu: menuList,
+          menus: menuList,
           // 영업 일정
-          schedule: scheduleList,
+          schedules: scheduleList,
           // 사업자 등록번호
           operatorNum: operatorNum,
+          // 약관 동의 여부
+          agreeTerms: termsChecked,
         },
         { withCredentials: true }
       )
@@ -604,7 +607,7 @@ const RegisterPage = () => {
               <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">
                 개인정보처리방침
               </a>
-              에 동의합니다<span className="essential">*</span>
+              , 알림문자 수신에 동의합니다<span className="essential">*</span>
             </label>
           </form>
           <span
