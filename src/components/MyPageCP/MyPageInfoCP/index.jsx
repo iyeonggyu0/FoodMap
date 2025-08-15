@@ -122,8 +122,13 @@ const MyPageInfoCP = ({ userData }) => {
       setPwConfirmError(false);
     }
     if (valid) {
+      const params = new URLSearchParams();
+      params.append("newPassword", password);
       axios
-        .put(`${import.meta.env.VITE_API_URL}/user/password`, { password }, { withCredentials: true })
+        .put(`${import.meta.env.VITE_API_URL}/user/password`, params, {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          withCredentials: true,
+        })
         .then((res) => {
           if (res.data.success) {
             alert("비밀번호가 변경되었습니다.");
@@ -163,8 +168,13 @@ const MyPageInfoCP = ({ userData }) => {
 
     // 모든 유효성 검사 통과 시 회원가입 처리
     if (valid) {
+      const params = new URLSearchParams();
+      params.append("newNickname", nickName);
       axios
-        .put(`${import.meta.env.VITE_API_URL}/user/nickname`, { nickname: nickName }, { withCredentials: true })
+        .put(`${import.meta.env.VITE_API_URL}/user/nickname`, params, {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          withCredentials: true,
+        })
         .then((res) => {
           if (res.data.success) {
             alert("닉네임이 변경되었습니다.");

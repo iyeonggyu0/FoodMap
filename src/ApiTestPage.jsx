@@ -202,13 +202,12 @@ const ApiTestPage = () => {
     const apiName = "passwordChange";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.put(
-        `${baseURL}/user/password`,
-        {
-          password: "newpassword123",
-        },
-        { withCredentials: true }
-      );
+      const params = new URLSearchParams();
+      params.append("newPassword", "newpassword123");
+      const response = await axios.put(`${baseURL}/user/password`, params, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        withCredentials: true,
+      });
       console.log("[passwordChange] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
@@ -223,13 +222,12 @@ const ApiTestPage = () => {
     const apiName = "nicknameChange";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.put(
-        `${baseURL}/user/nickname`,
-        {
-          nickname: "새닉네임",
-        },
-        { withCredentials: true }
-      );
+      const params = new URLSearchParams();
+      params.append("newNickname", "새닉네임");
+      const response = await axios.put(`${baseURL}/user/nickname`, params, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        withCredentials: true,
+      });
       console.log("[nicknameChange] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
