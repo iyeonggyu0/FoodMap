@@ -40,8 +40,10 @@ const ApiTestPage = () => {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         withCredentials: true,
       });
+      console.log("[login] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[login] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -53,8 +55,10 @@ const ApiTestPage = () => {
     setLoadingState(apiName, true);
     try {
       const response = await axios.get(`${baseURL}/login/check`, { withCredentials: true });
+      console.log("[loginCheck] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[loginCheck] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -66,8 +70,10 @@ const ApiTestPage = () => {
     setLoadingState(apiName, true);
     try {
       const response = await axios.get(`${baseURL}/logout`, { withCredentials: true });
+      console.log("[logout] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[logout] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -94,8 +100,10 @@ const ApiTestPage = () => {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         withCredentials: true,
       });
+      console.log("[signup] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[signup] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -117,8 +125,10 @@ const ApiTestPage = () => {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         withCredentials: true,
       });
+      console.log("[smsSend] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[smsSend] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -137,8 +147,10 @@ const ApiTestPage = () => {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         withCredentials: true,
       });
+      console.log("[smsVerifySignup] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[smsVerifySignup] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -157,8 +169,10 @@ const ApiTestPage = () => {
         },
         { withCredentials: true }
       );
+      console.log("[smsVerifyMypage] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[smsVerifyMypage] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -174,8 +188,10 @@ const ApiTestPage = () => {
     setLoadingState(apiName, true);
     try {
       const response = await axios.get(`${baseURL}/user/info`, { withCredentials: true });
+      console.log("[userInfo] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[userInfo] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -193,8 +209,10 @@ const ApiTestPage = () => {
         },
         { withCredentials: true }
       );
+      console.log("[passwordChange] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[passwordChange] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -212,8 +230,10 @@ const ApiTestPage = () => {
         },
         { withCredentials: true }
       );
+      console.log("[nicknameChange] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[nicknameChange] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -225,8 +245,10 @@ const ApiTestPage = () => {
     setLoadingState(apiName, true);
     try {
       const response = await axios.delete(`${baseURL}/user/secession`, { withCredentials: true });
+      console.log("[userSecession] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[userSecession] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -242,8 +264,10 @@ const ApiTestPage = () => {
     setLoadingState(apiName, true);
     try {
       const response = await axios.get(`${baseURL}/user/foodtruck`, { withCredentials: true });
+      console.log("[foodtruckGet] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[foodtruckGet] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -282,8 +306,10 @@ const ApiTestPage = () => {
         },
         { withCredentials: true }
       );
+      console.log("[foodtruckUpdate] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[foodtruckUpdate] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -300,8 +326,10 @@ const ApiTestPage = () => {
     try {
       const filter = "분식"; // 테스트용 필터
       const response = await axios.get(`${baseURL}/map/ft/${encodeURIComponent(filter)}`, { withCredentials: true });
+      console.log("[foodtruckList] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[foodtruckList] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -323,8 +351,10 @@ const ApiTestPage = () => {
         },
         { withCredentials: true }
       );
+      console.log("[likeAdd] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[likeAdd] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -337,8 +367,10 @@ const ApiTestPage = () => {
     try {
       const ftId = "test-foodtruck-id";
       const response = await axios.delete(`${baseURL}/map/ft/like/${ftId}`, { withCredentials: true });
+      console.log("[likeDelete] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[likeDelete] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -350,8 +382,10 @@ const ApiTestPage = () => {
     setLoadingState(apiName, true);
     try {
       const response = await axios.get(`${baseURL}/ft/like`, { withCredentials: true });
+      console.log("[likeList] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[likeList] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -374,8 +408,10 @@ const ApiTestPage = () => {
         },
         { withCredentials: true }
       );
+      console.log("[smsAdd] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[smsAdd] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -389,8 +425,10 @@ const ApiTestPage = () => {
       const ftId = "test-foodtruck-id";
       const day = "월";
       const response = await axios.delete(`${baseURL}/map/ft/sms/${ftId}/${day}`, { withCredentials: true });
+      console.log("[smsDelete] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[smsDelete] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -414,8 +452,10 @@ const ApiTestPage = () => {
         },
         { withCredentials: true }
       );
+      console.log("[reviewCreate] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[reviewCreate] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -427,8 +467,10 @@ const ApiTestPage = () => {
     setLoadingState(apiName, true);
     try {
       const response = await axios.get(`${baseURL}/user/review`, { withCredentials: true });
+      console.log("[reviewList] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[reviewList] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -448,8 +490,10 @@ const ApiTestPage = () => {
         },
         { withCredentials: true }
       );
+      console.log("[reviewUpdate] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[reviewUpdate] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -462,8 +506,10 @@ const ApiTestPage = () => {
     try {
       const reviewId = "test-review-id";
       const response = await axios.delete(`${baseURL}/review/${reviewId}`, { withCredentials: true });
+      console.log("[reviewDelete] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[reviewDelete] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -488,8 +534,10 @@ const ApiTestPage = () => {
         },
         { withCredentials: true }
       );
+      console.log("[faqCreate] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
+      console.log("[faqCreate] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
