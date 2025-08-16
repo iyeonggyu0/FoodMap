@@ -55,7 +55,7 @@ const ApiTestPage = () => {
     setLoadingState(apiName, true);
     try {
       const params = new URLSearchParams();
-      params.append("username", "newpassword123");
+      params.append("username", "testuser456");
       params.append("password", "newpassword123");
 
       const response = await axios.post(`${baseURL}/login`, params, {
