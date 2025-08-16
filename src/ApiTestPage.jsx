@@ -49,6 +49,28 @@ const ApiTestPage = () => {
     setLoadingState(apiName, false);
   };
 
+  // 1.1 로그인 API (LoginPage에서 발견)
+  const testNewLogin = async () => {
+    const apiName = "login";
+    setLoadingState(apiName, true);
+    try {
+      const params = new URLSearchParams();
+      params.append("username", "newpassword123");
+      params.append("password", "newpassword123");
+
+      const response = await axios.post(`${baseURL}/login`, params, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        withCredentials: true,
+      });
+      console.log("[login] 성공", response);
+      saveResult(apiName, { success: true, data: response.data });
+    } catch (error) {
+      console.log("[login] 실패", error);
+      saveResult(apiName, { success: false, error: error.response?.data || error.message });
+    }
+    setLoadingState(apiName, false);
+  };
+
   // 1.2 로그인 상태 확인 API (useLoginCheck, privateRoute에서 발견)
   const testLoginCheck = async () => {
     const apiName = "loginCheck";
@@ -608,6 +630,9 @@ const ApiTestPage = () => {
           </p>
           <button style={loading.login ? disabledButtonStyle : buttonStyle} onClick={testLogin} disabled={loading.login}>
             {loading.login ? "로딩중..." : "로그인 테스트"}
+          </button>
+          <button style={loading.login ? disabledButtonStyle : buttonStyle} onClick={testNewLogin} disabled={loading.login}>
+            {loading.login ? "로딩중..." : "비밀번호 변경 로그인 테스트"}
           </button>
           <ResultDisplay result={results.login} />
         </div>
