@@ -161,14 +161,14 @@ const ApiTestPage = () => {
     const apiName = "smsVerifyMypage";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.post(
-        `${baseURL}/certification/check`,
-        {
-          phone: "01022742467",
-          certification: "123456",
-        },
-        { withCredentials: true }
-      );
+      const params = new URLSearchParams();
+      params.append("phone", "01022742467");
+      params.append("code", "123456");
+
+      const response = await axios.put(`${baseURL}/certification/check`, params, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        withCredentials: true,
+      });
       console.log("[smsVerifyMypage] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {

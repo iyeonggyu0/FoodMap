@@ -51,7 +51,12 @@ const MyPageInfoCP = ({ userData }) => {
     } else {
       setPhoneError(false);
       try {
-        const res = await axios.post(`${import.meta.env.VITE_API_URL}/certification/send`, { phone }, { withCredentials: true });
+        const params = new URLSearchParams();
+        params.append("phone", phone);
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/certification/send`, params, {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          withCredentials: true,
+        });
         if (res.data.success) {
           alert("인증번호가 발송되었습니다.");
           setIsCertificationSent(true);
@@ -81,9 +86,15 @@ const MyPageInfoCP = ({ userData }) => {
     } else {
       setPhoneError(false);
 
-      // 인증번호 확인 로직
+      // 인증번호 확인 로직 (form-urlencoded)
       try {
-        const res = await axios.post(`${import.meta.env.VITE_API_URL}/certification/check`, { phone, certification }, { withCredentials: true });
+        const params = new URLSearchParams();
+        params.append("phone", phone);
+        params.append("code", certification);
+        const res = await axios.put(`${import.meta.env.VITE_API_URL}/certification/check`, params, {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          withCredentials: true,
+        });
         if (res.data.success) {
           setCertificationError(false);
           alert("전화번호가 변경되었습니다.");
