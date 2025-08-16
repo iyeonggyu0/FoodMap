@@ -119,7 +119,7 @@ const ApiTestPage = () => {
     setLoadingState(apiName, true);
     try {
       const params = new URLSearchParams();
-      params.append("phone", "01012345678");
+      params.append("phone", "01022742467");
 
       const response = await axios.post(`${baseURL}/certification/send`, params, {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -140,7 +140,7 @@ const ApiTestPage = () => {
     setLoadingState(apiName, true);
     try {
       const params = new URLSearchParams();
-      params.append("phone", "01012345678");
+      params.append("phone", "01022742467");
       params.append("code", "123456");
 
       const response = await axios.post(`${baseURL}/certification/check`, params, {
@@ -164,7 +164,7 @@ const ApiTestPage = () => {
       const response = await axios.post(
         `${baseURL}/certification/check`,
         {
-          phone: "01012345678",
+          phone: "01022742467",
           certification: "123456",
         },
         { withCredentials: true }
