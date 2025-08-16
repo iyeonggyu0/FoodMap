@@ -121,7 +121,7 @@ const ApiTestPage = () => {
       const params = new URLSearchParams();
       params.append("phone", "01012345678");
 
-      const response = await axios.post(`${baseURL}/api/sms/send`, params, {
+      const response = await axios.post(`${baseURL}/certification/send`, params, {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         withCredentials: true,
       });
@@ -143,7 +143,7 @@ const ApiTestPage = () => {
       params.append("phone", "01012345678");
       params.append("code", "123456");
 
-      const response = await axios.post(`${baseURL}/api/sms/verify`, params, {
+      const response = await axios.post(`${baseURL}/certification/check`, params, {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         withCredentials: true,
       });
@@ -162,7 +162,7 @@ const ApiTestPage = () => {
     setLoadingState(apiName, true);
     try {
       const response = await axios.post(
-        `${baseURL}/api/sms/verify`,
+        `${baseURL}/certification/check`,
         {
           phone: "01012345678",
           certification: "123456",
@@ -660,7 +660,7 @@ const ApiTestPage = () => {
         <div style={{ marginBottom: "20px" }}>
           <h3>3.1 SMS 발송 API</h3>
           <p>
-            <strong>POST /api/sms/send</strong> (SignUpPage.jsx, MyPageInfoCP.jsx에서 발견)
+            <strong>POST /certification/send</strong> (SignUpPage.jsx, MyPageInfoCP.jsx에서 발견)
             <br />
             <span style={{ fontSize: "12px", color: "#6c757d" }}>📋 form-urlencoded: phone</span>
           </p>
@@ -673,7 +673,7 @@ const ApiTestPage = () => {
         <div style={{ marginBottom: "20px" }}>
           <h3>3.2 SMS 인증 확인 API (회원가입)</h3>
           <p>
-            <strong>POST /api/sms/verify</strong> (SignUpPage.jsx에서 발견)
+            <strong>POST /certification/check</strong> (SignUpPage.jsx에서 발견)
             <br />
             <span style={{ fontSize: "12px", color: "#6c757d" }}>📋 form-urlencoded: phone, code</span>
           </p>
@@ -686,7 +686,7 @@ const ApiTestPage = () => {
         <div style={{ marginBottom: "20px" }}>
           <h3>3.3 SMS 인증 확인 API (마이페이지)</h3>
           <p>
-            <strong>PUT /api/sms/verify</strong> (MyPageInfoCP.jsx에서 발견)
+            <strong>PUT /certification/check</strong> (MyPageInfoCP.jsx에서 발견)
           </p>
           <button style={loading.smsVerifyMypage ? disabledButtonStyle : buttonStyle} onClick={testSmsVerifyMypage} disabled={loading.smsVerifyMypage}>
             {loading.smsVerifyMypage ? "로딩중..." : "SMS 인증 테스트 (마이페이지)"}
