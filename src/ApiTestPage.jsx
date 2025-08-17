@@ -163,7 +163,6 @@ const ApiTestPage = () => {
         `${baseURL}/certification/send`,
         { phone: "01022742467" },
         {
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
           withCredentials: true,
         }
       );
