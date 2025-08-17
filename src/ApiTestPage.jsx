@@ -136,17 +136,37 @@ const ApiTestPage = () => {
   // =================================
 
   // 3.1 SMS 발송 API (SignUpPage, MyPageInfoCP에서 발견)
+  // const testSmsSend = async () => {
+  //   const apiName = "smsSend";
+  //   setLoadingState(apiName, true);
+  //   try {
+  //     const params = new URLSearchParams();
+  //     params.append("phone", "01022742467");
+
+  //     const response = await axios.post(`${baseURL}/certification/send`, params, {
+  //       headers: { "Content-Type": "application/x-www-form-urlencoded" },
+  //       withCredentials: true,
+  //     });
+  //     console.log("[smsSend] 성공", response);
+  //     saveResult(apiName, { success: true, data: response.data });
+  //   } catch (error) {
+  //     console.log("[smsSend] 실패", error);
+  //     saveResult(apiName, { success: false, error: error.response?.data || error.message });
+  //   }
+  //   setLoadingState(apiName, false);
+  // };
   const testSmsSend = async () => {
     const apiName = "smsSend";
     setLoadingState(apiName, true);
     try {
-      const params = new URLSearchParams();
-      params.append("phone", "01022742467");
-
-      const response = await axios.post(`${baseURL}/certification/send`, params, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        withCredentials: true,
-      });
+      const response = await axios.post(
+        `${baseURL}/certification/send`,
+        { phone: "01022742467" },
+        {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          withCredentials: true,
+        }
+      );
       console.log("[smsSend] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
