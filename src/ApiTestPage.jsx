@@ -160,7 +160,7 @@ const ApiTestPage = () => {
     setLoadingState(apiName, true);
     try {
       const response = await axios.post(
-        `${baseURL}/certification/send`,
+        `${baseURL}/certification/send?debug=true`,
         { phone: "01022742467" },
         {
           withCredentials: true,
