@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useInput } from "./hooks/useInput";
 
 const ApiTestPage = () => {
   const [results, setResults] = useState({});
@@ -175,19 +176,23 @@ const ApiTestPage = () => {
     setLoadingState(apiName, false);
   };
 
+  const [testCertification1, onChangeCertification1, setTestCertification1] = useInput("");
+
   // 3.2 SMS 인증 확인 API - 회원가입용 (SignUpPage에서 발견)
   const testSmsVerifySignup = async () => {
     const apiName = "smsVerifySignup";
     setLoadingState(apiName, true);
     try {
-      const params = new URLSearchParams();
-      params.append("phone", "01022742467");
-      params.append("code", "123456");
-
-      const response = await axios.post(`${baseURL}/certification/check`, params, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        withCredentials: true,
-      });
+      const response = await axios.post(
+        `${baseURL}/certification/check`,
+        {
+          phone: "01022742467",
+          certification: testCertification1,
+        },
+        {
+          withCredentials: true,
+        }
+      );
       console.log("[smsVerifySignup] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
@@ -197,19 +202,22 @@ const ApiTestPage = () => {
     setLoadingState(apiName, false);
   };
 
+  const [testCertification2, onChangeCertification2, setTestCertification2] = useInput("");
   // 3.3 SMS 인증 확인 API - 마이페이지용 (MyPageInfoCP에서 발견)
   const testSmsVerifyMypage = async () => {
     const apiName = "smsVerifyMypage";
     setLoadingState(apiName, true);
     try {
-      const params = new URLSearchParams();
-      params.append("phone", "01022742467");
-      params.append("code", "123456");
-
-      const response = await axios.put(`${baseURL}/certification/check`, params, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        withCredentials: true,
-      });
+      const response = await axios.put(
+        `${baseURL}/certification/check`,
+        {
+          phone: "01022742467",
+          certification: testCertification2,
+        },
+        {
+          withCredentials: true,
+        }
+      );
       console.log("[smsVerifyMypage] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
@@ -721,6 +729,13 @@ const ApiTestPage = () => {
             <br />
             <span style={{ fontSize: "12px", color: "#6c757d" }}>📋 form-urlencoded: phone, code</span>
           </p>
+          <input
+            type="text"
+            value={testCertification1}
+            onChange={onChangeCertification1}
+            placeholder="인증 코드 입력"
+            style={{ marginBottom: "10px", padding: "5px", width: "200px" }}
+          />
           <button style={loading.smsVerifySignup ? disabledButtonStyle : buttonStyle} onClick={testSmsVerifySignup} disabled={loading.smsVerifySignup}>
             {loading.smsVerifySignup ? "로딩중..." : "SMS 인증 테스트 (회원가입)"}
           </button>
@@ -732,6 +747,13 @@ const ApiTestPage = () => {
           <p>
             <strong>PUT /certification/check</strong> (MyPageInfoCP.jsx에서 발견)
           </p>
+          <input
+            type="text"
+            value={testCertification2}
+            onChange={onChangeCertification2}
+            placeholder="인증 코드 입력"
+            style={{ marginBottom: "10px", padding: "5px", width: "200px" }}
+          />
           <button style={loading.smsVerifyMypage ? disabledButtonStyle : buttonStyle} onClick={testSmsVerifyMypage} disabled={loading.smsVerifyMypage}>
             {loading.smsVerifyMypage ? "로딩중..." : "SMS 인증 테스트 (마이페이지)"}
           </button>
