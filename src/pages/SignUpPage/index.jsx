@@ -137,31 +137,29 @@ const SignUpPage = () => {
       setPhoneError(false);
     }
 
-    // 인증번호 확인 로직
-    try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/certification/check`,
-        {
-          phone: phone,
-          certification: certification,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-      if (res.data.verified) {
-        setCertificationError(false);
-        valid = false;
-      } else {
-        setCertificationError(true);
-      }
-    } catch (error) {
-      setCertificationError(true);
-      console.error("인증번호 확인 중 에러:", error);
-    }
-
     // 모든 유효성 검사 통과 시 회원가입 처리
     if (valid) {
+      // 인증번호 확인 로직
+      try {
+        const res = await axios.post(
+          `${import.meta.env.VITE_API_URL}/certification/check`,
+          {
+            phone: phone,
+            certification: certification,
+          },
+          {
+            withCredentials: true,
+          }
+        );
+        if (!res.data.verified) {
+          return alert("인증번호가 일치하지 않습니다.");
+        }
+      } catch (error) {
+        setCertificationError(true);
+        console.error("인증번호 확인 중 에러:", error);
+        return alert("인증번호확인 에러");
+      }
+
       const params = new URLSearchParams();
       params.append("username", username);
       params.append("password", password);
