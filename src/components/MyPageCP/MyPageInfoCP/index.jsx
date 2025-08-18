@@ -101,7 +101,7 @@ const MyPageInfoCP = ({ userData }) => {
             withCredentials: true,
           }
         );
-        if (res.data.success) {
+        if (res.data.verified) {
           setCertificationError(false);
           alert("전화번호가 변경되었습니다.");
           return window.location.reload();

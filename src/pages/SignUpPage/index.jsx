@@ -149,7 +149,7 @@ const SignUpPage = () => {
           withCredentials: true,
         }
       );
-      if (res.data.success) {
+      if (res.data.verified) {
         setCertificationError(false);
         valid = false;
       } else {
