@@ -135,23 +135,21 @@ const RegisterPage = () => {
     alert("등록 신청이 완료되었습니다!");
 
     // FIXME: api 주소 확인하기
+    const params = new URLSearchParams();
+    params.append("name", FTName);
+    params.append("category", FTCategory);
+    params.append("intro", FTIntro);
+    params.append("operatorNum", operatorNum);
+    params.append("agreeTerms", termsChecked);
+    // menus, schedules는 객체/배열이므로 JSON.stringify 필요
+    params.append("menus", JSON.stringify(menuList));
+    params.append("schedules", JSON.stringify(scheduleList));
+
     axios
-      .post(
-        `${import.meta.env.VITE_API_URL}/user/foodtruck`,
-        {
-          name: FTName,
-          category: FTCategory,
-          intro: FTIntro,
-          menus: menuList,
-          schedules: scheduleList,
-          operatorNum: operatorNum,
-          agreeTerms: termsChecked,
-        },
-        {
-          withCredentials: true,
-          headers: { "Content-Type": "application/json" },
-        }
-      )
+      .post(`${import.meta.env.VITE_API_URL}/user/foodtruck`, params, {
+        withCredentials: true,
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      })
       .then((res) => {
         if (res.data.success) {
           alert("푸드트럭 등록이 완료되었습니다!");
