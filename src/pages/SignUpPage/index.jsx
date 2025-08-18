@@ -177,7 +177,7 @@ const SignUpPage = () => {
           { withCredentials: true }
         )
         .then((res) => {
-          if (res.data.success) {
+          if (res.success) {
             alert("회원가입 성공");
             setUsername("");
             setPassword("");
@@ -189,7 +189,7 @@ const SignUpPage = () => {
             setCertification("");
             window.location.href = "/login";
           } else {
-            alert("회원가입 실패: " + res.data.message);
+            alert("회원가입 실패: " + res.data);
           }
         });
     }
