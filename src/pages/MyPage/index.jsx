@@ -47,7 +47,7 @@ const MyPage = () => {
     axios
       .post(`${import.meta.env.VITE_API_URL}/logout`, { withCredentials: true })
       .then((res) => {
-        if (res.data.success) {
+        if (res.data.withCredentials) {
           alert("로그아웃 되었습니다.");
           setUserData({});
           window.location.href = "/";

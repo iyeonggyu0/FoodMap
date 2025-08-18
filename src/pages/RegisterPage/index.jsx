@@ -134,46 +134,24 @@ const RegisterPage = () => {
     }
     alert("등록 신청이 완료되었습니다!");
 
-    // FormData를 사용하여 form-data 형식으로 전송
-    const formData = new FormData();
-    formData.append("name", FTName);
-    formData.append("category", FTCategory);
-    formData.append("intro", FTIntro);
-    formData.append("operatorNum", operatorNum);
-    formData.append("agreeTerms", termsChecked);
-
-    // 메뉴 배열을 FormData에 추가
-    menuList.forEach((menu, index) => {
-      formData.append(`menus[${index}].name`, menu.name);
-      formData.append(`menus[${index}].price`, menu.price);
-      formData.append(`menus[${index}].info`, menu.info);
-      formData.append(`menus[${index}].num`, menu.num);
-    });
-
-    // 스케줄 배열을 FormData에 추가 (영업하는 날짜만)
-    let scheduleIndex = 0;
-    scheduleList.forEach((schedule) => {
-      if (schedule.holiday) {
-        // 영업하는 날짜만 전송
-        formData.append(`schedules[${scheduleIndex}].day`, schedule.day);
-        formData.append(`schedules[${scheduleIndex}].holiday`, schedule.holiday); // holiday=true가 영업, 서버에는 false로 보냄
-        formData.append(`schedules[${scheduleIndex}].start`, schedule.start); // HH:MM 형식으로
-        formData.append(`schedules[${scheduleIndex}].end`, schedule.end);
-        formData.append(`schedules[${scheduleIndex}].mapAddress`, schedule.mapAddress);
-        formData.append(`schedules[${scheduleIndex}].userAddress`, schedule.userAddress);
-        scheduleIndex++;
-      }
-    });
-
-    console.log("전송할 FormData:", formData); // 디버깅용
-
+    // FIXME: api 주소 확인하기
     axios
-      .post(`${import.meta.env.VITE_API_URL}/user/foodtruck`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
+      .post(
+        `${import.meta.env.VITE_API_URL}/user/foodtruck`,
+        {
+          name: FTName,
+          category: FTCategory,
+          intro: FTIntro,
+          menus: menuList,
+          schedules: scheduleList,
+          operatorNum: operatorNum,
+          agreeTerms: termsChecked,
         },
-        withCredentials: true,
-      })
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "application/json" },
+        }
+      )
       .then((res) => {
         if (res.data.success) {
           alert("푸드트럭 등록이 완료되었습니다!");
