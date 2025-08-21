@@ -98,7 +98,7 @@ const RegisterPage = () => {
           error = true;
         }
         // 7-3. 주소 10자 이상
-        if (!item.mapAddress || item.mapAddress.length < 10 || !item.userAddress || item.userAddress.length < 10) {
+        if (!item.mapAddress || item.mapAddress.length < 10) {
           newScheduleErrors[idx].address = true;
           errorMsgs.push(`${item.day}요일 주소는 10자 이상 입력해야 합니다.`);
           error = true;
