@@ -28,7 +28,10 @@ const LoginPage = () => {
       params.append("username", id);
       params.append("password", pw);
       await axios
-        .post(`${import.meta.env.VITE_API_URL}/login`, params, { headers: { "Content-Type": "application/x-www-form-urlencoded" } }, { withCredentials: true })
+        .post(`${import.meta.env.VITE_API_URL}/login`, params, {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          withCredentials: true,
+        })
         .then((res) => {
           if (res.data) {
             alert("로그인 성공");
@@ -42,7 +45,7 @@ const LoginPage = () => {
     } catch (err) {
       alert("로그인 요청 실패: " + (err.response?.data?.message || err.message));
     }
-  }, [id, pw]);
+  }, [id, pw, setId, setPw]);
 
   return (
     <MainLayOut>

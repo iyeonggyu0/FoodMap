@@ -168,14 +168,10 @@ const SignUpPage = () => {
       params.append("role", role);
       params.append("phone", phone);
       axios
-        .post(
-          `${import.meta.env.VITE_API_URL}/member`,
-          params,
-          {
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          },
-          { withCredentials: true }
-        )
+        .post(`${import.meta.env.VITE_API_URL}/member`, params, {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          withCredentials: true,
+        })
         .then((res) => {
           if (res.success) {
             alert("회원가입 성공");
