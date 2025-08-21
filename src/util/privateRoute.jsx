@@ -7,7 +7,7 @@ const PrivateRoute = () => {
 
   useEffect(() => {
     axios.get(`${import.meta.env.VITE_API_URL}/login/check`, { withCredentials: true }).then((res) => {
-      setAuth(res.data);
+      setAuth(res.data.loggedIn);
     });
   }, []);
 
