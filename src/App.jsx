@@ -16,7 +16,7 @@ import Error404Page from "./pages/Error404Page";
 import MyPage from "./pages/MyPage";
 import PrivateRoute from "./util/privateRoute.jsx";
 import ApiTestPage from "./ApiTestPage.jsx";
-// import ReportPage from "./pages/ReportPage";
+import ReportPage from "./pages/ReportPage";
 
 function App() {
   console.log(import.meta.env.VITE_API_URL);
@@ -52,7 +52,7 @@ function App() {
         <Route path="/faq" element={<FaqPage />} />
 
         {/* 푸드트럭 제보 */}
-        {/* <Route path="/report" element={<ReportPage />} /> */}
+        <Route path="/report" element={<ReportPage />} />
 
         <Route path="/test" element={<ApiTestPage />} />
 
