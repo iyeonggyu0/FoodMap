@@ -38,7 +38,7 @@ const RegisterPage = () => {
    * - 입력값 유효성 검사 후, 문제가 없으면 API로 데이터 전송
    * - 성공 시 입력값 초기화, 실패 시 에러 안내
    */
-  const registerSubmitHandler = (e) => {
+  const registerSubmitHandler = async (e) => {
     e.preventDefault();
     let error = false;
     let errorMsgs = [];
@@ -132,9 +132,20 @@ const RegisterPage = () => {
       alert("입력값에 문제가 있습니다.");
       return;
     }
-    alert("등록 신청이 완료되었습니다!");
+    // 에러 없으면 API 요청
+    if (file !== null) {
+      // 1MB = 1024 * 1024 bytes
+      if (file.size > 1024 * 1024) {
+        alert("이미지 파일이 너무 큽니다.\n1MB 이하의 이미지만 업로드할 수 있습니다.");
+        return;
+      } else {
+        const image = await handleUpload();
+        if (!image) {
+          return alert("이미지 업로드에 실패했습니다.\n다시 시도해주세요.");
+        }
+      }
+    }
 
-    // FIXME: api 주소 확인하기
     axios
       .post(
         `${import.meta.env.VITE_API_URL}/user/foodtruck`,
@@ -146,6 +157,7 @@ const RegisterPage = () => {
           schedule: scheduleList,
           operatorNum: operatorNum,
           agreeTerms: termsChecked,
+          imageUrl: url,
         },
         {
           withCredentials: true,
@@ -229,6 +241,8 @@ const RegisterPage = () => {
   const [menuPrice, onChangeMenuPrice, setMenuPrice] = useInput("");
   const [menuInfo, onChangeMenuInfo, setMenuInfo] = useInput("");
   const [menuNum, onChangeMenuNum, setMenuNum] = useInput("");
+  const [file, setFile] = useState(null);
+  const [url, setUrl] = useState("");
 
   /**
    * 메뉴 등록 함수
@@ -382,6 +396,43 @@ const RegisterPage = () => {
     }
   };
 
+  /**
+   * 이미지 선택 핸들러
+   * @param {*} e
+   */
+  const handleChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  /**
+   * 이미지 업로드 핸들러
+   */
+  const handleUpload = async () => {
+    if (!file) return alert("파일을 선택하세요!");
+
+    // 서버에 업로드 요청 (아래 API는 직접 구현)
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      body: JSON.stringify({ filename: file.name, type: file.type }),
+      headers: { "Content-Type": "application/json" },
+    });
+    const { url: uploadUrl, token } = await res.json();
+
+    // 실제 파일 업로드 (Vercel Blob으로 직접)
+    const uploadRes = await fetch(uploadUrl, {
+      method: "PUT",
+      headers: { "Content-Type": file.type, "x-vercel-blob-token": token },
+      body: file,
+    });
+
+    if (uploadRes.ok) {
+      setUrl(uploadUrl.split("?")[0]); // 업로드된 파일의 URL
+      return true; // 업로드 실패
+    } else {
+      return false; // 업로드 실패
+    }
+  };
+
   return (
     <MainLayOut>
       <RegisterPageMainStyle>
@@ -501,7 +552,19 @@ const RegisterPage = () => {
                 </div>
               </div>
             </div>
+            {/* 이미지 */}
+            <div>
+              <h2>이미지</h2>
+              <div className="image-upload col flexCenter">
+                <div>
+                  <p>푸드트럭이 드러난 이미지를 업로드 해 주세요</p>
+                  <p>선택사항 / 1MB 이하</p>
+                  <input type="file" accept="image/*" onChange={handleChange} />
+                </div>
+              </div>
+            </div>
           </RegisterPageMenuStyle>
+
           <RegisterPageScheduleStyle>
             <h2>
               운영 정보<span className="essential">*</span>
