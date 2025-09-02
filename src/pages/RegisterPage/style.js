@@ -244,6 +244,20 @@ export const RegisterPageMenuStyle = styled.div`
     color: var(--gray-4);
     margin-top: 0.5rem;
   }
+
+  & .image-upload {
+    border: 1px dashed var(--gray-4);
+    border-radius: 1rem;
+    width: 100%;
+    height: 180px;
+    text-align: center;
+  }
+
+  & .image-upload > div > p:nth-child(2) {
+    font-size: 0.8rem;
+    color: var(--gray-4);
+    margin-bottom: 2rem;
+  }
 `;
 
 export const RegisterPageScheduleStyle = styled.div`
