@@ -25,10 +25,54 @@ const ApiTestPage = () => {
   };
 
   // =================================
-  // 1. 사용자 인증 관련 API
+  // 1. 사용자 관리 API (UserController)
   // =================================
 
-  // 1.1 로그인 API (LoginPage에서 발견)
+  // 1.1 전체 사용자 조회 API
+  const testUsersGet = async () => {
+    const apiName = "usersGet";
+    setLoadingState(apiName, true);
+    try {
+      const response = await axios.get(`${baseURL}/api/users`, { withCredentials: true });
+      console.log("[usersGet] 성공", response);
+      saveResult(apiName, { success: true, data: response.data });
+    } catch (error) {
+      console.log("[usersGet] 실패", error);
+      saveResult(apiName, { success: false, error: error.response?.data || error.message });
+    }
+    setLoadingState(apiName, false);
+  };
+
+  // 1.2 사용자 생성 API
+  const testUserCreate = async () => {
+    const apiName = "userCreate";
+    setLoadingState(apiName, true);
+    try {
+      const params = new URLSearchParams();
+      params.append("username", "newuser456");
+      params.append("password", "password123");
+      params.append("email", "new@example.com");
+      params.append("nickname", "새사용자");
+      params.append("phone", "010-1111-2222");
+      params.append("role", "USER");
+      const response = await axios.post(`${baseURL}/api/users`, params, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        withCredentials: true,
+      });
+      console.log("[userCreate] 성공", response);
+      saveResult(apiName, { success: true, data: response.data });
+    } catch (error) {
+      console.log("[userCreate] 실패", error);
+      saveResult(apiName, { success: false, error: error.response?.data || error.message });
+    }
+    setLoadingState(apiName, false);
+  };
+
+  // =================================
+  // 2. 로그인/회원가입 관련 API (MemberController)
+  // =================================
+
+  // 2.1 로그인 API
   const testLogin = async () => {
     const apiName = "login";
     setLoadingState(apiName, true);
@@ -36,7 +80,6 @@ const ApiTestPage = () => {
       const params = new URLSearchParams();
       params.append("username", "testuser456");
       params.append("password", "testpass456");
-
       const response = await axios.post(`${baseURL}/login`, params, {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         withCredentials: true,
@@ -50,29 +93,7 @@ const ApiTestPage = () => {
     setLoadingState(apiName, false);
   };
 
-  // 1.1 로그인 API (LoginPage에서 발견)
-  const testNewLogin = async () => {
-    const apiName = "login";
-    setLoadingState(apiName, true);
-    try {
-      const params = new URLSearchParams();
-      params.append("username", "testuser456");
-      params.append("password", "newpassword123");
-
-      const response = await axios.post(`${baseURL}/login`, params, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        withCredentials: true,
-      });
-      console.log("[login] 성공", response);
-      saveResult(apiName, { success: true, data: response.data });
-    } catch (error) {
-      console.log("[login] 실패", error);
-      saveResult(apiName, { success: false, error: error.response?.data || error.message });
-    }
-    setLoadingState(apiName, false);
-  };
-
-  // 1.2 로그인 상태 확인 API (useLoginCheck, privateRoute에서 발견)
+  // 2.2 로그인 상태 확인 API
   const testLoginCheck = async () => {
     const apiName = "loginCheck";
     setLoadingState(apiName, true);
@@ -87,7 +108,7 @@ const ApiTestPage = () => {
     setLoadingState(apiName, false);
   };
 
-  // 1.3 로그아웃 API (MyPage에서 발견)
+  // 2.3 로그아웃 API
   const testLogout = async () => {
     const apiName = "logout";
     setLoadingState(apiName, true);
@@ -102,161 +123,38 @@ const ApiTestPage = () => {
     setLoadingState(apiName, false);
   };
 
-  // =================================
-  // 2. 회원가입 관련 API (실제 코드 기반)
-  // =================================
-
-  // 2.1 회원가입 API (SignUpPage에서 발견)
-  const testSignup = async () => {
-    const apiName = "signup";
+  // 2.4 회원가입 API (JSON)
+  const testSignupJson = async () => {
+    const apiName = "signupJson";
     setLoadingState(apiName, true);
     try {
       const params = new URLSearchParams();
-      params.append("username", "testuser456");
-      params.append("password", "testpass456");
+      params.append("username", "testuser789");
+      params.append("password", "password123");
       params.append("nickname", "테스트유저");
-      params.append("email", "test@example.com");
+      params.append("email", "test789@example.com");
+      params.append("phone", "010-1234-5678");
       params.append("role", "user");
-      params.append("phone", "01012345678");
-
-      const response = await axios.post(`${baseURL}/member`, params, {
+      params.append("smsCode", "123456");
+      const response = await axios.post(`${baseURL}/member/json`, params, {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         withCredentials: true,
       });
-      console.log("[signup] 성공", response);
+      console.log("[signupJson] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
-      console.log("[signup] 실패", error);
+      console.log("[signupJson] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
   };
 
-  // =================================
-  // 3. SMS 인증 관련 API (실제 코드 기반)
-  // =================================
-
-  // 3.1 SMS 발송 API (SignUpPage, MyPageInfoCP에서 발견)
-  // const testSmsSend = async () => {
-  //   const apiName = "smsSend";
-  //   setLoadingState(apiName, true);
-  //   try {
-  //     const params = new URLSearchParams();
-  //     params.append("phone", "01022742467");
-
-  //     const response = await axios.post(`${baseURL}/certification/send`, params, {
-  //       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-  //       withCredentials: true,
-  //     });
-  //     console.log("[smsSend] 성공", response);
-  //     saveResult(apiName, { success: true, data: response.data });
-  //   } catch (error) {
-  //     console.log("[smsSend] 실패", error);
-  //     saveResult(apiName, { success: false, error: error.response?.data || error.message });
-  //   }
-  //   setLoadingState(apiName, false);
-  // };
-  const testSmsSend = async () => {
-    const apiName = "smsSend";
-    setLoadingState(apiName, true);
-    try {
-      const response = await axios.post(
-        `${baseURL}/certification/send?debug=true`,
-        { phone: "01022742467" },
-        {
-          withCredentials: true,
-        }
-      );
-      console.log("[smsSend] 성공", response);
-      saveResult(apiName, { success: true, data: response.data });
-    } catch (error) {
-      console.log("[smsSend] 실패", error);
-      saveResult(apiName, { success: false, error: error.response?.data || error.message });
-    }
-    setLoadingState(apiName, false);
-  };
-
-  const [testCertification1, onChangeCertification1, setTestCertification1] = useInput("");
-
-  // 3.2 SMS 인증 확인 API - 회원가입용 (SignUpPage에서 발견)
-  const testSmsVerifySignup = async () => {
-    const apiName = "smsVerifySignup";
-    setLoadingState(apiName, true);
-    try {
-      const response = await axios.post(
-        `${baseURL}/certification/check`,
-        {
-          phone: "01022742467",
-          certification: testCertification1,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-      console.log("[smsVerifySignup] 성공", response);
-      saveResult(apiName, { success: true, data: response.data });
-    } catch (error) {
-      console.log("[smsVerifySignup] 실패", error);
-      saveResult(apiName, { success: false, error: error.response?.data || error.message });
-    }
-    setLoadingState(apiName, false);
-  };
-
-  const [testCertification2, onChangeCertification2, setTestCertification2] = useInput("");
-  // 3.3 SMS 인증 확인 API - 마이페이지용 (MyPageInfoCP에서 발견)
-  const testSmsVerifyMypage = async () => {
-    const apiName = "smsVerifyMypage";
-    setLoadingState(apiName, true);
-    try {
-      const response = await axios.put(
-        `${baseURL}/certification/check`,
-        {
-          phone: "01022742467",
-          certification: testCertification2,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-      console.log("[smsVerifyMypage] 성공", response);
-      saveResult(apiName, { success: true, data: response.data });
-    } catch (error) {
-      console.log("[smsVerifyMypage] 실패", error);
-      saveResult(apiName, { success: false, error: error.response?.data || error.message });
-    }
-    setLoadingState(apiName, false);
-  };
-
-  // =================================
-  // 4. 사용자 정보 관리 API (실제 코드 기반)
-  // =================================
-
-  // 4.1 사용자 정보 조회 API (MyPage에서 발견)
-  const testUserInfo = async () => {
-    const apiName = "userInfo";
-    setLoadingState(apiName, true);
-    try {
-      const response = await axios.get(`${baseURL}/user/info`, { withCredentials: true });
-      console.log("[userInfo] 성공", response);
-      saveResult(apiName, { success: true, data: response.data });
-    } catch (error) {
-      console.log("[userInfo] 실패", error);
-      saveResult(apiName, { success: false, error: error.response?.data || error.message });
-    }
-    setLoadingState(apiName, false);
-  };
-
-  // 4.2 비밀번호 변경 API (MyPageInfoCP에서 발견)
+  // 2.5 비밀번호 변경 API (쿼리 파라미터)
   const testPasswordChange = async () => {
     const apiName = "passwordChange";
     setLoadingState(apiName, true);
     try {
-      const params = new URLSearchParams();
-      params.append("newPassword", "newpassword123");
-      const response = await axios.put(`${baseURL}/user/password`, params, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        withCredentials: true,
-      });
+      const response = await axios.put(`${baseURL}/user/password?newPassword=newpassword123`, null, { withCredentials: true });
       console.log("[passwordChange] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
@@ -266,17 +164,12 @@ const ApiTestPage = () => {
     setLoadingState(apiName, false);
   };
 
-  // 4.3 닉네임 변경 API (MyPageInfoCP에서 발견)
+  // 2.6 닉네임 변경 API (쿼리 파라미터)
   const testNicknameChange = async () => {
     const apiName = "nicknameChange";
     setLoadingState(apiName, true);
     try {
-      const params = new URLSearchParams();
-      params.append("newNickname", "새닉네임");
-      const response = await axios.put(`${baseURL}/user/nickname`, params, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        withCredentials: true,
-      });
+      const response = await axios.put(`${baseURL}/user/nickname?newNickname=새닉네임`, null, { withCredentials: true });
       console.log("[nicknameChange] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
@@ -286,7 +179,7 @@ const ApiTestPage = () => {
     setLoadingState(apiName, false);
   };
 
-  // 4.4 회원탈퇴 API (MyPageInfoCP에서 발견)
+  // 2.7 회원탈퇴 API
   const testUserSecession = async () => {
     const apiName = "userSecession";
     setLoadingState(apiName, true);
@@ -302,133 +195,101 @@ const ApiTestPage = () => {
   };
 
   // =================================
-  // 5. 푸드트럭 관리 API (실제 코드 기반)
+  // 3. 인증번호 관련 API (SignSmsController)
   // =================================
 
-  // 5.1 푸드트럭 정보 조회 API (MyFTCP에서 발견)
-  const testFoodtruckGet = async () => {
-    const apiName = "foodtruckGet";
+  // 3.1 인증번호 발송 API
+  const testSmsSend = async () => {
+    const apiName = "smsSend";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.get(`${baseURL}/user/foodtruck`, { withCredentials: true });
-      console.log("[foodtruckGet] 성공", response);
+      const params = new URLSearchParams();
+      params.append("phone", "01012345678");
+      const response = await axios.post(`${baseURL}/certification/send`, params, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        withCredentials: true,
+      });
+      console.log("[smsSend] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
-      console.log("[foodtruckGet] 실패", error);
+      console.log("[smsSend] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
   };
 
-  // 5.2 푸드트럭 정보 수정 API (MyFTCP에서 발견)
-  const testFoodtruckUpdate = async () => {
-    const apiName = "foodtruckUpdate";
+  const [testCertification1, onChangeCertification1, setTestCertification1] = useInput("");
+
+  // 3.2 인증번호 확인 API - 회원가입용
+  const testSmsVerifySignup = async () => {
+    const apiName = "smsVerifySignup";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.put(
-        `${baseURL}/user/foodtruck`,
-        {
-          name: "맛있는 푸드트럭",
-          category: "분식",
-          intro: "맛있는 음식을 제공합니다",
-          operatorNum: "123-45-67890",
-          menu: [
-            {
-              name: "떡볶이",
-              price: "4000",
-              info: "매콤달콤한 떡볶이",
-              num: "1",
-            },
-          ],
-          schedule: [
-            {
-              day: "월",
-              holiday: false,
-              start: "10:00",
-              end: "20:00",
-              mapAddress: "서울시 강남구",
-              userAddress: "강남역 근처",
-            },
-          ],
-        },
-        { withCredentials: true }
-      );
-      console.log("[foodtruckUpdate] 성공", response);
+      const params = new URLSearchParams();
+      params.append("phone", "01012345678");
+      params.append("certification", testCertification1);
+      const response = await axios.post(`${baseURL}/certification/check`, params, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        withCredentials: true,
+      });
+      console.log("[smsVerifySignup] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
-      console.log("[foodtruckUpdate] 실패", error);
+      console.log("[smsVerifySignup] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
   };
 
-  // =================================
-  // 6. 지도/푸드트럭 목록 API (실제 코드 기반)
-  // =================================
+  const [testCertification2, onChangeCertification2, setTestCertification2] = useInput("");
 
-  // 6.1 푸드트럭 목록 조회 API (MapPage에서 발견)
-  const testFoodtruckList = async () => {
-    const apiName = "foodtruckList";
+  // 3.3 인증번호 확인 API - 마이페이지용
+  const testSmsVerifyMypage = async () => {
+    const apiName = "smsVerifyMypage";
     setLoadingState(apiName, true);
     try {
-      const filter = "분식"; // 테스트용 필터
-      const response = await axios.get(`${baseURL}/map/ft/${encodeURIComponent(filter)}`, { withCredentials: true });
-      console.log("[foodtruckList] 성공", response);
+      const params = new URLSearchParams();
+      params.append("phone", "01012345678");
+      params.append("certification", testCertification2);
+      const response = await axios.put(`${baseURL}/certification/check`, params, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        withCredentials: true,
+      });
+      console.log("[smsVerifyMypage] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
-      console.log("[foodtruckList] 실패", error);
+      console.log("[smsVerifyMypage] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
   };
 
   // =================================
-  // 7. 찜하기 관련 API (실제 코드 기반)
+  // 4. 지도/푸드트럭 관련 API (MapController)
   // =================================
 
-  // 7.1 찜하기 추가 API (MapPage, MyLikeCP에서 발견)
-  const testLikeAdd = async () => {
-    const apiName = "likeAdd";
+  // 4.1 푸드트럭 찜 토글 API (쿼리 파라미터)
+  const testLikeToggle = async () => {
+    const apiName = "likeToggle";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.post(
-        `${baseURL}/map/ft/like`,
-        {
-          ftId: "test-foodtruck-id",
-        },
-        { withCredentials: true }
-      );
-      console.log("[likeAdd] 성공", response);
+      const foodtruckId = "test-foodtruck-id";
+      const response = await axios.post(`${baseURL}/map/ft/like?foodtruckId=${foodtruckId}`, null, { withCredentials: true });
+      console.log("[likeToggle] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
-      console.log("[likeAdd] 실패", error);
+      console.log("[likeToggle] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
   };
 
-  // 7.2 찜하기 삭제 API (MapPage, MyLikeCP에서 발견)
-  const testLikeDelete = async () => {
-    const apiName = "likeDelete";
-    setLoadingState(apiName, true);
-    try {
-      const ftId = "test-foodtruck-id";
-      const response = await axios.delete(`${baseURL}/map/ft/like/${ftId}`, { withCredentials: true });
-      console.log("[likeDelete] 성공", response);
-      saveResult(apiName, { success: true, data: response.data });
-    } catch (error) {
-      console.log("[likeDelete] 실패", error);
-      saveResult(apiName, { success: false, error: error.response?.data || error.message });
-    }
-    setLoadingState(apiName, false);
-  };
-
-  // 7.3 찜 목록 조회 API (MyLikeCP에서 발견)
+  // 4.2 찜 목록 조회 API
   const testLikeList = async () => {
     const apiName = "likeList";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.get(`${baseURL}/ft/like`, { withCredentials: true });
+      const response = await axios.get(`${baseURL}/map/ft/like`, { withCredentials: true });
       console.log("[likeList] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
@@ -438,40 +299,31 @@ const ApiTestPage = () => {
     setLoadingState(apiName, false);
   };
 
-  // =================================
-  // 8. SMS 알림 관련 API (실제 코드 기반)
-  // =================================
-
-  // 8.1 SMS 알림 추가 API (MapPage, MyLikeCP에서 발견)
-  const testSmsAdd = async () => {
-    const apiName = "smsAdd";
+  // 4.3 SMS 토글 API (쿼리 파라미터)
+  const testSmsToggle = async () => {
+    const apiName = "smsToggle";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.post(
-        `${baseURL}/map/ft/sms`,
-        {
-          ftId: "test-foodtruck-id",
-          day: "월",
-        },
-        { withCredentials: true }
-      );
-      console.log("[smsAdd] 성공", response);
+      const storeId = "test-store-id";
+      const day = "월";
+      const response = await axios.post(`${baseURL}/map/ft/sms?storeId=${storeId}&day=${day}`, null, { withCredentials: true });
+      console.log("[smsToggle] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
-      console.log("[smsAdd] 실패", error);
+      console.log("[smsToggle] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
   };
 
-  // 8.2 SMS 알림 삭제 API (MapPage, MyLikeCP에서 발견)
+  // 4.4 SMS 삭제 API
   const testSmsDelete = async () => {
     const apiName = "smsDelete";
     setLoadingState(apiName, true);
     try {
-      const ftId = "test-foodtruck-id";
+      const foodtruckId = "test-foodtruck-id";
       const day = "월";
-      const response = await axios.delete(`${baseURL}/map/ft/sms/${ftId}/${day}`, { withCredentials: true });
+      const response = await axios.delete(`${baseURL}/map/ft/sms/${foodtruckId}/${day}`, { withCredentials: true });
       console.log("[smsDelete] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
@@ -482,109 +334,179 @@ const ApiTestPage = () => {
   };
 
   // =================================
-  // 9. 리뷰 관련 API (실제 코드 기반)
+  // 5. 푸드트럭 관리 API (RegisterController)
   // =================================
 
-  // 9.1 리뷰 작성 API (ReviewCP, PcReviewCP에서 발견)
-  const testReviewCreate = async () => {
-    const apiName = "reviewCreate";
+  // 5.1 푸드트럭 등록 API (JSON)
+  const testFoodtruckCreate = async () => {
+    const apiName = "foodtruckCreate";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.post(
-        `${baseURL}/review`,
-        {
-          content: "맛있었습니다!",
-          rating: 5,
-          ftId: "test-foodtruck-id",
-        },
-        { withCredentials: true }
+      const params = new URLSearchParams();
+      params.append("name", "맛있는 푸드트럭");
+      params.append("category", "한식");
+      params.append("menu", JSON.stringify([{ name: "김밥", price: 3000, info: "맛있어요", num: 1 }]));
+      params.append(
+        "schedule",
+        JSON.stringify([
+          {
+            dayOfWeek: "월",
+            isOpen: true,
+            openTime: "10:00",
+            closeTime: "18:00",
+            location: "서울",
+          },
+        ])
       );
-      console.log("[reviewCreate] 성공", response);
+      const response = await axios.post(`${baseURL}/user/foodtruck`, params, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        withCredentials: true,
+      });
+      console.log("[foodtruckCreate] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
-      console.log("[reviewCreate] 실패", error);
+      console.log("[foodtruckCreate] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
   };
 
-  // 9.2 리뷰 목록 조회 API (MyReviewCP에서 발견)
-  const testReviewList = async () => {
-    const apiName = "reviewList";
+  // 5.2 푸드트럭 상세 조회 API
+  const testFoodtruckGetApi = async () => {
+    const apiName = "foodtruckGetApi";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.get(`${baseURL}/user/review`, { withCredentials: true });
-      console.log("[reviewList] 성공", response);
+      const id = "1"; // 테스트용 ID
+      const response = await axios.get(`${baseURL}/user/foodtruck/${id}/api`, { withCredentials: true });
+      console.log("[foodtruckGetApi] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
-      console.log("[reviewList] 실패", error);
+      console.log("[foodtruckGetApi] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
   };
 
-  // 9.3 리뷰 수정 API (MyReviewCP에서 발견)
-  const testReviewUpdate = async () => {
-    const apiName = "reviewUpdate";
+  // 5.3 푸드트럭 수정 API
+  const testFoodtruckUpdate = async () => {
+    const apiName = "foodtruckUpdate";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.put(
-        `${baseURL}/review`,
-        {
-          id: "test-review-id",
-          content: "수정된 리뷰 내용입니다.",
-          rating: 4,
-        },
-        { withCredentials: true }
+      const id = "1"; // 테스트용 ID
+      const params = new URLSearchParams();
+      params.append("name", "수정된 푸드트럭");
+      params.append("category", "분식");
+      params.append("menu", JSON.stringify([{ name: "떡볶이", price: 4000, info: "매콤해요", num: 1 }]));
+      params.append(
+        "schedule",
+        JSON.stringify([
+          {
+            dayOfWeek: "화",
+            isOpen: true,
+            openTime: "11:00",
+            closeTime: "19:00",
+            location: "부산",
+          },
+        ])
       );
-      console.log("[reviewUpdate] 성공", response);
+      const response = await axios.put(`${baseURL}/user/foodtruck/${id}`, params, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        withCredentials: true,
+      });
+      console.log("[foodtruckUpdate] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
-      console.log("[reviewUpdate] 실패", error);
+      console.log("[foodtruckUpdate] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
   };
 
-  // 9.4 리뷰 삭제 API (MyReviewCP에서 발견)
-  const testReviewDelete = async () => {
-    const apiName = "reviewDelete";
+  // 5.4 푸드트럭 삭제 API
+  const testFoodtruckDelete = async () => {
+    const apiName = "foodtruckDelete";
     setLoadingState(apiName, true);
     try {
-      const reviewId = "test-review-id";
-      const response = await axios.delete(`${baseURL}/review/${reviewId}`, { withCredentials: true });
-      console.log("[reviewDelete] 성공", response);
+      const id = "1"; // 테스트용 ID
+      const response = await axios.delete(`${baseURL}/user/foodtruck/${id}`, { withCredentials: true });
+      console.log("[foodtruckDelete] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
-      console.log("[reviewDelete] 실패", error);
+      console.log("[foodtruckDelete] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
   };
 
   // =================================
-  // 10. 기타 API (실제 코드 기반)
+  // 6. 리뷰 관련 API (ReviewPostController)
   // =================================
 
-  // 10.1 FAQ 문의 API (FaqPage에서 발견)
-  const testFaqCreate = async () => {
-    const apiName = "faqCreate";
+  // 6.1 리뷰 목록 조회 API
+  const testReviewListApi = async () => {
+    const apiName = "reviewListApi";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.post(
-        `${baseURL}/faq`,
-        {
-          askCategory: "기타",
-          askTitle: "테스트 문의",
-          askContent: "테스트 문의 내용입니다.",
-          askContact: "test@example.com",
-        },
-        { withCredentials: true }
-      );
-      console.log("[faqCreate] 성공", response);
+      const response = await axios.get(`${baseURL}/api/review`, { withCredentials: true });
+      console.log("[reviewListApi] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
-      console.log("[faqCreate] 실패", error);
+      console.log("[reviewListApi] 실패", error);
+      saveResult(apiName, { success: false, error: error.response?.data || error.message });
+    }
+    setLoadingState(apiName, false);
+  };
+
+  // 6.2 리뷰 단건 조회 API
+  const testReviewGetApi = async () => {
+    const apiName = "reviewGetApi";
+    setLoadingState(apiName, true);
+    try {
+      const id = "1"; // 테스트용 리뷰 ID
+      const response = await axios.get(`${baseURL}/api/review/${id}`, { withCredentials: true });
+      console.log("[reviewGetApi] 성공", response);
+      saveResult(apiName, { success: true, data: response.data });
+    } catch (error) {
+      console.log("[reviewGetApi] 실패", error);
+      saveResult(apiName, { success: false, error: error.response?.data || error.message });
+    }
+    setLoadingState(apiName, false);
+  };
+
+  // 6.3 리뷰 생성 API
+  const testReviewCreateApi = async () => {
+    const apiName = "reviewCreateApi";
+    setLoadingState(apiName, true);
+    try {
+      const params = new URLSearchParams();
+      params.append("truckId", "2");
+      params.append("nickName", "종휘");
+      params.append("content", "정말 맛있어요!");
+      params.append("rating", "4.5");
+      const response = await axios.post(`${baseURL}/api/review`, params, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        withCredentials: true,
+      });
+      console.log("[reviewCreateApi] 성공", response);
+      saveResult(apiName, { success: true, data: response.data });
+    } catch (error) {
+      console.log("[reviewCreateApi] 실패", error);
+      saveResult(apiName, { success: false, error: error.response?.data || error.message });
+    }
+    setLoadingState(apiName, false);
+  };
+
+  // 6.4 리뷰 삭제 API
+  const testReviewDeleteApi = async () => {
+    const apiName = "reviewDeleteApi";
+    setLoadingState(apiName, true);
+    try {
+      const id = "5"; // 테스트용 리뷰 ID
+      const response = await axios.delete(`${baseURL}/api/review/${id}`, { withCredentials: true });
+      console.log("[reviewDeleteApi] 성공", response);
+      saveResult(apiName, { success: true, data: response.data });
+    } catch (error) {
+      console.log("[reviewDeleteApi] 실패", error);
       saveResult(apiName, { success: false, error: error.response?.data || error.message });
     }
     setLoadingState(apiName, false);
@@ -628,46 +550,61 @@ const ApiTestPage = () => {
 
   return (
     <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      <h1>API 테스트 페이지 (실제 소스코드 기반)</h1>
+      <h1>API 테스트 페이지 (노션 최신 버전 기준)</h1>
       <p>Base URL: {baseURL}</p>
       <div style={{ marginBottom: "20px", padding: "10px", backgroundColor: "#f8f9fa", borderRadius: "4px" }}>
-        <strong>📝 실제 src/ 폴더에서 발견된 API들만 포함</strong>
-        <br />총 {Object.keys(results).length > 0 ? Object.keys(results).length : "23"}개의 실제 사용 중인 API
+        <strong>📝 노션 API 명세 기준으로 전면 수정</strong>
+        <br />총 {Object.keys(results).length > 0 ? Object.keys(results).length : "20+"}개의 최신 API 포함
       </div>
 
-      <div style={{ marginBottom: "20px", padding: "15px", backgroundColor: "#fff3cd", borderRadius: "4px", border: "1px solid #ffeaa7" }}>
-        <h3 style={{ color: "#856404", margin: "0 0 10px 0" }}>🔧 Spring Security 호환성 수정</h3>
-        <p style={{ margin: "0", color: "#856404" }}>
-          <strong>로그인, 회원가입, SMS 인증</strong> API들은 Spring Security의 기본 설정에 맞춰
-          <code style={{ backgroundColor: "#f8f9fa", padding: "2px 4px", borderRadius: "3px" }}>application/x-www-form-urlencoded</code>
-          형식으로 요청을 보내도록 수정되었습니다.
-        </p>
-      </div>
-
-      {/* 1. 사용자 인증 관련 API */}
+      {/* 1. 사용자 관리 API */}
       <section style={{ marginBottom: "30px" }}>
-        <h2>🔐 1. 사용자 인증 관련 API</h2>
+        <h2>👥 1. 사용자 관리 API (UserController)</h2>
 
         <div style={{ marginBottom: "20px" }}>
-          <h3>1.1 로그인 API</h3>
+          <h3>1.1 전체 사용자 조회 API</h3>
           <p>
-            <strong>POST /login</strong> (LoginPage.jsx에서 발견)
+            <strong>GET /api/users</strong>
+          </p>
+          <button style={loading.usersGet ? disabledButtonStyle : buttonStyle} onClick={testUsersGet} disabled={loading.usersGet}>
+            {loading.usersGet ? "로딩중..." : "사용자 조회 테스트"}
+          </button>
+          <ResultDisplay result={results.usersGet} />
+        </div>
+
+        <div style={{ marginBottom: "20px" }}>
+          <h3>1.2 사용자 생성 API</h3>
+          <p>
+            <strong>POST /api/users</strong>
+          </p>
+          <button style={loading.userCreate ? disabledButtonStyle : buttonStyle} onClick={testUserCreate} disabled={loading.userCreate}>
+            {loading.userCreate ? "로딩중..." : "사용자 생성 테스트"}
+          </button>
+          <ResultDisplay result={results.userCreate} />
+        </div>
+      </section>
+
+      {/* 2. 로그인/회원가입 관련 API */}
+      <section style={{ marginBottom: "30px" }}>
+        <h2>🔐 2. 로그인/회원가입 관련 API (MemberController)</h2>
+
+        <div style={{ marginBottom: "20px" }}>
+          <h3>2.1 로그인 API</h3>
+          <p>
+            <strong>POST /login</strong>
             <br />
-            <span style={{ fontSize: "12px", color: "#6c757d" }}>📋 form-urlencoded: username, password</span>
+            <span style={{ fontSize: "12px", color: "#6c757d" }}>📋 JSON: username, password</span>
           </p>
           <button style={loading.login ? disabledButtonStyle : buttonStyle} onClick={testLogin} disabled={loading.login}>
             {loading.login ? "로딩중..." : "로그인 테스트"}
-          </button>
-          <button style={loading.login ? disabledButtonStyle : buttonStyle} onClick={testNewLogin} disabled={loading.login}>
-            {loading.login ? "로딩중..." : "비밀번호 변경 로그인 테스트"}
           </button>
           <ResultDisplay result={results.login} />
         </div>
 
         <div style={{ marginBottom: "20px" }}>
-          <h3>1.2 로그인 상태 확인 API</h3>
+          <h3>2.2 로그인 상태 확인 API</h3>
           <p>
-            <strong>GET /login/check</strong> (useLoginCheck.js, privateRoute.jsx에서 발견)
+            <strong>GET /login/check</strong>
           </p>
           <button style={loading.loginCheck ? disabledButtonStyle : buttonStyle} onClick={testLoginCheck} disabled={loading.loginCheck}>
             {loading.loginCheck ? "로딩중..." : "로그인 상태 확인 테스트"}
@@ -676,110 +613,33 @@ const ApiTestPage = () => {
         </div>
 
         <div style={{ marginBottom: "20px" }}>
-          <h3>1.3 로그아웃 API</h3>
+          <h3>2.3 로그아웃 API</h3>
           <p>
-            <strong>POST /logout</strong> (MyPage.jsx에서 발견)
+            <strong>POST /logout</strong>
           </p>
           <button style={loading.logout ? disabledButtonStyle : buttonStyle} onClick={testLogout} disabled={loading.logout}>
             {loading.logout ? "로딩중..." : "로그아웃 테스트"}
           </button>
           <ResultDisplay result={results.logout} />
         </div>
-      </section>
-
-      {/* 2. 회원가입 관련 API */}
-      <section style={{ marginBottom: "30px" }}>
-        <h2>👤 2. 회원가입 관련 API</h2>
 
         <div style={{ marginBottom: "20px" }}>
-          <h3>2.1 회원가입 API</h3>
+          <h3>2.4 회원가입 API (JSON)</h3>
           <p>
-            <strong>POST /member</strong> (SignUpPage.jsx에서 발견)
+            <strong>POST /member/json</strong>
             <br />
-            <span style={{ fontSize: "12px", color: "#6c757d" }}>📋 form-urlencoded: username, password, nickname, email, role, phone</span>
+            <span style={{ fontSize: "12px", color: "#6c757d" }}>📋 JSON: username, password, nickname, email, phone, role, smsCode</span>
           </p>
-          <button style={loading.signup ? disabledButtonStyle : buttonStyle} onClick={testSignup} disabled={loading.signup}>
-            {loading.signup ? "로딩중..." : "회원가입 테스트"}
+          <button style={loading.signupJson ? disabledButtonStyle : buttonStyle} onClick={testSignupJson} disabled={loading.signupJson}>
+            {loading.signupJson ? "로딩중..." : "회원가입 테스트 (JSON)"}
           </button>
-          <ResultDisplay result={results.signup} />
-        </div>
-      </section>
-
-      {/* 3. SMS 인증 관련 API */}
-      <section style={{ marginBottom: "30px" }}>
-        <h2>📱 3. SMS 인증 관련 API</h2>
-
-        <div style={{ marginBottom: "20px" }}>
-          <h3>3.1 SMS 발송 API</h3>
-          <p>
-            <strong>POST /certification/send</strong> (SignUpPage.jsx, MyPageInfoCP.jsx에서 발견)
-            <br />
-            <span style={{ fontSize: "12px", color: "#6c757d" }}>📋 form-urlencoded: phone</span>
-          </p>
-          <button style={loading.smsSend ? disabledButtonStyle : buttonStyle} onClick={testSmsSend} disabled={loading.smsSend}>
-            {loading.smsSend ? "로딩중..." : "SMS 발송 테스트"}
-          </button>
-          <ResultDisplay result={results.smsSend} />
+          <ResultDisplay result={results.signupJson} />
         </div>
 
         <div style={{ marginBottom: "20px" }}>
-          <h3>3.2 SMS 인증 확인 API (회원가입)</h3>
+          <h3>2.5 비밀번호 변경 API</h3>
           <p>
-            <strong>POST /certification/check</strong> (SignUpPage.jsx에서 발견)
-            <br />
-            <span style={{ fontSize: "12px", color: "#6c757d" }}>📋 form-urlencoded: phone, code</span>
-          </p>
-          <input
-            type="text"
-            value={testCertification1}
-            onChange={onChangeCertification1}
-            placeholder="인증 코드 입력"
-            style={{ marginBottom: "10px", padding: "5px", width: "200px" }}
-          />
-          <button style={loading.smsVerifySignup ? disabledButtonStyle : buttonStyle} onClick={testSmsVerifySignup} disabled={loading.smsVerifySignup}>
-            {loading.smsVerifySignup ? "로딩중..." : "SMS 인증 테스트 (회원가입)"}
-          </button>
-          <ResultDisplay result={results.smsVerifySignup} />
-        </div>
-
-        <div style={{ marginBottom: "20px" }}>
-          <h3>3.3 SMS 인증 확인 API (마이페이지)</h3>
-          <p>
-            <strong>PUT /certification/check</strong> (MyPageInfoCP.jsx에서 발견)
-          </p>
-          <input
-            type="text"
-            value={testCertification2}
-            onChange={onChangeCertification2}
-            placeholder="인증 코드 입력"
-            style={{ marginBottom: "10px", padding: "5px", width: "200px" }}
-          />
-          <button style={loading.smsVerifyMypage ? disabledButtonStyle : buttonStyle} onClick={testSmsVerifyMypage} disabled={loading.smsVerifyMypage}>
-            {loading.smsVerifyMypage ? "로딩중..." : "SMS 인증 테스트 (마이페이지)"}
-          </button>
-          <ResultDisplay result={results.smsVerifyMypage} />
-        </div>
-      </section>
-
-      {/* 4. 사용자 정보 관리 API */}
-      <section style={{ marginBottom: "30px" }}>
-        <h2>👨‍💼 4. 사용자 정보 관리 API</h2>
-
-        <div style={{ marginBottom: "20px" }}>
-          <h3>4.1 사용자 정보 조회 API</h3>
-          <p>
-            <strong>GET /user/info</strong> (MyPage.jsx에서 발견)
-          </p>
-          <button style={loading.userInfo ? disabledButtonStyle : buttonStyle} onClick={testUserInfo} disabled={loading.userInfo}>
-            {loading.userInfo ? "로딩중..." : "사용자 정보 조회 테스트"}
-          </button>
-          <ResultDisplay result={results.userInfo} />
-        </div>
-
-        <div style={{ marginBottom: "20px" }}>
-          <h3>4.2 비밀번호 변경 API</h3>
-          <p>
-            <strong>PUT /user/password</strong> (MyPageInfoCP.jsx에서 발견)
+            <strong>PUT /user/password?newPassword={"{newPassword}"}</strong>
           </p>
           <button style={loading.passwordChange ? disabledButtonStyle : buttonStyle} onClick={testPasswordChange} disabled={loading.passwordChange}>
             {loading.passwordChange ? "로딩중..." : "비밀번호 변경 테스트"}
@@ -788,9 +648,9 @@ const ApiTestPage = () => {
         </div>
 
         <div style={{ marginBottom: "20px" }}>
-          <h3>4.3 닉네임 변경 API</h3>
+          <h3>2.6 닉네임 변경 API</h3>
           <p>
-            <strong>PUT /user/nickname</strong> (MyPageInfoCP.jsx에서 발견)
+            <strong>PUT /user/nickname?newNickname={"{newNickname}"}</strong>
           </p>
           <button style={loading.nicknameChange ? disabledButtonStyle : buttonStyle} onClick={testNicknameChange} disabled={loading.nicknameChange}>
             {loading.nicknameChange ? "로딩중..." : "닉네임 변경 테스트"}
@@ -799,9 +659,9 @@ const ApiTestPage = () => {
         </div>
 
         <div style={{ marginBottom: "20px" }}>
-          <h3>4.4 회원탈퇴 API</h3>
+          <h3>2.7 회원탈퇴 API</h3>
           <p>
-            <strong>DELETE /user/secession</strong> (MyPageInfoCP.jsx에서 발견)
+            <strong>DELETE /user/secession</strong>
           </p>
           <button style={loading.userSecession ? disabledButtonStyle : buttonStyle} onClick={testUserSecession} disabled={loading.userSecession}>
             {loading.userSecession ? "로딩중..." : "회원탈퇴 테스트"}
@@ -810,176 +670,212 @@ const ApiTestPage = () => {
         </div>
       </section>
 
-      {/* 5. 푸드트럭 관리 API */}
+      {/* 3. 인증번호 관련 API */}
       <section style={{ marginBottom: "30px" }}>
-        <h2>🚚 5. 푸드트럭 관리 API</h2>
+        <h2>� 3. 인증번호 관련 API (SignSmsController)</h2>
 
         <div style={{ marginBottom: "20px" }}>
-          <h3>5.1 푸드트럭 정보 조회 API</h3>
+          <h3>3.1 인증번호 발송 API</h3>
           <p>
-            <strong>GET /user/foodtruck</strong> (MyFTCP.jsx에서 발견)
+            <strong>POST /certification/send</strong>
+            <br />
+            <span style={{ fontSize: "12px", color: "#6c757d" }}>📋 JSON: phone</span>
           </p>
-          <button style={loading.foodtruckGet ? disabledButtonStyle : buttonStyle} onClick={testFoodtruckGet} disabled={loading.foodtruckGet}>
-            {loading.foodtruckGet ? "로딩중..." : "푸드트럭 정보 조회 테스트"}
+          <button style={loading.smsSend ? disabledButtonStyle : buttonStyle} onClick={testSmsSend} disabled={loading.smsSend}>
+            {loading.smsSend ? "로딩중..." : "SMS 발송 테스트"}
           </button>
-          <ResultDisplay result={results.foodtruckGet} />
+          <ResultDisplay result={results.smsSend} />
         </div>
 
         <div style={{ marginBottom: "20px" }}>
-          <h3>5.2 푸드트럭 정보 수정 API</h3>
+          <h3>3.2 인증번호 확인 API (회원가입)</h3>
           <p>
-            <strong>PUT /user/foodtruck</strong> (MyFTCP.jsx에서 발견)
+            <strong>POST /certification/check</strong>
+            <br />
+            <span style={{ fontSize: "12px", color: "#6c757d" }}>📋 JSON: phone, certification</span>
           </p>
-          <button style={loading.foodtruckUpdate ? disabledButtonStyle : buttonStyle} onClick={testFoodtruckUpdate} disabled={loading.foodtruckUpdate}>
-            {loading.foodtruckUpdate ? "로딩중..." : "푸드트럭 정보 수정 테스트"}
+          <input
+            type="text"
+            value={testCertification1}
+            onChange={onChangeCertification1}
+            placeholder="인증 코드 입력"
+            style={{ marginBottom: "10px", padding: "5px", width: "200px" }}
+          />
+          <br />
+          <button style={loading.smsVerifySignup ? disabledButtonStyle : buttonStyle} onClick={testSmsVerifySignup} disabled={loading.smsVerifySignup}>
+            {loading.smsVerifySignup ? "로딩중..." : "SMS 인증 테스트 (회원가입)"}
           </button>
-          <ResultDisplay result={results.foodtruckUpdate} />
+          <ResultDisplay result={results.smsVerifySignup} />
+        </div>
+
+        <div style={{ marginBottom: "20px" }}>
+          <h3>3.3 인증번호 확인 API (마이페이지)</h3>
+          <p>
+            <strong>PUT /certification/check</strong>
+          </p>
+          <input
+            type="text"
+            value={testCertification2}
+            onChange={onChangeCertification2}
+            placeholder="인증 코드 입력"
+            style={{ marginBottom: "10px", padding: "5px", width: "200px" }}
+          />
+          <br />
+          <button style={loading.smsVerifyMypage ? disabledButtonStyle : buttonStyle} onClick={testSmsVerifyMypage} disabled={loading.smsVerifyMypage}>
+            {loading.smsVerifyMypage ? "로딩중..." : "SMS 인증 테스트 (마이페이지)"}
+          </button>
+          <ResultDisplay result={results.smsVerifyMypage} />
         </div>
       </section>
 
-      {/* 6. 지도/푸드트럭 목록 API */}
+      {/* 4. 지도/푸드트럭 관련 API */}
       <section style={{ marginBottom: "30px" }}>
-        <h2>🗺️ 6. 지도/푸드트럭 목록 API</h2>
+        <h2>�️ 4. 지도/푸드트럭 관련 API (MapController)</h2>
 
         <div style={{ marginBottom: "20px" }}>
-          <h3>6.1 푸드트럭 목록 조회 API</h3>
+          <h3>4.1 푸드트럭 찜 토글 API</h3>
           <p>
-            <strong>GET /map/ft/분식</strong> (MapPage.jsx에서 발견)
+            <strong>POST /map/ft/like?foodtruckId={"{id}"}</strong>
           </p>
-          <button style={loading.foodtruckList ? disabledButtonStyle : buttonStyle} onClick={testFoodtruckList} disabled={loading.foodtruckList}>
-            {loading.foodtruckList ? "로딩중..." : "푸드트럭 목록 조회 테스트"}
+          <button style={loading.likeToggle ? disabledButtonStyle : buttonStyle} onClick={testLikeToggle} disabled={loading.likeToggle}>
+            {loading.likeToggle ? "로딩중..." : "찜 토글 테스트"}
           </button>
-          <ResultDisplay result={results.foodtruckList} />
-        </div>
-      </section>
-
-      {/* 7. 찜하기 관련 API */}
-      <section style={{ marginBottom: "30px" }}>
-        <h2>❤️ 7. 찜하기 관련 API</h2>
-
-        <div style={{ marginBottom: "20px" }}>
-          <h3>7.1 찜하기 추가 API</h3>
-          <p>
-            <strong>POST /map/ft/like</strong> (MapPage.jsx, MyLikeCP.jsx에서 발견)
-          </p>
-          <button style={loading.likeAdd ? disabledButtonStyle : buttonStyle} onClick={testLikeAdd} disabled={loading.likeAdd}>
-            {loading.likeAdd ? "로딩중..." : "찜하기 추가 테스트"}
-          </button>
-          <ResultDisplay result={results.likeAdd} />
+          <ResultDisplay result={results.likeToggle} />
         </div>
 
         <div style={{ marginBottom: "20px" }}>
-          <h3>7.2 찜하기 삭제 API</h3>
+          <h3>4.2 찜 목록 조회 API</h3>
           <p>
-            <strong>DELETE /map/ft/like/test-foodtruck-id</strong> (MapPage.jsx, MyLikeCP.jsx에서 발견)
-          </p>
-          <button style={loading.likeDelete ? disabledButtonStyle : buttonStyle} onClick={testLikeDelete} disabled={loading.likeDelete}>
-            {loading.likeDelete ? "로딩중..." : "찜하기 삭제 테스트"}
-          </button>
-          <ResultDisplay result={results.likeDelete} />
-        </div>
-
-        <div style={{ marginBottom: "20px" }}>
-          <h3>7.3 찜 목록 조회 API</h3>
-          <p>
-            <strong>GET /ft/like</strong> (MyLikeCP.jsx에서 발견)
+            <strong>GET /map/ft/like</strong>
           </p>
           <button style={loading.likeList ? disabledButtonStyle : buttonStyle} onClick={testLikeList} disabled={loading.likeList}>
             {loading.likeList ? "로딩중..." : "찜 목록 조회 테스트"}
           </button>
           <ResultDisplay result={results.likeList} />
         </div>
-      </section>
-
-      {/* 8. SMS 알림 관련 API */}
-      <section style={{ marginBottom: "30px" }}>
-        <h2>🔔 8. SMS 알림 관련 API</h2>
 
         <div style={{ marginBottom: "20px" }}>
-          <h3>8.1 SMS 알림 추가 API</h3>
+          <h3>4.3 SMS 토글 API</h3>
           <p>
-            <strong>POST /map/ft/sms</strong> (MapPage.jsx, MyLikeCP.jsx에서 발견)
+            <strong>
+              POST /map/ft/sms?storeId={"{id}"}&day={"{day}"}
+            </strong>
           </p>
-          <button style={loading.smsAdd ? disabledButtonStyle : buttonStyle} onClick={testSmsAdd} disabled={loading.smsAdd}>
-            {loading.smsAdd ? "로딩중..." : "SMS 알림 추가 테스트"}
+          <button style={loading.smsToggle ? disabledButtonStyle : buttonStyle} onClick={testSmsToggle} disabled={loading.smsToggle}>
+            {loading.smsToggle ? "로딩중..." : "SMS 토글 테스트"}
           </button>
-          <ResultDisplay result={results.smsAdd} />
+          <ResultDisplay result={results.smsToggle} />
         </div>
 
         <div style={{ marginBottom: "20px" }}>
-          <h3>8.2 SMS 알림 삭제 API</h3>
+          <h3>4.4 SMS 삭제 API</h3>
           <p>
-            <strong>DELETE /map/ft/sms/test-foodtruck-id/월</strong> (MapPage.jsx, MyLikeCP.jsx에서 발견)
+            <strong>
+              DELETE /map/ft/sms/{"{foodtruckId}"}/{"{day}"}
+            </strong>
           </p>
           <button style={loading.smsDelete ? disabledButtonStyle : buttonStyle} onClick={testSmsDelete} disabled={loading.smsDelete}>
-            {loading.smsDelete ? "로딩중..." : "SMS 알림 삭제 테스트"}
+            {loading.smsDelete ? "로딩중..." : "SMS 삭제 테스트"}
           </button>
           <ResultDisplay result={results.smsDelete} />
         </div>
       </section>
 
-      {/* 9. 리뷰 관련 API */}
+      {/* 5. 푸드트럭 관리 API */}
       <section style={{ marginBottom: "30px" }}>
-        <h2>⭐ 9. 리뷰 관련 API</h2>
+        <h2>🚚 5. 푸드트럭 관리 API (RegisterController)</h2>
 
         <div style={{ marginBottom: "20px" }}>
-          <h3>9.1 리뷰 작성 API</h3>
+          <h3>5.1 푸드트럭 등록 API</h3>
           <p>
-            <strong>POST /review</strong> (ReviewCP.jsx, PcReviewCP.jsx에서 발견)
+            <strong>POST /user/foodtruck</strong>
           </p>
-          <button style={loading.reviewCreate ? disabledButtonStyle : buttonStyle} onClick={testReviewCreate} disabled={loading.reviewCreate}>
-            {loading.reviewCreate ? "로딩중..." : "리뷰 작성 테스트"}
+          <button style={loading.foodtruckCreate ? disabledButtonStyle : buttonStyle} onClick={testFoodtruckCreate} disabled={loading.foodtruckCreate}>
+            {loading.foodtruckCreate ? "로딩중..." : "푸드트럭 등록 테스트"}
           </button>
-          <ResultDisplay result={results.reviewCreate} />
+          <ResultDisplay result={results.foodtruckCreate} />
         </div>
 
         <div style={{ marginBottom: "20px" }}>
-          <h3>9.2 리뷰 목록 조회 API</h3>
+          <h3>5.2 푸드트럭 상세 조회 API</h3>
           <p>
-            <strong>GET /user/review</strong> (MyReviewCP.jsx에서 발견)
+            <strong>GET /user/foodtruck/{"{id}"}/api</strong>
           </p>
-          <button style={loading.reviewList ? disabledButtonStyle : buttonStyle} onClick={testReviewList} disabled={loading.reviewList}>
-            {loading.reviewList ? "로딩중..." : "리뷰 목록 조회 테스트"}
+          <button style={loading.foodtruckGetApi ? disabledButtonStyle : buttonStyle} onClick={testFoodtruckGetApi} disabled={loading.foodtruckGetApi}>
+            {loading.foodtruckGetApi ? "로딩중..." : "푸드트럭 상세 조회 테스트"}
           </button>
-          <ResultDisplay result={results.reviewList} />
+          <ResultDisplay result={results.foodtruckGetApi} />
         </div>
 
         <div style={{ marginBottom: "20px" }}>
-          <h3>9.3 리뷰 수정 API</h3>
+          <h3>5.3 푸드트럭 수정 API</h3>
           <p>
-            <strong>PUT /review</strong> (MyReviewCP.jsx에서 발견)
+            <strong>PUT /user/foodtruck/{"{id}"}</strong>
           </p>
-          <button style={loading.reviewUpdate ? disabledButtonStyle : buttonStyle} onClick={testReviewUpdate} disabled={loading.reviewUpdate}>
-            {loading.reviewUpdate ? "로딩중..." : "리뷰 수정 테스트"}
+          <button style={loading.foodtruckUpdate ? disabledButtonStyle : buttonStyle} onClick={testFoodtruckUpdate} disabled={loading.foodtruckUpdate}>
+            {loading.foodtruckUpdate ? "로딩중..." : "푸드트럭 수정 테스트"}
           </button>
-          <ResultDisplay result={results.reviewUpdate} />
+          <ResultDisplay result={results.foodtruckUpdate} />
         </div>
 
         <div style={{ marginBottom: "20px" }}>
-          <h3>9.4 리뷰 삭제 API</h3>
+          <h3>5.4 푸드트럭 삭제 API</h3>
           <p>
-            <strong>DELETE /review/test-review-id</strong> (MyReviewCP.jsx에서 발견)
+            <strong>DELETE /user/foodtruck/{"{id}"}</strong>
           </p>
-          <button style={loading.reviewDelete ? disabledButtonStyle : buttonStyle} onClick={testReviewDelete} disabled={loading.reviewDelete}>
-            {loading.reviewDelete ? "로딩중..." : "리뷰 삭제 테스트"}
+          <button style={loading.foodtruckDelete ? disabledButtonStyle : buttonStyle} onClick={testFoodtruckDelete} disabled={loading.foodtruckDelete}>
+            {loading.foodtruckDelete ? "로딩중..." : "푸드트럭 삭제 테스트"}
           </button>
-          <ResultDisplay result={results.reviewDelete} />
+          <ResultDisplay result={results.foodtruckDelete} />
         </div>
       </section>
 
-      {/* 10. 기타 API */}
+      {/* 6. 리뷰 관련 API */}
       <section style={{ marginBottom: "30px" }}>
-        <h2>❓ 10. 기타 API</h2>
+        <h2>⭐ 6. 리뷰 관련 API (ReviewPostController)</h2>
 
         <div style={{ marginBottom: "20px" }}>
-          <h3>10.1 FAQ 문의 API</h3>
+          <h3>6.1 리뷰 목록 조회 API</h3>
           <p>
-            <strong>POST /faq</strong> (FaqPage.jsx에서 발견)
+            <strong>GET /api/review</strong>
           </p>
-          <button style={loading.faqCreate ? disabledButtonStyle : buttonStyle} onClick={testFaqCreate} disabled={loading.faqCreate}>
-            {loading.faqCreate ? "로딩중..." : "FAQ 문의 테스트"}
+          <button style={loading.reviewListApi ? disabledButtonStyle : buttonStyle} onClick={testReviewListApi} disabled={loading.reviewListApi}>
+            {loading.reviewListApi ? "로딩중..." : "리뷰 목록 조회 테스트"}
           </button>
-          <ResultDisplay result={results.faqCreate} />
+          <ResultDisplay result={results.reviewListApi} />
+        </div>
+
+        <div style={{ marginBottom: "20px" }}>
+          <h3>6.2 리뷰 단건 조회 API</h3>
+          <p>
+            <strong>GET /api/review/{"{id}"}</strong>
+          </p>
+          <button style={loading.reviewGetApi ? disabledButtonStyle : buttonStyle} onClick={testReviewGetApi} disabled={loading.reviewGetApi}>
+            {loading.reviewGetApi ? "로딩중..." : "리뷰 단건 조회 테스트"}
+          </button>
+          <ResultDisplay result={results.reviewGetApi} />
+        </div>
+
+        <div style={{ marginBottom: "20px" }}>
+          <h3>6.3 리뷰 생성 API</h3>
+          <p>
+            <strong>POST /api/review</strong>
+          </p>
+          <button style={loading.reviewCreateApi ? disabledButtonStyle : buttonStyle} onClick={testReviewCreateApi} disabled={loading.reviewCreateApi}>
+            {loading.reviewCreateApi ? "로딩중..." : "리뷰 생성 테스트"}
+          </button>
+          <ResultDisplay result={results.reviewCreateApi} />
+        </div>
+
+        <div style={{ marginBottom: "20px" }}>
+          <h3>6.4 리뷰 삭제 API</h3>
+          <p>
+            <strong>DELETE /api/review/{"{id}"}</strong>
+          </p>
+          <button style={loading.reviewDeleteApi ? disabledButtonStyle : buttonStyle} onClick={testReviewDeleteApi} disabled={loading.reviewDeleteApi}>
+            {loading.reviewDeleteApi ? "로딩중..." : "리뷰 삭제 테스트"}
+          </button>
+          <ResultDisplay result={results.reviewDeleteApi} />
         </div>
       </section>
 
