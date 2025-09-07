@@ -48,6 +48,7 @@ const ApiTestPage = () => {
     const apiName = "userCreate";
     setLoadingState(apiName, true);
     try {
+      // 폼 방식 유지 (명세상 @RequestParam)
       const params = new URLSearchParams();
       params.append("username", "newuser456");
       params.append("password", "password123");
@@ -77,11 +78,13 @@ const ApiTestPage = () => {
     const apiName = "login";
     setLoadingState(apiName, true);
     try {
-      const params = new URLSearchParams();
-      params.append("username", "testuser456");
-      params.append("password", "testpass456");
-      const response = await axios.post(`${baseURL}/login`, params, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      // JSON 방식 (@RequestBody)
+      const jsonBody = {
+        username: "testuser456",
+        password: "testpass456",
+      };
+      const response = await axios.post(`${baseURL}/login`, jsonBody, {
+        headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
       console.log("[login] 성공", response);
@@ -128,16 +131,18 @@ const ApiTestPage = () => {
     const apiName = "signupJson";
     setLoadingState(apiName, true);
     try {
-      const params = new URLSearchParams();
-      params.append("username", "testuser789");
-      params.append("password", "password123");
-      params.append("nickname", "테스트유저");
-      params.append("email", "test789@example.com");
-      params.append("phone", "010-1234-5678");
-      params.append("role", "user");
-      params.append("smsCode", "123456");
-      const response = await axios.post(`${baseURL}/member/json`, params, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      // JSON 방식 (@RequestBody)
+      const jsonBody = {
+        username: "testuser789",
+        password: "password123",
+        nickname: "테스트유저",
+        email: "test789@example.com",
+        phone: "010-1234-5678",
+        role: "user",
+        smsCode: "123456",
+      };
+      const response = await axios.post(`${baseURL}/member/json`, jsonBody, {
+        headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
       console.log("[signupJson] 성공", response);
@@ -203,10 +208,10 @@ const ApiTestPage = () => {
     const apiName = "smsSend";
     setLoadingState(apiName, true);
     try {
-      const params = new URLSearchParams();
-      params.append("phone", "01012345678");
-      const response = await axios.post(`${baseURL}/certification/send`, params, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      // JSON 방식 (@RequestBody)
+      const jsonBody = { phone: "01012345678" };
+      const response = await axios.post(`${baseURL}/certification/send`, jsonBody, {
+        headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
       console.log("[smsSend] 성공", response);
@@ -225,11 +230,10 @@ const ApiTestPage = () => {
     const apiName = "smsVerifySignup";
     setLoadingState(apiName, true);
     try {
-      const params = new URLSearchParams();
-      params.append("phone", "01012345678");
-      params.append("certification", testCertification1);
-      const response = await axios.post(`${baseURL}/certification/check`, params, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      // JSON 방식 (@RequestBody)
+      const jsonBody = { phone: "01012345678", certification: testCertification1 };
+      const response = await axios.post(`${baseURL}/certification/check`, jsonBody, {
+        headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
       console.log("[smsVerifySignup] 성공", response);
@@ -248,11 +252,10 @@ const ApiTestPage = () => {
     const apiName = "smsVerifyMypage";
     setLoadingState(apiName, true);
     try {
-      const params = new URLSearchParams();
-      params.append("phone", "01012345678");
-      params.append("certification", testCertification2);
-      const response = await axios.put(`${baseURL}/certification/check`, params, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      // JSON 방식 (@RequestBody)
+      const jsonBody = { phone: "01012345678", certification: testCertification2 };
+      const response = await axios.put(`${baseURL}/certification/check`, jsonBody, {
+        headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
       console.log("[smsVerifyMypage] 성공", response);
@@ -342,13 +345,12 @@ const ApiTestPage = () => {
     const apiName = "foodtruckCreate";
     setLoadingState(apiName, true);
     try {
-      const params = new URLSearchParams();
-      params.append("name", "맛있는 푸드트럭");
-      params.append("category", "한식");
-      params.append("menu", JSON.stringify([{ name: "김밥", price: 3000, info: "맛있어요", num: 1 }]));
-      params.append(
-        "schedule",
-        JSON.stringify([
+      // JSON 방식 (@RequestBody)
+      const jsonBody = {
+        name: "맛있는 푸드트럭",
+        category: "한식",
+        menu: [{ name: "김밥", price: 3000, info: "맛있어요", num: 1 }],
+        schedule: [
           {
             dayOfWeek: "월",
             isOpen: true,
@@ -356,10 +358,10 @@ const ApiTestPage = () => {
             closeTime: "18:00",
             location: "서울",
           },
-        ])
-      );
-      const response = await axios.post(`${baseURL}/user/foodtruck`, params, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        ],
+      };
+      const response = await axios.post(`${baseURL}/user/foodtruck`, jsonBody, {
+        headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
       console.log("[foodtruckCreate] 성공", response);
@@ -393,13 +395,12 @@ const ApiTestPage = () => {
     setLoadingState(apiName, true);
     try {
       const id = "1"; // 테스트용 ID
-      const params = new URLSearchParams();
-      params.append("name", "수정된 푸드트럭");
-      params.append("category", "분식");
-      params.append("menu", JSON.stringify([{ name: "떡볶이", price: 4000, info: "매콤해요", num: 1 }]));
-      params.append(
-        "schedule",
-        JSON.stringify([
+      // JSON 방식 (@RequestBody)
+      const jsonBody = {
+        name: "수정된 푸드트럭",
+        category: "분식",
+        menu: [{ name: "떡볶이", price: 4000, info: "매콤해요", num: 1 }],
+        schedule: [
           {
             dayOfWeek: "화",
             isOpen: true,
@@ -407,10 +408,10 @@ const ApiTestPage = () => {
             closeTime: "19:00",
             location: "부산",
           },
-        ])
-      );
-      const response = await axios.put(`${baseURL}/user/foodtruck/${id}`, params, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        ],
+      };
+      const response = await axios.put(`${baseURL}/user/foodtruck/${id}`, jsonBody, {
+        headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
       console.log("[foodtruckUpdate] 성공", response);
@@ -478,13 +479,15 @@ const ApiTestPage = () => {
     const apiName = "reviewCreateApi";
     setLoadingState(apiName, true);
     try {
-      const params = new URLSearchParams();
-      params.append("truckId", "2");
-      params.append("nickName", "종휘");
-      params.append("content", "정말 맛있어요!");
-      params.append("rating", "4.5");
-      const response = await axios.post(`${baseURL}/api/review`, params, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      // JSON 방식 (@RequestBody)
+      const jsonBody = {
+        truckId: 2,
+        nickName: "종휘",
+        content: "정말 맛있어요!",
+        rating: 4.5,
+      };
+      const response = await axios.post(`${baseURL}/api/review`, jsonBody, {
+        headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
       console.log("[reviewCreateApi] 성공", response);
