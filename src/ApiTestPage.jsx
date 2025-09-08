@@ -81,7 +81,7 @@ const ApiTestPage = () => {
       // JSON 방식 (@RequestBody)
       const jsonBody = {
         username: "testuser456",
-        password: "testpass456",
+        password: "password123",
       };
       const response = await axios.post(`${baseURL}/login`, jsonBody, {
         headers: { "Content-Type": "application/json" },
@@ -359,6 +359,7 @@ const ApiTestPage = () => {
             location: "서울",
           },
         ],
+        agreeTerms: true,
       };
       const response = await axios.post(`${baseURL}/user/foodtruck`, jsonBody, {
         headers: { "Content-Type": "application/json" },
