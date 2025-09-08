@@ -50,7 +50,7 @@ const ApiTestPage = () => {
     try {
       // 폼 방식 유지 (명세상 @RequestParam)
       const params = new URLSearchParams();
-      params.append("username", "newuser456");
+      params.append("username", "testuser789");
       params.append("password", "password123");
       params.append("email", "new@example.com");
       params.append("nickname", "새사용자");
@@ -74,13 +74,57 @@ const ApiTestPage = () => {
   // =================================
 
   // 2.1 로그인 API
+  // 비밀번호 변경 후 로그인 테스트
+  const testLoginWithChangedPassword = async () => {
+    const apiName = "loginWithChangedPassword";
+    setLoadingState(apiName, true);
+    try {
+      const jsonBody = {
+        username: "testuser789",
+        password: "newpassword123", // 비밀번호 변경 API에서 사용한 값
+      };
+      const response = await axios.post(`${baseURL}/login`, jsonBody, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
+      console.log("[loginWithChangedPassword] 성공", response);
+      saveResult(apiName, { success: true, data: response.data });
+    } catch (error) {
+      console.log("[loginWithChangedPassword] 실패", error);
+      saveResult(apiName, { success: false, error: error.response?.data || error.message });
+    }
+    setLoadingState(apiName, false);
+  };
+
+  // 닉네임 변경 후 로그인 테스트
+  const testLoginWithChangedNickname = async () => {
+    const apiName = "loginWithChangedNickname";
+    setLoadingState(apiName, true);
+    try {
+      const jsonBody = {
+        username: "testuser123",
+        password: "password123", // 기존 비밀번호
+      };
+      // 닉네임 변경은 로그인 파라미터에 직접 사용하지 않으므로, 로그인 후 닉네임이 변경된 계정으로 로그인되는지 확인
+      const response = await axios.post(`${baseURL}/login`, jsonBody, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
+      console.log("[loginWithChangedNickname] 성공", response);
+      saveResult(apiName, { success: true, data: response.data });
+    } catch (error) {
+      console.log("[loginWithChangedNickname] 실패", error);
+      saveResult(apiName, { success: false, error: error.response?.data || error.message });
+    }
+    setLoadingState(apiName, false);
+  };
   const testLogin = async () => {
     const apiName = "login";
     setLoadingState(apiName, true);
     try {
       // JSON 방식 (@RequestBody)
       const jsonBody = {
-        username: "testuser456",
+        username: "testuser789",
         password: "password123",
       };
       const response = await axios.post(`${baseURL}/login`, jsonBody, {
@@ -174,7 +218,7 @@ const ApiTestPage = () => {
     const apiName = "nicknameChange";
     setLoadingState(apiName, true);
     try {
-      const response = await axios.put(`${baseURL}/user/nickname?newNickname=새닉네임`, null, { withCredentials: true });
+      const response = await axios.put(`${baseURL}/user/nickname?newNickname=testuser123`, null, { withCredentials: true });
       console.log("[nicknameChange] 성공", response);
       saveResult(apiName, { success: true, data: response.data });
     } catch (error) {
@@ -603,6 +647,24 @@ const ApiTestPage = () => {
             {loading.login ? "로딩중..." : "로그인 테스트"}
           </button>
           <ResultDisplay result={results.login} />
+          <div style={{ marginTop: "10px" }}>
+            <button
+              style={loading.loginWithChangedPassword ? disabledButtonStyle : buttonStyle}
+              onClick={testLoginWithChangedPassword}
+              disabled={loading.loginWithChangedPassword}>
+              {loading.loginWithChangedPassword ? "로딩중..." : "비밀번호 변경 후 로그인"}
+            </button>
+            <ResultDisplay result={results.loginWithChangedPassword} />
+          </div>
+          <div style={{ marginTop: "10px" }}>
+            <button
+              style={loading.loginWithChangedNickname ? disabledButtonStyle : buttonStyle}
+              onClick={testLoginWithChangedNickname}
+              disabled={loading.loginWithChangedNickname}>
+              {loading.loginWithChangedNickname ? "로딩중..." : "닉네임 변경 후 로그인"}
+            </button>
+            <ResultDisplay result={results.loginWithChangedNickname} />
+          </div>
         </div>
 
         <div style={{ marginBottom: "20px" }}>
