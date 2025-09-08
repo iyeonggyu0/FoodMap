@@ -50,14 +50,23 @@ const PcReviewCP = ({ isLogin, offReviewClick, details }) => {
 
     axios
       .post(
-        `${import.meta.env.VITE_API_URL}/review`,
+        `${import.meta.env.VITE_API_URL}/api/review`,
         {
+          truckId: details.id,
           content: reviewText,
           rating: rating,
-          ftId: details.id,
         },
         { withCredentials: true }
       )
+      .then((res) => {
+        if (res.data.success) {
+          alert("리뷰가 작성되었습니다.");
+          setReviewText("");
+          setRating(5);
+        } else {
+          alert("리뷰 작성에 실패했습니다. 다시 시도해주세요.");
+        }
+      })
       .catch((err) => {
         console.error("리뷰 작성 중 오류 발생:", err);
         alert("리뷰 작성에 실패했습니다. 다시 시도해주세요.");

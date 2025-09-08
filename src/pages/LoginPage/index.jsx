@@ -24,12 +24,13 @@ const LoginPage = () => {
    */
   const onLoginHandler = useCallback(async () => {
     try {
-      const params = new URLSearchParams();
-      params.append("username", id);
-      params.append("password", pw);
+      const jsonBody = {
+        username: id,
+        password: pw,
+      };
       await axios
-        .post(`${import.meta.env.VITE_API_URL}/login`, params, {
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        .post(`${import.meta.env.VITE_API_URL}/login`, jsonBody, {
+          headers: { "Content-Type": "application/json" },
           withCredentials: true,
         })
         .then((res) => {

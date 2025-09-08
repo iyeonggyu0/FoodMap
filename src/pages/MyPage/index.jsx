@@ -22,7 +22,7 @@ const MyPage = () => {
     // 사용자 정보를 불러오는 API 호출
     // FIXME:
     axios
-      .get(`${import.meta.env.VITE_API_URL}/user/info`, { withCredentials: true })
+      .get(`${import.meta.env.VITE_API_URL}/api/users`, { withCredentials: true })
       .then((res) => {
         if (res.data.success) {
           setUserData(res.data.user);

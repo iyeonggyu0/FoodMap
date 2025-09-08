@@ -44,7 +44,7 @@ const MapPage = () => {
       return;
     }
 
-    axios.post(`${import.meta.env.VITE_API_URL}/map/ft/like`, { ftId }, { withCredentials: true }).catch((err) => {
+    axios.post(`${import.meta.env.VITE_API_URL}/map/ft/like?foodtruckId=${ftId}`, null, { withCredentials: true }).catch((err) => {
       console.error("찜하기 실패:", err);
       alert("찜하기에 실패했습니다.");
     });
@@ -72,7 +72,7 @@ const MapPage = () => {
       return;
     }
 
-    axios.post(`${import.meta.env.VITE_API_URL}/map/ft/sms`, { ftId, day }, { withCredentials: true }).catch((err) => {
+    axios.post(`${import.meta.env.VITE_API_URL}/map/ft/sms?storeId=${ftId}&day=${day}`, null, { withCredentials: true }).catch((err) => {
       console.error("알림 등록 실패:", err);
       alert("알림 등록에 실패했습니다.");
     });

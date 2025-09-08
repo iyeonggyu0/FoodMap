@@ -139,11 +139,8 @@ const MyPageInfoCP = ({ userData }) => {
       setPwConfirmError(false);
     }
     if (valid) {
-      const params = new URLSearchParams();
-      params.append("newPassword", password);
       axios
-        .put(`${import.meta.env.VITE_API_URL}/user/password`, params, {
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        .put(`${import.meta.env.VITE_API_URL}/user/password?newPassword=${encodeURIComponent(password)}`, null, {
           withCredentials: true,
         })
         .then((res) => {
@@ -185,11 +182,8 @@ const MyPageInfoCP = ({ userData }) => {
 
     // 모든 유효성 검사 통과 시 회원가입 처리
     if (valid) {
-      const params = new URLSearchParams();
-      params.append("newNickname", nickName);
       axios
-        .put(`${import.meta.env.VITE_API_URL}/user/nickname`, params, {
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        .put(`${import.meta.env.VITE_API_URL}/user/nickname?newNickname=${encodeURIComponent(nickName)}`, null, {
           withCredentials: true,
         })
         .then((res) => {

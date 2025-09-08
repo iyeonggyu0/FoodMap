@@ -168,12 +168,12 @@ const SignUpPage = () => {
       params.append("role", role);
       params.append("phone", phone);
       axios
-        .post(`${import.meta.env.VITE_API_URL}/member`, params, {
+        .post(`${import.meta.env.VITE_API_URL}/api/users`, params, {
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           withCredentials: true,
         })
         .then((res) => {
-          if (res.success) {
+          if (res.data.success) {
             alert("회원가입 성공");
             setUsername("");
             setPassword("");
@@ -185,7 +185,7 @@ const SignUpPage = () => {
             setCertification("");
             window.location.href = "/login";
           } else {
-            alert("회원가입 실패: " + res.data);
+            alert("회원가입 실패: " + res.data.message);
           }
         });
     }
