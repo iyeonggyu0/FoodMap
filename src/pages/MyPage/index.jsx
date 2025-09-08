@@ -47,8 +47,12 @@ const MyPage = () => {
     axios
       .post(`${import.meta.env.VITE_API_URL}/logout`, null, { withCredentials: true })
       .then((res) => {
-        if (res.data.success) {
-          alert("로그아웃 되었습니다.");
+        if (res.data.message) {
+          alert(res.data.message);
+          setUserData({});
+          window.location.href = "/";
+        } else {
+          alert("로그아웃되었습니다.");
           setUserData({});
           window.location.href = "/";
         }

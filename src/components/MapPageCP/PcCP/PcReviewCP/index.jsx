@@ -52,15 +52,14 @@ const PcReviewCP = ({ isLogin, offReviewClick, details }) => {
       .post(
         `${import.meta.env.VITE_API_URL}/api/review`,
         {
-          truckId: details.id,
           content: reviewText,
           rating: rating,
         },
         { withCredentials: true }
       )
       .then((res) => {
-        if (res.data.success) {
-          alert("리뷰가 작성되었습니다.");
+        if (res.data.message) {
+          alert(res.data.message);
           setReviewText("");
           setRating(5);
         } else {

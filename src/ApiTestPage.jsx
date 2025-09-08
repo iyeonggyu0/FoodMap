@@ -55,7 +55,7 @@ const ApiTestPage = () => {
       params.append("email", "new@example.com");
       params.append("nickname", "새사용자");
       params.append("phone", "010-1111-2222");
-      params.append("role", "USER");
+      params.append("role", "user");
       const response = await axios.post(`${baseURL}/api/users`, params, {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         withCredentials: true,

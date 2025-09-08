@@ -54,7 +54,7 @@ const MyPageInfoCP = ({ userData }) => {
         const res = await axios.post(
           `${import.meta.env.VITE_API_URL}/certification/send`,
           {
-            phone: phone,
+            phone: phone.replace(/-/g, ""), // 하이픈 제거
           },
           {
             withCredentials: true,
@@ -94,7 +94,7 @@ const MyPageInfoCP = ({ userData }) => {
         const res = await axios.put(
           `${import.meta.env.VITE_API_URL}/certification/check`,
           {
-            phone: phone,
+            phone: phone.replace(/-/g, ""), // 하이픈 제거
             certification: certification,
           },
           {
@@ -144,8 +144,8 @@ const MyPageInfoCP = ({ userData }) => {
           withCredentials: true,
         })
         .then((res) => {
-          if (res.data.success) {
-            alert("비밀번호가 변경되었습니다.");
+          if (res.data.message) {
+            alert(res.data.message);
             window.location.reload();
           } else {
             alert("비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
@@ -187,8 +187,8 @@ const MyPageInfoCP = ({ userData }) => {
           withCredentials: true,
         })
         .then((res) => {
-          if (res.data.success) {
-            alert("닉네임이 변경되었습니다.");
+          if (res.data.message) {
+            alert(res.data.message);
             window.location.reload();
           } else {
             alert("닉네임 변경에 실패했습니다. 다시 시도해주세요.");
@@ -211,8 +211,8 @@ const MyPageInfoCP = ({ userData }) => {
       axios
         .delete(`${import.meta.env.VITE_API_URL}/user/secession`, { withCredentials: true })
         .then((res) => {
-          if (res.data.success) {
-            alert("회원탈퇴가 완료되었습니다.");
+          if (res.data.message) {
+            alert(res.data.message);
             window.location.href = "/";
           } else {
             alert("회원탈퇴에 실패했습니다. 다시 시도해주세요.");
