@@ -1,10 +1,11 @@
 import { useCallback, useState, useRef } from "react";
+import { Link } from "react-router-dom";
 import InputCP from "@/components/_common/InputCP";
 import SelectInputCP from "@/components/_common/SelectInputCP";
 import TextAreaInputCP from "@/components/_common/TextAreaInputCP";
 import { useInput } from "@/hooks/useInput";
 import MainLayOut from "@/layout/MainLayOut";
-import { ReportPageMainStyle, ReportPageMenuStyle } from "./style";
+import { ReportPageMainStyle, ReportPageMenuStyle, ButtonStyle } from "./style";
 import ButtonCP from "@/components/_common/ButtonCP";
 import OutLineButtonCP from "@/components/_common/OutLineButtonCP";
 import {
@@ -21,6 +22,10 @@ import axios from "axios";
 import { encrypt } from "../../util/crypto";
 
 const ReportPage = () => {
+  const [nameError, setNameError] = useState(false);
+  const [categoryError, setCategoryError] = useState(false);
+  const [introError, setIntroError] = useState(false);
+  const [menuError, setMenuError] = useState(false);
   // 에러 span refs
   const nameErrorRef = useRef();
   const categoryErrorRef = useRef();
@@ -309,7 +314,7 @@ const ReportPage = () => {
       <ReportPageMainStyle>
         <div className="flex flex-col gap-8 max-w-[1440px] mx-auto px-4 py-12 md:px-12 md:w-[75vw]">
           {/* 푸드트럭 제보 안내 카드 */}
-          <Card className="cards border-solid border-brown-dark">
+          <Card className="overflow-hidden shadow-lg border-solid border-brown-dark">
             <CardHeader className="bg-white">
               <CardTitle className="flex items-center space-x-2 text-brown-10 relative">
                 <div className="bg-brown-main p-2 rounded-lg">
@@ -353,12 +358,14 @@ const ReportPage = () => {
           </Card>
           <section className="cards p-6">
             <div>
-              <h1>푸드트럭 기본 정보</h1>
-              <p>제보하려는 푸드트럭의 기본 정보를 입력해주세요</p>
+              <h1 className="text-3xl font-bold">푸드트럭 기본 정보</h1>
+              <p className="text-base">
+                제보하려는 푸드트럭의 기본 정보를 입력해주세요
+              </p>
             </div>
-            <div>
-              <div className="col">
-                <div>
+            <div className="flex flex-col gap-6">
+              <div className="flex gap-6 flex-col lg:flex-row">
+                <div className="flex-1 ">
                   <InputCP
                     title="푸드트럭 이름"
                     essential="true"
@@ -366,20 +373,27 @@ const ReportPage = () => {
                     ex="황금 잉어빵"
                     onChangeHandler={onChangeFTName}
                   />
-                  <span className="nameError error" ref={nameErrorRef}>
-                    2글자 이상 입력하세요
-                  </span>
+                  {nameError && (
+                    <span className="nameError error" ref={nameErrorRef}>
+                      2글자 이상 입력하세요
+                    </span>
+                  )}
                 </div>
-                <div>
+                <div className="flex-1">
                   <SelectInputCP
                     title="카테고리"
                     essential="true"
                     listData={FTCategoryList}
                     onChangeHandler={onChangeFTCategory}
                   />
-                  <span className="categoryError error" ref={categoryErrorRef}>
-                    카테고리를 선택하세요
-                  </span>
+                  {categoryError && (
+                    <span
+                      className="categoryError error"
+                      ref={categoryErrorRef}
+                    >
+                      카테고리를 선택하세요
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="col-full">
@@ -393,10 +407,12 @@ const ReportPage = () => {
                     maxRows={7}
                     minRows={5}
                   />
-                  <span className="introError error" ref={introErrorRef}>
-                    20자 이상 입력하세요
-                    {/* FIXME: 제보페이지이므로 조건 완화 고려 */}
-                  </span>
+                  {introError && (
+                    <span className="introError error" ref={introErrorRef}>
+                      20자 이상 입력하세요
+                      {/* FIXME: 제보페이지이므로 조건 완화 고려 */}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -453,9 +469,11 @@ const ReportPage = () => {
                         </div>
                       ))}
                   </div>
-                  <span className="menuError error" ref={menuErrorRef}>
-                    메뉴를 하나 이상 등록하세요
-                  </span>
+                  {menuError && (
+                    <span className="menuError error" ref={menuErrorRef}>
+                      메뉴를 하나 이상 등록하세요
+                    </span>
+                  )}
                 </div>
                 <div className="menu-add">
                   <p>메뉴 등록</p>
@@ -511,10 +529,36 @@ const ReportPage = () => {
           {/* FIXME: 제보자 정보 카드 */}
 
           <div className="cards p-6">
-            <h2>제보 시 주의사항</h2>
-            <p>ㆍ허위 정보 제보 시 서비스 이용이 제한될 수 있습니다.</p>
-            <p>ㆍ개인정보는 제보 검토 목적으로만 사용됩니다.</p>
-            <p>ㆍ중복 제보는 자동으로 필터링됩니다.</p>
+            {/* 이용약관 */}
+            <div>
+              <p>
+                제보 내용이 사실임을 확인하며,{" "}
+                <Link to="/terms">
+                  <span className="text-brown-main">이용약관</span>
+                </Link>
+                에 동의합니다. *
+              </p>
+            </div>
+            {/* 주의사항 */}
+            <div className="flex p-4 flex-col gap-2 bg-yellow-50 border border-solid border-yellow-200 rounded-md">
+              <div className="flex gap-2 items-center">
+                <AlertCircle className="w-5 text-brown-main" />
+                <h2 className="text-base text-brown-main font-medium">
+                  제보 시 주의사항
+                </h2>
+              </div>
+              <div className="text-brown-main text-xs flex flex-col gap-1 pl-2">
+                <p>ㆍ허위 정보 제보 시 서비스 이용이 제한될 수 있습니다.</p>
+                <p>ㆍ개인정보는 제보 검토 목적으로만 사용됩니다.</p>
+                <p>ㆍ중복 제보는 자동으로 필터링됩니다.</p>
+              </div>
+            </div>
+
+            {/* 제보버튼 */}
+            <ButtonStyle>
+              <ButtonCP>푸드트럭 제보하기</ButtonCP>
+              <OutLineButtonCP color="black">취소</OutLineButtonCP>
+            </ButtonStyle>
           </div>
         </div>
       </ReportPageMainStyle>
