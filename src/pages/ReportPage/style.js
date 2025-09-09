@@ -12,7 +12,10 @@ export const ReportPageMainStyle = styled.main`
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
-    background: var(--brown-dark);
+    background: white;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
   }
 
   @media screen and (max-width: 768px) {
@@ -105,5 +108,17 @@ export const ReportPageMenuStyle = styled.div`
     font-size: 0.9rem;
     color: var(--gray-4);
     margin-top: 0.5rem;
+  }
+`;
+
+export const ButtonStyle = styled.div`
+  display: flex;
+  gap: 20px;
+  & > span {
+    flex: 1;
+    padding: 1rem;
+  }
+  & > span:nth-child(1) {
+    opacity: 50%;
   }
 `;
