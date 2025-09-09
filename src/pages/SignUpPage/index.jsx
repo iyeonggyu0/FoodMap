@@ -55,7 +55,7 @@ const SignUpPage = () => {
         const res = await axios.post(
           `${import.meta.env.VITE_API_URL}/certification/send`,
           {
-            phone: phone,
+            phone: phone.replace(/-/g, ""), // 하이픈 제거
           },
           {
             withCredentials: true,
@@ -144,7 +144,7 @@ const SignUpPage = () => {
         const res = await axios.post(
           `${import.meta.env.VITE_API_URL}/certification/check`,
           {
-            phone: phone,
+            phone: phone.replace(/-/g, ""), // 하이픈 제거
             certification: certification,
           },
           {
@@ -160,21 +160,25 @@ const SignUpPage = () => {
         return alert("인증번호확인 에러");
       }
 
-      const params = new URLSearchParams();
-      params.append("username", username);
-      params.append("password", password);
-      params.append("nickname", nickname);
-      params.append("email", email);
-      params.append("role", role);
-      params.append("phone", phone);
+      // JSON 형식으로 회원가입 요청
+      const requestBody = {
+        username: username,
+        password: password,
+        nickname: nickname,
+        email: email,
+        role: role.toLowerCase(), // 소문자로 변경
+        phone: phone.replace(/-/g, ""), // 하이픈 제거
+        smsCode: certification,
+      };
+
       axios
-        .post(`${import.meta.env.VITE_API_URL}/member`, params, {
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        .post(`${import.meta.env.VITE_API_URL}/member/json`, requestBody, {
+          headers: { "Content-Type": "application/json" },
           withCredentials: true,
         })
         .then((res) => {
-          if (res.success) {
-            alert("회원가입 성공");
+          if (res.data.message) {
+            alert(res.data.message);
             setUsername("");
             setPassword("");
             setConfirmPassword("");
@@ -185,8 +189,12 @@ const SignUpPage = () => {
             setCertification("");
             window.location.href = "/login";
           } else {
-            alert("회원가입 실패: " + res.data);
+            alert("회원가입에 실패했습니다. 다시 시도해주세요.");
           }
+        })
+        .catch((err) => {
+          console.error("회원가입 중 오류 발생:", err);
+          alert("회원가입에 실패했습니다. 다시 시도해주세요.");
         });
     }
   };

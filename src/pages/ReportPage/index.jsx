@@ -91,7 +91,7 @@ const ReportPage = () => {
     // FIXME: api 주소 확인하기
     axios
       .post(
-        `${import.meta.env.VITE_API_URL}`,
+        `${import.meta.env.VITE_API_URL}/user/foodtruck`,
         {
           // 푸드트럭 이름
           name: FTName,

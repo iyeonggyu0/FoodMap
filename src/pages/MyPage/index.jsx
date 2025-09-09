@@ -22,7 +22,7 @@ const MyPage = () => {
     // 사용자 정보를 불러오는 API 호출
     // FIXME:
     axios
-      .get(`${import.meta.env.VITE_API_URL}/user/info`, { withCredentials: true })
+      .get(`${import.meta.env.VITE_API_URL}/api/users`, { withCredentials: true })
       .then((res) => {
         if (res.data.success) {
           setUserData(res.data.user);
@@ -47,8 +47,12 @@ const MyPage = () => {
     axios
       .post(`${import.meta.env.VITE_API_URL}/logout`, null, { withCredentials: true })
       .then((res) => {
-        if (res.data.success) {
-          alert("로그아웃 되었습니다.");
+        if (res.data.message) {
+          alert(res.data.message);
+          setUserData({});
+          window.location.href = "/";
+        } else {
+          alert("로그아웃되었습니다.");
           setUserData({});
           window.location.href = "/";
         }
