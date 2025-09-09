@@ -5,7 +5,9 @@ const ButtonCPStyle = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+  transition: opacity 0.2s ease;
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  opacity: ${({ disabled }) => (disabled ? 0.4 : 1)};
   background-color: ${({ pcOnly, media, color }) =>
     pcOnly ? (media ? `var(${color})` : "transparent") : `var(${color})`};
   padding: ${({ pcOnly, media }) =>
@@ -23,6 +25,7 @@ const ButtonCPStyle = styled.span`
  * @param {boolean} [pcOnly=false] PC에서만 배경을 유지 할 예정인지 (기본값: F)
  * @param {string} color 글자, 테두리 색을 정한다. (기본값: --brown-light:)
  * @param {string} fontColor 글자 색을 정한다. (기본값: --gray-0)
+ * @param {boolean} [disabled=false] 클릭 비활성화를 할 것인지 (기본값: F)
  * @returns BrownButtonCP 는 _common에 속하며, 해당 태그로 감싼 글자를 span으로 갈색 css 적용
  */
 const ButtonCP = ({
@@ -32,6 +35,7 @@ const ButtonCP = ({
   pcOnly = false,
   color = "--brown-light",
   fontColor = "--gray-0",
+  disabled = false,
 }) => {
   const isPc = useMedia().isPc;
   return (
@@ -40,7 +44,8 @@ const ButtonCP = ({
       media={isPc}
       color={color}
       fontColor={fontColor}
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
     >
       {icon && (
         <span
