@@ -146,26 +146,29 @@ const RegisterPage = () => {
       }
     }
 
+    // FormData 생성
+    const formData = new FormData();
+    const requestData = {
+      name: FTName,
+      category: FTCategory,
+      intro: FTIntro,
+      operatorNum: operatorNum,
+      agreeTerms: termsChecked,
+      menu: menuList,
+      schedule: scheduleList,
+    };
+    formData.append("request", JSON.stringify(requestData));
+    if (file) {
+      formData.append("image", file);
+    }
+
     axios
-      .post(
-        `${import.meta.env.VITE_API_URL}/user/foodtruck`,
-        {
-          name: FTName,
-          category: FTCategory,
-          intro: FTIntro,
-          menu: menuList,
-          schedule: scheduleList,
-          operatorNum: operatorNum,
-          agreeTerms: termsChecked,
-          imageUrl: url,
-        },
-        {
-          withCredentials: true,
-          headers: { "Content-Type": "application/json" },
-        }
-      )
+      .post(`${import.meta.env.VITE_API_URL}/user/foodtruck`, formData, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
+      })
       .then((res) => {
-        if (res.data.success) {
+        if (res.data.message === "created") {
           alert("푸드트럭 등록이 완료되었습니다!");
           // 입력값 초기화
           setFTName("");
@@ -188,13 +191,10 @@ const RegisterPage = () => {
           setMenuNum("");
           setMenuModify(false);
           setEditMenuNum("");
-          setMenuList([]);
-          setMenuName("");
-          setMenuPrice("");
-          setMenuInfo("");
-          setMenuNum("");
+        } else if (res.data.error === "TERMS_NOT_AGREED") {
+          alert("약관 동의가 필요합니다.");
         } else {
-          alert("푸드트럭 등록에 실패했습니다. 다시 시도해주세요.");
+          alert(res.data.message || "푸드트럭 등록에 실패했습니다. 다시 시도해주세요.");
         }
       })
       .catch((err) => {
@@ -242,7 +242,6 @@ const RegisterPage = () => {
   const [menuInfo, onChangeMenuInfo, setMenuInfo] = useInput("");
   const [menuNum, onChangeMenuNum, setMenuNum] = useInput("");
   const [file, setFile] = useState(null);
-  const [url, setUrl] = useState("");
 
   /**
    * 메뉴 등록 함수
@@ -408,29 +407,8 @@ const RegisterPage = () => {
    * 이미지 업로드 핸들러
    */
   const handleUpload = async () => {
-    if (!file) return alert("파일을 선택하세요!");
-
-    // 서버에 업로드 요청 (아래 API는 직접 구현)
-    const res = await fetch("/api/upload", {
-      method: "POST",
-      body: JSON.stringify({ filename: file.name, type: file.type }),
-      headers: { "Content-Type": "application/json" },
-    });
-    const { url: uploadUrl, token } = await res.json();
-
-    // 실제 파일 업로드 (Vercel Blob으로 직접)
-    const uploadRes = await fetch(uploadUrl, {
-      method: "PUT",
-      headers: { "Content-Type": file.type, "x-vercel-blob-token": token },
-      body: file,
-    });
-
-    if (uploadRes.ok) {
-      setUrl(uploadUrl.split("?")[0]); // 업로드된 파일의 URL
-      return true; // 업로드 실패
-    } else {
-      return false; // 업로드 실패
-    }
+    // 이미지 업로드 함수는 더 이상 사용하지 않음
+    return;
   };
 
   return (
