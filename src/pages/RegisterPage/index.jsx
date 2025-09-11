@@ -147,16 +147,35 @@ const RegisterPage = () => {
     }
 
     // FormData 생성
-    const formData = new FormData();
+    // menu의 price, num을 문자열로 변환
+    const menuListForRequest = menuList.map((menu) => ({
+      name: menu.name,
+      price: String(menu.price),
+      info: menu.info,
+      num: String(menu.num),
+    }));
+
+    // schedule의 start/end를 HH:mm 형식으로 맞춤
+    const scheduleListForRequest = scheduleList.map((item) => ({
+      day: item.day,
+      holiday: item.holiday,
+      start: item.start.length === 2 ? item.start + ":00" : item.start, // 15 → 15:00
+      end: item.end.length === 2 ? item.end + ":00" : item.end,
+      mapAddress: item.mapAddress,
+      userAddress: item.userAddress,
+    }));
+
     const requestData = {
       name: FTName,
       category: FTCategory,
       intro: FTIntro,
       operatorNum: operatorNum,
       agreeTerms: termsChecked,
-      menu: menuList,
-      schedule: scheduleList,
+      menu: menuListForRequest,
+      schedule: scheduleListForRequest,
     };
+
+    const formData = new FormData();
     formData.append("request", JSON.stringify(requestData));
     if (file) {
       formData.append("image", file);

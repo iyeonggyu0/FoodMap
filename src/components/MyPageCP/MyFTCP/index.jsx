@@ -14,6 +14,12 @@ import ButtonCP from "../../_common/ButtonCP";
 import { ftDummyData } from "../../../_dummyData/ftDummyData";
 
 const MyFTCP = () => {
+  // 이미지 파일 상태
+  const [file, setFile] = useState(null);
+  // 이미지 선택 핸들러
+  const handleChange = (e) => {
+    setFile(e.target.files[0]);
+  };
   const isPc = useMedia().isPc;
 
   // 주소찾기 모달 상태 및 선택된 요일 인덱스
@@ -130,36 +136,49 @@ const MyFTCP = () => {
       return;
     }
 
-    alert("수정 신청이 완료되었습니다!");
-
-    // FIXME: 로그인 세션 확인하기
+    // id는 실제 푸드트럭 PK로 치환 필요 (예시: 1)
+    const truckId = 1; // TODO: 실제 id로 치환
+    const requestBody = {
+      id: truckId,
+      name: FTName,
+      category: FTCategory,
+      intro: FTIntro,
+      menu: menuList.map((menu) => ({
+        name: menu.name,
+        price: String(menu.price),
+        info: menu.info,
+        num: String(menu.num),
+      })),
+      schedule: scheduleList.map((item) => ({
+        day: item.day,
+        holiday: item.holiday,
+        start: item.start.length === 2 ? item.start + ":00" : item.start,
+        end: item.end.length === 2 ? item.end + ":00" : item.end,
+        mapAddress: item.mapAddress,
+        userAddress: item.userAddress,
+      })),
+      operatorNum: operatorNum,
+    };
 
     axios
       .put(
-        `${import.meta.env.VITE_API_URL}/user/foodtruck`,
+        `${import.meta.env.VITE_API_URL}/user/foodtruck/${truckId}`,
+        (() => {
+          const formData = new FormData();
+          formData.append("request", JSON.stringify(requestBody));
+          if (file) formData.append("image", file);
+          return formData;
+        })(),
         {
-          // 푸드트럭 이름
-          name: FTName,
-          // 푸드트럭 카테고리
-          category: FTCategory,
-          // 푸드트럭 소개
-          intro: FTIntro,
-          // 메뉴 리스트
-          menu: menuList,
-          // 영업 일정
-          schedule: scheduleList,
-          // 사업자 등록번호
-          operatorNum: operatorNum,
-        },
-        { withCredentials: true }
+          withCredentials: true,
+        }
       )
       .then((res) => {
-        if (res.data.success) {
+        if (res.data.message === "updated") {
           alert("푸드트럭 정보가 수정되었습니다!");
-          // 페이지 새로고침으로 최신 데이터 반영
           window.location.reload();
         } else {
-          alert("푸드트럭 정보 수정에 실패했습니다. 다시 시도해주세요.");
+          alert(res.data.message || "푸드트럭 정보 수정에 실패했습니다. 다시 시도해주세요.");
         }
       })
       .catch((err) => {
@@ -454,6 +473,17 @@ const MyFTCP = () => {
               <span className="introError error" ref={introErrorRef}>
                 20자 이상 입력하세요
               </span>
+            </div>
+          </div>
+        </div>
+        {/* 이미지 업로드 */}
+        <div>
+          <h2>이미지</h2>
+          <div className="image-upload col flexCenter">
+            <div>
+              <p>푸드트럭이 드러난 이미지를 업로드 해 주세요</p>
+              <p>선택사항 / 1MB 이하</p>
+              <input type="file" accept="image/*" onChange={handleChange} />
             </div>
           </div>
         </div>
