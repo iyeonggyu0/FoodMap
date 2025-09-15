@@ -18,7 +18,14 @@ const MyFTCP = () => {
   const [file, setFile] = useState(null);
   // 이미지 선택 핸들러
   const handleChange = (e) => {
-    setFile(e.target.files[0]);
+    const selectedFile = e.target.files[0];
+    console.log("MyFTCP - 선택된 파일:", selectedFile);
+    if (selectedFile) {
+      console.log("MyFTCP - 파일명:", selectedFile.name);
+      console.log("MyFTCP - 파일 크기:", selectedFile.size);
+      console.log("MyFTCP - 파일 타입:", selectedFile.type);
+    }
+    setFile(selectedFile);
   };
   const isPc = useMedia().isPc;
 
@@ -194,11 +201,27 @@ const MyFTCP = () => {
     // FormData 생성
     const formData = new FormData();
     formData.append("request", JSON.stringify(changedFields));
-    if (file) formData.append("image", file);
+
+    console.log("전송할 changedFields:", changedFields);
+    console.log("선택된 파일:", file);
+
+    if (file) {
+      formData.append("image", file);
+      console.log("이미지 파일이 FormData에 추가됨:", file.name, file.size);
+    } else {
+      console.log("선택된 이미지 파일이 없음");
+    }
+
+    // FormData 내용 확인
+    console.log("FormData 내용:");
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
 
     axios
       .put(`${import.meta.env.VITE_API_URL}/user/foodtruck/${truckId}`, formData, {
         withCredentials: true,
+        headers: { Accept: "application/json" },
       })
       .then((res) => {
         if (res.data.message === "updated") {
@@ -504,7 +527,7 @@ const MyFTCP = () => {
           <div className="image-upload col flexCenter">
             <div>
               <p>푸드트럭이 드러난 이미지를 업로드 해 주세요</p>
-              <p>선택사항 / 1MB 이하</p>
+              <p>선택사항</p>
               <input type="file" accept="image/*" onChange={handleChange} />
             </div>
           </div>

@@ -132,19 +132,6 @@ const RegisterPage = () => {
       alert("입력값에 문제가 있습니다.");
       return;
     }
-    // 에러 없으면 API 요청
-    if (file !== null) {
-      // 1MB = 1024 * 1024 bytes
-      if (file.size > 1024 * 1024) {
-        alert("이미지 파일이 너무 큽니다.\n1MB 이하의 이미지만 업로드할 수 있습니다.");
-        return;
-      } else {
-        const image = await handleUpload();
-        if (!image) {
-          return alert("이미지 업로드에 실패했습니다.\n다시 시도해주세요.");
-        }
-      }
-    }
 
     // FormData 생성
     // menu의 price, num을 문자열로 변환
@@ -177,13 +164,27 @@ const RegisterPage = () => {
 
     const formData = new FormData();
     formData.append("request", JSON.stringify(requestData));
+
+    console.log("RegisterPage - 전송할 requestData:", requestData);
+    console.log("RegisterPage - 선택된 파일:", file);
+
     if (file) {
       formData.append("image", file);
+      console.log("RegisterPage - 이미지 파일이 FormData에 추가됨:", file.name, file.size);
+    } else {
+      console.log("RegisterPage - 선택된 이미지 파일이 없음");
+    }
+
+    // FormData 내용 확인
+    console.log("RegisterPage - FormData 내용:");
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
     }
 
     axios
       .post(`${import.meta.env.VITE_API_URL}/user/foodtruck`, formData, {
         withCredentials: true,
+        headers: { Accept: "application/json" },
       })
       .then((res) => {
         if (res.data.message === "created") {
@@ -418,15 +419,14 @@ const RegisterPage = () => {
    * @param {*} e
    */
   const handleChange = (e) => {
-    setFile(e.target.files[0]);
-  };
-
-  /**
-   * 이미지 업로드 핸들러
-   */
-  const handleUpload = async () => {
-    // 이미지 업로드 함수는 더 이상 사용하지 않음
-    return;
+    const selectedFile = e.target.files[0];
+    console.log("RegisterPage - 선택된 파일:", selectedFile);
+    if (selectedFile) {
+      console.log("RegisterPage - 파일명:", selectedFile.name);
+      console.log("RegisterPage - 파일 크기:", selectedFile.size);
+      console.log("RegisterPage - 파일 타입:", selectedFile.type);
+    }
+    setFile(selectedFile);
   };
 
   return (
