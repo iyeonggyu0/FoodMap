@@ -49,8 +49,93 @@ const MyFTCP = () => {
     e.preventDefault();
     let error = false;
     let errorMsgs = [];
-    // ...기존 유효성 검사 코드...
-    // (생략)
+
+    // 1. 푸드트럭 이름 2글자 이상
+    if (!FTName || FTName.length < 2) {
+      nameErrorRef.current.style.visibility = "visible";
+      errorMsgs.push("푸드트럭 이름은 2글자 이상 입력해야 합니다.");
+      error = true;
+    } else {
+      nameErrorRef.current.style.visibility = "hidden";
+    }
+    // 2. 카테고리 선택
+    if (!FTCategory) {
+      categoryErrorRef.current.style.visibility = "visible";
+      errorMsgs.push("카테고리를 선택하세요.");
+      error = true;
+    } else {
+      categoryErrorRef.current.style.visibility = "hidden";
+    }
+    // 3. 소개 20자 이상
+    if (!FTIntro || FTIntro.length < 20) {
+      introErrorRef.current.style.visibility = "visible";
+      errorMsgs.push("푸드트럭 소개는 20자 이상 입력해야 합니다.");
+      error = true;
+    } else {
+      introErrorRef.current.style.visibility = "hidden";
+    }
+    // 6. 메뉴 1개 이상
+    if (!menuList || menuList.length === 0) {
+      menuErrorRef.current.style.visibility = "visible";
+      errorMsgs.push("메뉴를 하나 이상 등록하세요.");
+      error = true;
+    } else {
+      menuErrorRef.current.style.visibility = "hidden";
+    }
+    // 7. 요일 중 하나라도 영업 체크, 체크된 요일의 데이터 검사
+    let hasOpenDay = false;
+    let newScheduleErrors = scheduleErrors.map(() => ({ open: false, close: false, address: false }));
+    scheduleList.forEach((item, idx) => {
+      if (item.holiday) {
+        hasOpenDay = true;
+        // 7-1. 오픈/클로즈 숫자 두자리
+        if (!/^\d{2}$/.test(item.start)) {
+          newScheduleErrors[idx].open = true;
+          errorMsgs.push(`${item.day}요일 오픈 시간은 두자리 숫자여야 합니다.`);
+          error = true;
+        }
+        if (!/^\d{2}$/.test(item.end)) {
+          newScheduleErrors[idx].close = true;
+          errorMsgs.push(`${item.day}요일 클로징 시간은 두자리 숫자여야 합니다.`);
+          error = true;
+        }
+        // 7-2. 클로징 >= 오픈
+        if (/^\d{2}$/.test(item.start) && /^\d{2}$/.test(item.end) && Number(item.end) < Number(item.start)) {
+          newScheduleErrors[idx].close = true;
+          errorMsgs.push(`${item.day}요일 클로징 시간은 오픈 시간보다 빠를 수 없습니다.`);
+          error = true;
+        }
+        // 7-3. 주소 10자 이상
+        if (!item.mapAddress || item.mapAddress.length < 10 || !item.userAddress || item.userAddress.length < 10) {
+          newScheduleErrors[idx].address = true;
+          errorMsgs.push(`${item.day}요일 주소는 10자 이상 입력해야 합니다.`);
+          error = true;
+        }
+      }
+    });
+    setScheduleErrors(newScheduleErrors);
+    if (!hasOpenDay) {
+      errorMsgs.push("요일 중 하나 이상 영업 체크가 필요합니다.");
+      error = true;
+    }
+    // 8. 사업자 등록번호
+    if (!/^\d{3}-\d{2}-\d{5}$/.test(operatorNum)) {
+      operatorNumErrorRef.current.style.visibility = "visible";
+      errorMsgs.push("사업자 등록번호는 000-00-00000 형식이어야 합니다.");
+      error = true;
+    } else {
+      operatorNumErrorRef.current.style.visibility = "hidden";
+    }
+    // 9. 약관 동의
+    const termsChecked = document.getElementById("terms")?.checked;
+    if (!termsChecked) {
+      termsErrorRef.current.style.visibility = "visible";
+      errorMsgs.push("약관에 동의해야 합니다.");
+      error = true;
+    } else {
+      termsErrorRef.current.style.visibility = "hidden";
+    }
+
     if (error) {
       alert("입력값에 문제가 있습니다.");
       return;

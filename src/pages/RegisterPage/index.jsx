@@ -184,7 +184,6 @@ const RegisterPage = () => {
     axios
       .post(`${import.meta.env.VITE_API_URL}/user/foodtruck`, formData, {
         withCredentials: true,
-        headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
         if (res.data.message === "created") {
