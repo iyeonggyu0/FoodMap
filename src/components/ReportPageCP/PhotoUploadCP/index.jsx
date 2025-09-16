@@ -66,7 +66,7 @@ const PhotoUploadCP = ({ formData, setFormData }) => {
   };
   return (
     <>
-      <Card>
+      <Card className="shadow-lg border-solid border-brown-dark">
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Camera className="h-5 w-5 text-brown-main" />
@@ -104,6 +104,7 @@ const PhotoUploadCP = ({ formData, setFormData }) => {
               id="photo-upload"
             />
             <ButtonCP
+              className="w-32 mx-auto"
               onClick={() => document.getElementById("photo-upload")?.click()}
               disabled={formData.photos.length >= 5}
             >

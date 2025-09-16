@@ -4,6 +4,9 @@ export default {
   content: ["./src/**/*.{html,js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      boxShadow: {
+        cards: "0 0 4px rgba(0, 0, 0, 0.3)",
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
