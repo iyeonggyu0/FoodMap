@@ -36,6 +36,7 @@ const ButtonCP = ({
   color = "--brown-light",
   fontColor = "--gray-0",
   disabled = false,
+  className = "",
 }) => {
   const isPc = useMedia().isPc;
   return (
@@ -46,6 +47,7 @@ const ButtonCP = ({
       fontColor={fontColor}
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
+      className={className}
     >
       {icon && (
         <span
