@@ -12,14 +12,14 @@ export const ReportPageMainStyle = styled.main`
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
-    background: white;
+    background: var(--gray-0);
     display: flex;
     flex-direction: column;
     gap: 24px;
   }
 
   @media screen and (max-width: 768px) {
-    padding: 1.5rem 0;
+    padding: 0;
   }
 `;
 
@@ -34,7 +34,6 @@ export const ReportPageMenuStyle = styled.div`
   & > h2 + div {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 1rem;
   }
 
   & .col > div {
@@ -54,6 +53,10 @@ export const ReportPageMenuStyle = styled.div`
 
     & .menu-list > p + div {
       height: 200px !important;
+    }
+
+    & .menu-add {
+      margin-bottom: 0 !important;
     }
   }
 
@@ -109,6 +112,12 @@ export const ReportPageMenuStyle = styled.div`
     color: var(--gray-4);
     margin-top: 0.5rem;
   }
+
+  /* 수정모드, 등록모드 버튼 */
+  & .btnMod > div span {
+    padding: 14px;
+    margin-bottom: 0;
+  }
 `;
 
 export const ButtonStyle = styled.div`
@@ -119,6 +128,5 @@ export const ButtonStyle = styled.div`
     padding: 1rem;
   }
   & > span:nth-child(1) {
-    opacity: 50%;
   }
 `;
