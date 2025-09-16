@@ -1,13 +1,14 @@
 import { useCallback, useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import InputCP from "@/components/_common/InputCP";
-import SelectInputCP from "@/components/_common/SelectInputCP";
-import TextAreaInputCP from "@/components/_common/TextAreaInputCP";
-import { useInput } from "@/hooks/useInput";
 import MainLayOut from "@/layout/MainLayOut";
 import { ReportPageMainStyle, ReportPageMenuStyle, ButtonStyle } from "./style";
+import { useInput } from "@/hooks/useInput";
+import InputCP from "@/components/_common/InputCP";
 import ButtonCP from "@/components/_common/ButtonCP";
 import OutLineButtonCP from "@/components/_common/OutLineButtonCP";
+import SelectInputCP from "@/components/_common/SelectInputCP";
+import TextAreaInputCP from "@/components/_common/TextAreaInputCP";
+import PhotoUploadCP from "@/components/ReportPageCP/PhotoUploadCP";
 import {
   Card,
   CardContent,
@@ -15,7 +16,17 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Star, AlertCircle, Camera, CheckCircle } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Star, AlertCircle, Camera, CheckCircle, MapPin } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEraser, faPen } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
@@ -26,13 +37,58 @@ const ReportPage = () => {
   const [categoryError, setCategoryError] = useState(false);
   const [introError, setIntroError] = useState(false);
   const [menuError, setMenuError] = useState(false);
+
+  const [formData, setFormData] = useState({
+    truckName: "",
+    category: "",
+    location: "",
+    detailedAddress: "",
+    operatingHours: "",
+    phone: "",
+    description: "",
+    menuItems: "",
+    reporterName: "",
+    reporterEmail: "",
+    reporterPhone: "",
+    photos: [],
+    agreeTerms: false,
+  });
+
+  const locations = [
+    "강남구",
+    "강동구",
+    "강북구",
+    "강서구",
+    "관악구",
+    "광진구",
+    "구로구",
+    "금천구",
+    "노원구",
+    "도봉구",
+    "동대문구",
+    "동작구",
+    "마포구",
+    "서대문구",
+    "서초구",
+    "성동구",
+    "성북구",
+    "송파구",
+    "양천구",
+    "영등포구",
+    "용산구",
+    "은평구",
+    "종로구",
+    "중구",
+    "중랑구",
+  ];
+
   // 에러 span refs
   const nameErrorRef = useRef();
   const categoryErrorRef = useRef();
   const introErrorRef = useRef();
   const menuErrorRef = useRef();
   const termsErrorRef = useRef();
-  // 제보 신청 함수
+
   /**
    * 푸드트럭 제보 신청을 처리하는 함수
    * @param {Event} e - 폼 제출 이벤트 객체
@@ -192,7 +248,6 @@ const ReportPage = () => {
    * - menuNum: 이미 menuList에 존재하면 등록 불가
    * 에러 발생 시 alert로 안내
    */
-  // 메뉴 등록 함수
   const menuAddHandler = useCallback(() => {
     // menuName 3글자 이상 체크
     if (!menuName || menuName.length < 3) {
@@ -309,6 +364,19 @@ const ReportPage = () => {
     [menuModify, editMenuNum]
   );
 
+  /**
+   * 인풋값 변할 때 formData로 바뀐거 전달하는 함수
+   * @param {*} key
+   * @param {*} value
+   */
+  const handleInputChange = (key, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+    console.log(formData);
+  };
+
   return (
     <MainLayOut>
       <ReportPageMainStyle>
@@ -356,10 +424,13 @@ const ReportPage = () => {
               </div>
             </CardContent>
           </Card>
+
           <section className="cards p-6">
             <div>
-              <h1 className="text-3xl font-bold">푸드트럭 기본 정보</h1>
-              <p className="text-base">
+              <h1 className="text-2xl font-bold text-brown-10">
+                푸드트럭 기본 정보
+              </h1>
+              <p className="text-sm text-muted-foreground">
                 제보하려는 푸드트럭의 기본 정보를 입력해주세요
               </p>
             </div>
@@ -504,7 +575,7 @@ const ReportPage = () => {
                       ex="숫자가 이어질 필요가 없습니다. 메뉴는 오름차순으로 표시됩니다."
                     />
                   </div>
-                  <div>
+                  <div className="btnMod">
                     {/* 수정모드, 등록모드 버튼 구분 */}
                     {!menuModify && (
                       <div onClick={menuAddHandler}>
@@ -522,22 +593,106 @@ const ReportPage = () => {
             </ReportPageMenuStyle>
           </section>
 
-          {/* FIXME: 푸드트럭 위치 정보 카드 */}
+          {/* 푸드트럭 위치 정보 카드 */}
+          <Card className="cards">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <MapPin className="h-5 w-5 text-brown-main" />
+                <span>위치 정보</span>
+              </CardTitle>
+              <CardDescription>
+                푸드트럭을 발견한 위치를 알려주세요
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="location">지역 *</Label>
+                  <Select
+                    onValueChange={(value) =>
+                      handleInputChange("location", value)
+                    }
+                  >
+                    <SelectTrigger className="border border-solid mt-2">
+                      <SelectValue placeholder="지역 선택" />
+                    </SelectTrigger>
+                    <SelectContent className="border border-solid border-gray-3">
+                      {locations.map((location) => (
+                        <SelectItem key={location} value={location}>
+                          {location}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="operatingHours">운영 시간</Label>
+                  <Input
+                    className="border border-solid mt-2"
+                    id="operatingHours"
+                    placeholder="예: 11:00 - 20:00"
+                    value={formData.operatingHours}
+                    onChange={(e) =>
+                      handleInputChange("operatingHours", e.target.value)
+                    }
+                  />
+                </div>
+              </div>
 
-          {/* FIXME: 사진 첨부 카드 */}
+              <div>
+                <Label htmlFor="detailedAddress">상세 위치 *</Label>
+                <Input
+                  className="border border-solid mt-2"
+                  id="detailedAddress"
+                  placeholder="예: 강남역 2번 출구 앞, 신촌 연세대 정문 근처"
+                  value={formData.detailedAddress}
+                  onChange={(e) =>
+                    handleInputChange("detailedAddress", e.target.value)
+                  }
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="phone">연락처</Label>
+                <Input
+                  className="border border-solid mt-2"
+                  id="phone"
+                  type="tel"
+                  placeholder="010-1234-5678 (알고 있는 경우만)"
+                  value={formData.phone}
+                  onChange={(e) => handleInputChange("phone", e.target.value)}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* 사진 업로드 카드 */}
+          <PhotoUploadCP formData={formData} setFormData={setFormData} />
 
           {/* FIXME: 제보자 정보 카드 */}
 
           <div className="cards p-6">
             {/* 이용약관 */}
-            <div>
-              <p>
+            <div className="flex gap-2">
+              <Checkbox
+                className="border-solid border-brown-main data-[state=checked]:bg-brown-main"
+                id="agreeTerms"
+                checked={formData.agreeTerms}
+                onCheckedChange={(checked) =>
+                  handleInputChange("agreeTerms", checked)
+                }
+              />
+              <Label
+                htmlFor="agreeTerms"
+                className="cursor-pointer select-none"
+              >
                 제보 내용이 사실임을 확인하며,{" "}
                 <Link to="/terms">
                   <span className="text-brown-main">이용약관</span>
                 </Link>
                 에 동의합니다. *
-              </p>
+              </Label>
             </div>
             {/* 주의사항 */}
             <div className="flex p-4 flex-col gap-2 bg-yellow-50 border border-solid border-yellow-200 rounded-md">
@@ -556,7 +711,9 @@ const ReportPage = () => {
 
             {/* 제보버튼 */}
             <ButtonStyle>
-              <ButtonCP>푸드트럭 제보하기</ButtonCP>
+              <ButtonCP disabled={!formData.agreeTerms}>
+                푸드트럭 제보하기
+              </ButtonCP>
               <OutLineButtonCP color="black">취소</OutLineButtonCP>
             </ButtonStyle>
           </div>
