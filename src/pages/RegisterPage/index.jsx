@@ -13,10 +13,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEraser, faPen } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useMedia } from "../../hooks/useMedia";
+import { useNavigate } from "react-router-dom";
 
 const RegisterPage = () => {
   const isPc = useMedia().isPc;
 
+  const nav = useNavigate();
   // 주소찾기 모달 상태 및 선택된 요일 인덱스
   const [modalState, setModalState] = useState(false);
   const [selectedScheduleIdx, setSelectedScheduleIdx] = useState(null);
@@ -210,6 +212,7 @@ const RegisterPage = () => {
           setMenuNum("");
           setMenuModify(false);
           setEditMenuNum("");
+          nav("/");
         } else if (res.data.error === "TERMS_NOT_AGREED") {
           alert("약관 동의가 필요합니다.");
         } else {

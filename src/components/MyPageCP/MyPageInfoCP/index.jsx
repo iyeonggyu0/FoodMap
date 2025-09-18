@@ -14,107 +14,19 @@ const MyPageInfoCP = ({ userData }) => {
   const [nickNameError, setNickNameError] = useState(false);
   const [phone, onChangePhone, setPhone] = useInput();
 
-  // 인증/비밀번호 관련
-  const [certification, onChangeCertification, setCertification] = useInput(""); // 인증번호 입력
-
   const [password, onChangePassword, setPassword] = useInput("");
   const [confirmPassword, onChangeConfirmPassword, setConfirmPassword] = useInput("");
   const [pwError, setPwError] = useState(false);
   const [pwConfirmError, setPwConfirmError] = useState(false);
-
-  // 에러/상태 관련
-  const [certificationError, setCertificationError] = useState(false);
-  const [phoneError, setPhoneError] = useState(false);
-  const [isCertificationSent, setIsCertificationSent] = useState(false); // 인증번호 발송 여부
 
   const isPc = useMedia().isPc;
 
   useEffect(() => {
     setNickName(userData.nickname);
     setPhone(userData.phone);
-    setCertification("");
     setPassword("");
     setConfirmPassword("");
   }, [userData]);
-
-  /**
-   * 인증번호 발송 함수
-   * - 전화번호 형식(010으로 시작, 11자리) 검증
-   * - 인증번호 발송 API 호출
-   * - 성공 시 인증번호 발송 상태 변경 및 알림
-   */
-  const onCertificationSent = async () => {
-    // 전화번호: 숫자만, 9~11자
-    const phoneRegex = /^010\d{8}$/;
-    if (!phoneRegex.test(phone)) {
-      return setPhoneError(true);
-    } else {
-      setPhoneError(false);
-      try {
-        const res = await axios.post(
-          `${import.meta.env.VITE_API_URL}/certification/send`,
-          {
-            phone: phone.replace(/-/g, ""), // 하이픈 제거
-          },
-          {
-            withCredentials: true,
-          }
-        );
-        if (res.data.success) {
-          alert("인증번호가 발송되었습니다.");
-          setIsCertificationSent(true);
-        } else {
-          alert("인증번호 발송에 실패했습니다. 다시 시도해주세요.");
-        }
-      } catch (error) {
-        alert("인증번호 발송 중 오류가 발생했습니다. 다시 시도해주세요.");
-        console.error("인증번호 발송 에러:", error);
-      }
-    }
-  };
-
-  /**
-   * 전화번호 변경 함수
-   * - 변경된 전화번호와 인증번호를 검증
-   * - 인증번호 확인 API 호출
-   * - 성공 시 전화번호 변경 및 페이지 새로고침
-   */
-  const onUpdataPhone = useCallback(async () => {
-    if (userData.phone === phone) return alert("변경된 전화번호가 없습니다.");
-
-    // 전화번호: 숫자만, 9~11자
-    const phoneRegex = /^010\d{8}$/;
-    if (!phoneRegex.test(phone)) {
-      return setPhoneError(true);
-    } else {
-      setPhoneError(false);
-
-      // 인증번호 확인 로직 (form-urlencoded)
-      try {
-        const res = await axios.put(
-          `${import.meta.env.VITE_API_URL}/certification/check`,
-          {
-            phone: phone.replace(/-/g, ""), // 하이픈 제거
-            certification: certification,
-          },
-          {
-            withCredentials: true,
-          }
-        );
-        if (res.data.verified) {
-          setCertificationError(false);
-          alert("전화번호가 변경되었습니다.");
-          return window.location.reload();
-        } else {
-          setCertificationError(true);
-          alert("인증번호가 일치하지 않습니다.");
-        }
-      } catch (error) {
-        setCertificationError(true);
-        console.error("인증번호 확인 중 에러:", error);
-      }
-    }
-  }, [phone]);
 
   /**
    * 비밀번호 변경 함수
@@ -238,37 +150,14 @@ const MyPageInfoCP = ({ userData }) => {
           </span>
           {userData.nickname !== nickName && (
             <div style={{ marginTop: "4px" }} onClick={onUpdateNickName}>
-              <OutLineButtonCP color="#A47764">넥네임 변경 </OutLineButtonCP>
+              <OutLineButtonCP color="#A47764">닉네임 변경 </OutLineButtonCP>
             </div>
           )}
         </div>
         <InputCP title={"역할"} value={userData.role} lock={true} />
 
         <div className="col">
-          <InputCP title="전화번호" value={phone} onChangeHandler={onChangePhone} ex="숫자만 입력하세요" />
-          <span className="error" style={{ visibility: phoneError ? "visible" : "hidden" }} lock={isCertificationSent}>
-            전화번호 형식이 올바르지 않습니다.
-          </span>
-          {!isCertificationSent && userData.phone !== phone && (
-            <div style={{ marginTop: "4px" }} onClick={onCertificationSent}>
-              <OutLineButtonCP color="#A47764">인증번호 발송</OutLineButtonCP>
-            </div>
-          )}
-
-          {isCertificationSent && (
-            <div style={{ marginTop: "10px" }}>
-              <InputCP title="" essential={true} value={certification} onChangeHandler={onChangeCertification} ex="인증번호" />
-              <span className="error" style={{ visibility: certificationError ? "visible" : "hidden" }}>
-                인증번호가 일치하지 않습니다.
-              </span>
-            </div>
-          )}
-
-          {isCertificationSent && (
-            <div style={{ marginTop: "4px" }} onClick={onUpdataPhone}>
-              <OutLineButtonCP color="#A47764">핸드폰 번호 변경 </OutLineButtonCP>
-            </div>
-          )}
+          <InputCP title="전화번호" value={phone} lock={true} ex="숫자만 입력하세요" />
         </div>
 
         <div>
