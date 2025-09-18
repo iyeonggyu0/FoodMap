@@ -18,24 +18,43 @@ const MyPage = () => {
   const [onMenu, setOnMenu] = useState(false);
   const isPc = useMedia().isPc;
 
+  // 찜/알림, 내 트럭 상태 추가
+  const [likeList, setLikeList] = useState([]);
+  const [smsList, setSmsList] = useState([]);
+  const [myTruckList, setMyTruckList] = useState([]);
+
   useEffect(() => {
-    // 사용자 정보를 불러오는 API 호출
-    // FIXME:
+    // 1. 내 정보
     axios
-      .get(`${import.meta.env.VITE_API_URL}/api/users`, { withCredentials: true })
+      .get(`${import.meta.env.VITE_API_URL}/me`, { withCredentials: true })
       .then((res) => {
-        if (res.data.success) {
-          setUserData(res.data.user);
-        } else {
-          console.error("사용자 정보 로드 실패:", res.data.message);
-        }
+        setUserData(res.data);
       })
       .catch((err) => {
         console.error("사용자 정보 로드 중 오류 발생:", err);
         alert("사용자 정보를 불러오는 데 실패했습니다.");
       });
-    // FIXME:
-    // setUserData(userDummyData);
+
+    // 2. 찜/알림 목록
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/map/ft/mine`, { withCredentials: true })
+      .then((res) => {
+        setLikeList(res.data.likes || []);
+        setSmsList(res.data.sms || []);
+      })
+      .catch((err) => {
+        console.error("찜/알림 목록 로드 중 오류 발생:", err);
+      });
+
+    // 3. 내 푸드트럭 목록
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/user/foodtruck/mine`, { withCredentials: true })
+      .then((res) => {
+        setMyTruckList(res.data || []);
+      })
+      .catch((err) => {
+        console.error("내 푸드트럭 목록 로드 중 오류 발생:", err);
+      });
 
     if (isPc) {
       setOnMenu(true);
@@ -131,8 +150,8 @@ const MyPage = () => {
           </section>
           <section className="mainSection">
             {paging === 0 && <MyPageInfoCP userData={userData} />}
-            {paging === 1 && <MyFTCP />}
-            {paging === 2 && <MyLikeCP />}
+            {paging === 1 && <MyFTCP myTruckList={myTruckList} />}
+            {paging === 2 && <MyLikeCP likeList={likeList} smsList={smsList} />}
             {paging === 3 && <MyReviewCP />}
           </section>
         </MyPageMainStyle>

@@ -13,7 +13,7 @@ import OutLineButtonCP from "../../_common/OutLineButtonCP";
 import ButtonCP from "../../_common/ButtonCP";
 import { ftDummyData } from "../../../_dummyData/ftDummyData";
 
-const MyFTCP = () => {
+const MyFTCP = ({ myTruckList = [] }) => {
   // 이미지 파일 상태
   const [file, setFile] = useState(null);
   // 이미지 선택 핸들러
@@ -50,7 +50,7 @@ const MyFTCP = () => {
    * - 성공 시 알림 및 페이지 새로고침, 실패 시 에러 안내
    */
   // 기존 데이터 저장용 state
-  const [originData, setOriginData] = useState(null);
+  const [originData, setOriginData] = useState(myTruckList[0] || null);
 
   const updateSubmitHandler = (e) => {
     e.preventDefault();
@@ -238,9 +238,9 @@ const MyFTCP = () => {
   };
 
   // 푸드트럭 이름
-  const [FTName, onChangeFTName, setFTName] = useInput("");
+  const [FTName, onChangeFTName, setFTName] = useInput(originData?.name || "");
   // 푸드트럭 카테고리
-  const [FTCategory, onChangeFTCategory, setFTCategory] = useInput("");
+  const [FTCategory, onChangeFTCategory, setFTCategory] = useInput(originData?.category || "");
 
   // 푸드트럭 카테고리 리스트
   const FTCategoryList = [
@@ -255,12 +255,12 @@ const MyFTCP = () => {
   ];
 
   // 푸드트럭 소개
-  const [FTIntro, onChangeFTIntro, setFTIntro] = useInput("");
+  const [FTIntro, onChangeFTIntro, setFTIntro] = useInput(originData?.intro || "");
 
   // 사업자 등록번호
-  const [operatorNum, onChangeOperatorNum, setOperatorNum] = useInput("");
+  const [operatorNum, onChangeOperatorNum, setOperatorNum] = useInput(originData?.operatorNum || "");
 
-  const [menuList, setMenuList] = useState([]);
+  const [menuList, setMenuList] = useState(originData?.menu || []);
 
   const [menuModify, setMenuModify] = useState(false);
   const [editMenuNum, setEditMenuNum] = useState(""); // 수정 중인 메뉴 번호
@@ -269,7 +269,7 @@ const MyFTCP = () => {
   const [menuPrice, onChangeMenuPrice, setMenuPrice] = useInput("");
   const [menuInfo, onChangeMenuInfo, setMenuInfo] = useInput("");
   const [menuNum, onChangeMenuNum, setMenuNum] = useInput("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrl, setImageUrl] = useState(originData?.imageUrl || "");
 
   /**
    * 메뉴 등록 함수

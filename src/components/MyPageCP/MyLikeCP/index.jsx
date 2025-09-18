@@ -1,40 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
 import { useMedia } from "../../../hooks/useMedia";
 import { MyLikeCPMainStyle } from "./style";
-import axios from "axios";
-import { ftDummyListData } from "../../../_dummyData/ftDummyListData";
-import FTList from "../../MapPageCP/_common/FTList";
-import { useLoginCheck } from "../../../hooks/useLoginCheck";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faStar, faBell as faBellSolid } from "@fortawesome/free-solid-svg-icons";
-
 import { faBell as faBellRegular } from "@fortawesome/free-regular-svg-icons";
 
-const MyLikeCP = () => {
+// likeList, smsList를 props로 받음
+const MyLikeCP = ({ likeList = [], smsList = [] }) => {
   const isPc = useMedia().isPc;
-  const [ftList, setFtList] = useState([]); // 찜 목록 상태
-
-  useEffect(() => {
-    // 찜 목록을 불러오는 API 호출
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/ft/like`, { withCredentials: true })
-      .then((res) => {
-        if (res.data.success) {
-          setFtList(res.data.ftList);
-        } else {
-          console.error("찜 목록 로드 실패:", res.data.message);
-        }
-      })
-      .catch((err) => {
-        console.error("찜 목록 로드 중 오류 발생:", err);
-        alert("찜 목록을 불러오는 데 실패했습니다.");
-      });
-    // setFtList(ftDummyListData); // 초기화
-  }, []);
-
-  const isLogin = useLoginCheck();
-  // const isLogin = true; // 로그인 상태 확인 (임시)
-
   // 오늘 요일 확인
   const today = (new Date().getDay() + 6) % 7; // 0:월~6:일
   const dayMap = ["월", "화", "수", "목", "금", "토", "일"];
@@ -42,7 +14,7 @@ const MyLikeCP = () => {
 
   // 각 푸드트럭별 영업상태 계산 함수
   const getBusinessStatus = (ft) => {
-    const todaySchedule = ft.schedule.find((sch) => sch.day === todayKorean);
+    const todaySchedule = ft.schedule?.find((sch) => sch.day === todayKorean);
     const isHolidayToday = !todaySchedule || todaySchedule.holiday;
     if (!isHolidayToday) {
       return { status: "휴무", color: "#999" };
@@ -124,8 +96,8 @@ const MyLikeCP = () => {
     <MyLikeCPMainStyle isPc={isPc}>
       <h2>알림/찜 목록</h2>
       <ul>
-        {ftList &&
-          ftList?.map((ft, index) => {
+        {likeList && likeList.length > 0 ? (
+          likeList.map((ft, index) => {
             const businessInfo = getBusinessStatus(ft);
             return (
               <li className="ftListIndexLi" key={index}>
@@ -137,42 +109,28 @@ const MyLikeCP = () => {
                     </span>
                   </p>
                   <p className="intro">{ft.intro}</p>
-                  <p>{ft.schedule[today].userAddress}</p>
+                  <p>{ft.schedule?.[today]?.userAddress}</p>
                   <p className="flexBetween">
                     <span>
-                      {ft.schedule[today].start}시 ~ {ft.schedule[today].end}시
+                      {ft.schedule?.[today]?.start}시 ~ {ft.schedule?.[today]?.end}시
                     </span>
-
                     <span style={{ fontSize: "1rem" }}>
-                      {isLogin && ft.like && (
-                        <span
-                          style={{ color: "var(--red)", paddingRight: "0.5rem", cursor: "pointer" }}
-                          onClick={() => {
-                            onDeleteLike(ft.truckId);
-                          }}>
-                          <FontAwesomeIcon icon={faHeart} />
-                        </span>
-                      )}
+                      <FontAwesomeIcon icon={faHeart} style={{ color: "var(--red)", paddingRight: "0.5rem" }} />
                       <FontAwesomeIcon icon={faStar} className="icon" /> {avgRating(ft) || "리뷰 없음"}
                     </span>
                   </p>
                 </div>
                 <div className="ftScheduleDiv flexBetween">
                   <ul className="schedule">
-                    {ft.schedule.slice().map((schedule, index) => (
+                    {ft.schedule?.slice().map((schedule, idx) => (
                       <li
-                        key={index}
+                        key={idx}
                         style={{
-                          color: !schedule.holiday ? "var(--red)" : index === today ? "var(--green-accent)" : "",
+                          color: !schedule.holiday ? "var(--red)" : idx === today ? "var(--green-accent)" : "",
                         }}>
                         <span>
                           {!schedule.holiday ? <FontAwesomeIcon icon={faBellRegular} style={{ visibility: "hidden" }} /> : ""}
-                          {!schedule.sms && schedule.holiday && (
-                            <FontAwesomeIcon icon={faBellRegular} onClick={() => onAddSms(ft.truckId, schedule.day)} style={{ cursor: "pointer" }} />
-                          )}
-                          {schedule.sms && schedule.holiday && (
-                            <FontAwesomeIcon icon={faBellSolid} onClick={() => onDeleteSms(ft.truckId, schedule.day)} style={{ cursor: "pointer" }} />
-                          )}
+                          {/* 알림 토글은 생략, 필요시 구현 */}
                         </span>
                         <span>{schedule.day}요일</span>
                         <span>{!schedule.holiday ? "휴일" : `${schedule.start}시 ~ ${schedule.end}시`}</span>
@@ -183,7 +141,10 @@ const MyLikeCP = () => {
                 </div>
               </li>
             );
-          })}
+          })
+        ) : (
+          <li>찜한 푸드트럭이 없습니다.</li>
+        )}
       </ul>
     </MyLikeCPMainStyle>
   );
