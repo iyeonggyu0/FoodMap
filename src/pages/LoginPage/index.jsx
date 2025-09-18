@@ -57,8 +57,10 @@ const LoginPage = () => {
             <InputCP value={id} onChangeHandler={onChangeId} ex="ID" />
             <InputCP value={pw} onChangeHandler={onChangePw} ex="PW" pw="true" />
           </div>
-          <div onClick={onLoginHandler}>
-            <ButtonCP>로그인</ButtonCP>
+          <div>
+            <div onClick={onLoginHandler}>
+              <ButtonCP>로그인</ButtonCP>
+            </div>
             <span className="signupLink" onClick={() => nav("/sign-up")}>
               회원가입 바로가기
             </span>
