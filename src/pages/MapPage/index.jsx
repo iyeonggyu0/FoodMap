@@ -78,10 +78,28 @@ const MapPage = () => {
     });
   }, []);
 
+  // 지도 기반 푸드트럭 조회 API 호출 (명세 준수)
   const onChangeFilterFun = useCallback(() => {
-    // FIXME: 임시데이터 사용
+    // 현재 지도 중심 좌표 또는 기본 좌표 사용
+    let lat = DEFAULT_CENTER.lat;
+    let lng = DEFAULT_CENTER.lng;
+    if (mapRef.current && mapRef.current.getCenter) {
+      const center = mapRef.current.getCenter();
+      lat = center.getLat();
+      lng = center.getLng();
+    }
+    const radiusKm = 2; // 기본 반경 2km
+    // filter가 카테고리명일 때만 category 파라미터 추가
+    const params = new URLSearchParams({
+      lat: lat.toString(),
+      lng: lng.toString(),
+      radiusKm: radiusKm.toString(),
+    });
+    if (filter && filter !== "") {
+      params.append("category", filter);
+    }
     axios
-      .get(`${import.meta.env.VITE_API_URL}/map/ft/${encodeURIComponent(filter)}`, { withCredentials: true })
+      .get(`${import.meta.env.VITE_API_URL}/map/ft?${params.toString()}`, { withCredentials: true })
       .then((res) => {
         if (res.data) {
           onChangeFtData(res.data);
@@ -93,7 +111,7 @@ const MapPage = () => {
         console.error("Error fetching data:", err);
       });
     // onChangeFtData(ftDummyListData);
-  });
+  }, [filter, onChangeFtData]);
 
   useEffect(() => {
     onChangeFilterFun();
