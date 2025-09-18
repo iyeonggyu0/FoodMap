@@ -144,15 +144,45 @@ const RegisterPage = () => {
       num: String(menu.num),
     }));
 
-    // schedule의 start/end를 HH:mm 형식으로 맞춤
-    const scheduleListForRequest = scheduleList.map((item) => ({
-      day: item.day,
-      holiday: item.holiday,
-      start: item.start.length === 2 ? item.start + ":00" : item.start, // 15 → 15:00
-      end: item.end.length === 2 ? item.end + ":00" : item.end,
-      mapAddress: item.mapAddress,
-      userAddress: item.userAddress,
-    }));
+    // schedule의 start/end를 HH:mm 형식으로 맞춤 및 주소->좌표 변환
+    const scheduleListForRequest = await Promise.all(
+      scheduleList.map(async (item) => {
+        const start = item.start.length === 2 ? item.start + ":00" : item.start;
+        const end = item.end.length === 2 ? item.end + ":00" : item.end;
+        let lat = item.lat,
+          lng = item.lng;
+        if (item.mapAddress && (!lat || !lng)) {
+          try {
+            // addressToCoords 동적 import (MapPage에서 복사)
+            if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services) throw new Error("Kakao map not loaded");
+            const geocoder = new window.kakao.maps.services.Geocoder();
+            const coords = await new Promise((resolve, reject) => {
+              geocoder.addressSearch(item.mapAddress, function (result, status) {
+                if (status === window.kakao.maps.services.Status.OK && result.length > 0) {
+                  resolve({ lat: parseFloat(result[0].y), lng: parseFloat(result[0].x) });
+                } else {
+                  reject("주소 변환 실패: " + item.mapAddress);
+                }
+              });
+            });
+            lat = coords.lat;
+            lng = coords.lng;
+          } catch (e) {
+            console.warn("주소->좌표 변환 실패:", item.mapAddress, e);
+          }
+        }
+        return {
+          day: item.day,
+          holiday: item.holiday,
+          start,
+          end,
+          mapAddress: item.mapAddress,
+          userAddress: item.userAddress,
+          lat,
+          lng,
+        };
+      })
+    );
 
     const requestData = {
       name: FTName,
@@ -342,7 +372,7 @@ const RegisterPage = () => {
     setMenuNum("");
     setMenuModify(false);
     setEditMenuNum("");
-  }, [editMenuNum, menuName, menuPrice, menuInfo, menuNum, menuList]);
+  }, [editMenuNum, menuName, menuPrice, menuInfo, menuNum, menuList, setMenuName, setMenuPrice, setMenuInfo, setMenuNum]);
 
   /**
    * 메뉴 삭제 함수
@@ -364,7 +394,7 @@ const RegisterPage = () => {
         setMenuNum("");
       }
     },
-    [menuModify, editMenuNum]
+    [menuModify, editMenuNum, setMenuName, setMenuPrice, setMenuInfo, setMenuNum]
   );
 
   /**

@@ -1,3 +1,77 @@
+// 주소 -> 좌표 변환 (Promise)
+const addressToCoords = (address) => {
+  return new Promise((resolve, reject) => {
+    if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services) return reject("Kakao map not loaded");
+    const geocoder = new window.kakao.maps.services.Geocoder();
+    geocoder.addressSearch(address, function (result, status) {
+      if (status === window.kakao.maps.services.Status.OK && result.length > 0) {
+        resolve({ lat: parseFloat(result[0].y), lng: parseFloat(result[0].x) });
+      } else {
+        reject("주소 변환 실패: " + address);
+      }
+    });
+  });
+};
+
+// 좌표 -> 주소 변환 (Promise)
+const coordsToAddress = (lat, lng) => {
+  return new Promise((resolve, reject) => {
+    if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services) return reject("Kakao map not loaded");
+    const geocoder = new window.kakao.maps.services.Geocoder();
+    geocoder.coord2Address(lng, lat, function (result, status) {
+      if (status === window.kakao.maps.services.Status.OK && result.length > 0) {
+        resolve(result[0].address.address_name);
+      } else {
+        reject("좌표 변환 실패: " + lat + "," + lng);
+      }
+    });
+  });
+};
+
+// schedule 배열을 주소->좌표 변환하여 lat/lng 필드 추가 (비동기)
+const enrichScheduleWithCoords = async (scheduleArr) => {
+  const newArr = await Promise.all(
+    scheduleArr.map(async (item) => {
+      if (item.mapAddress && (!item.lat || !item.lng)) {
+        try {
+          const coords = await addressToCoords(item.mapAddress);
+          return { ...item, lat: coords.lat, lng: coords.lng };
+        } catch {
+          return item;
+        }
+      }
+      return item;
+    })
+  );
+  return newArr;
+};
+
+// schedule 배열을 좌표->주소 변환하여 mapAddress 필드 추가 (비동기)
+const enrichScheduleWithAddress = async (scheduleArr) => {
+  const newArr = await Promise.all(
+    scheduleArr.map(async (item) => {
+      if (item.lat && item.lng && !item.mapAddress) {
+        try {
+          const address = await coordsToAddress(item.lat, item.lng);
+          return { ...item, mapAddress: address };
+        } catch {
+          return item;
+        }
+      }
+      return item;
+    })
+  );
+  return newArr;
+};
+
+// 예시: schedule 변환 사용법
+// useEffect(() => {
+//   const testSchedule = [
+//     { day: "월", holiday: false, start: "10:00", end: "18:00", mapAddress: "서울역", userAddress: "서울역 광장" },
+//   ];
+//   enrichScheduleWithCoords(testSchedule).then(console.log);
+//   // 또는 enrichScheduleWithAddress(testSchedule).then(console.log);
+// }, []);
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useMedia } from "../../hooks/useMedia";
 import PcCP from "../../components/MapPageCP/PcCP";
@@ -111,7 +185,7 @@ const MapPage = () => {
         console.error("Error fetching data:", err);
       });
     // onChangeFtData(ftDummyListData);
-  }, [filter, onChangeFtData]);
+  }, [filter]);
 
   useEffect(() => {
     onChangeFilterFun();
