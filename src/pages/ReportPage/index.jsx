@@ -22,12 +22,16 @@ const ReportPage = () => {
   const [formData, setFormData] = useState({
     truckName: "",
     category: "",
+    description: "",
+    menuItems: [], //등록된 메뉴들의 리스트 { num, name, price, info }
+    menuNum: "", //현재 입력 중인 메뉴의 임시 값
+    menuName: "",
+    menuPrice: "",
+    menuInfo: "",
     location: "",
     detailedAddress: "",
     operatingHours: "",
     phone: "",
-    description: "",
-    menuItems: "",
     reporterName: "",
     reporterEmail: "",
     reporterPhone: "",
@@ -37,7 +41,7 @@ const ReportPage = () => {
 
   /**
    * 인풋값 변할 때 formData로 바뀐거 전달하는 함수
-   * @param {*} key
+   * @param {String} key
    * @param {*} value
    */
   const handleInputChange = (key, value) => {
@@ -96,7 +100,11 @@ const ReportPage = () => {
           </Card>
 
           {/* 푸드트럭 기본 정보 카드 */}
-          <FTInfoCP />
+          <FTInfoCP
+            formData={formData}
+            setFormData={setFormData}
+            handleInputChange={handleInputChange}
+          />
 
           {/* 푸드트럭 위치 정보 카드 */}
           <FTPositionInfoCP
