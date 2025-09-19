@@ -7,7 +7,7 @@ import { useCallback, useState, useRef } from "react";
 import { useInput } from "@/hooks/useInput";
 import axios from "axios";
 
-const FTInfoCP = () => {
+const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
   const [nameError, setNameError] = useState(false);
   const [categoryError, setCategoryError] = useState(false);
   const [introError, setIntroError] = useState(false);
@@ -51,6 +51,64 @@ const FTInfoCP = () => {
   const [menuPrice, onChangeMenuPrice, setMenuPrice] = useInput("");
   const [menuInfo, onChangeMenuInfo, setMenuInfo] = useInput("");
   const [menuNum, onChangeMenuNum, setMenuNum] = useInput("");
+
+  const menuCondition = () => {
+    if (!formData.menuName || formData.menuName.length < 3) {
+      alert("메뉴 이름은 3글자 이상 입력해야 합니다.");
+      return false;
+    }
+    // menuPrice 숫자만 허용, 1 이상
+    const price = Number((formData.menuPrice || "").trim());
+    if (!price || !Number.isInteger(price) || Number(price) < 1) {
+      alert("가격은 1 이상의 숫자만 입력해야 합니다.");
+      return false;
+    }
+    // menuNum 중복 체크 (수정 중인 메뉴 제외)
+    if (
+      formData.menuItems.some(
+        (menu) => menu.num === formData.menuNum && menu.num !== editMenuNum
+      )
+    ) {
+      alert("이미 해당 번호에 메뉴가 존재합니다.");
+      return false;
+    }
+  };
+
+  const handleAddMenu = () => {
+    // menuName 3글자 이상 체크
+    if (!formData.menuName || formData.menuName.length < 3) {
+      alert("메뉴 이름은 3글자 이상 입력해야 합니다.");
+      return;
+    }
+    // menuPrice 숫자만 허용, 1 이상
+    const price = Number((formData.menuPrice || "").trim());
+    if (!price || !Number.isInteger(price) || Number(price) < 1) {
+      alert("가격은 1 이상의 숫자만 입력해야 합니다.");
+      return;
+    }
+    // menuNum 중복 체크
+    if (formData.menuItems.some((menu) => menu.num === formData.menuNum)) {
+      alert("이미 해당 번호에 메뉴가 존재합니다.");
+      return;
+    }
+    alert("메뉴가 등록되었습니다!");
+    setFormData((prev) => ({
+      ...prev,
+      menuItems: [
+        ...prev.menuItems,
+        {
+          num: formData.menuNum,
+          name: formData.menuName,
+          price: formData.menuPrice,
+          info: formData.menuInfo,
+        },
+      ],
+      menuNum: "",
+      menuName: "",
+      menuPrice: "",
+      menuInfo: "",
+    }));
+  };
 
   /**
    * 메뉴 등록 함수
@@ -103,6 +161,27 @@ const FTInfoCP = () => {
     setMenuInfo,
     setMenuNum,
   ]);
+
+  const handleEditMenu = (editNum) => {
+    setFormData((prev) => ({
+      ...prev,
+      menuItems: prev.menuItems.map((item) =>
+        item.num === editNum
+          ? {
+              ...item,
+              num: formData.menuNum,
+              name: formData.menuName,
+              price: formData.menuPrice,
+              info: formData.menuInfo,
+            }
+          : item
+      ),
+      menuNum: "",
+      menuName: "",
+      menuPrice: "",
+      menuInfo: "",
+    }));
+  };
 
   /**
    * 메뉴 수정 함수
@@ -234,9 +313,11 @@ const FTInfoCP = () => {
             <InputCP
               title="푸드트럭 이름"
               essential="true"
-              value={FTName}
+              value={formData.truckName}
               ex="황금 잉어빵"
-              onChangeHandler={onChangeFTName}
+              onChangeHandler={(e) =>
+                handleInputChange("truckName", e.target.value)
+              }
             />
             {nameError && (
               <span className="nameError error" ref={nameErrorRef}>
@@ -264,8 +345,10 @@ const FTInfoCP = () => {
               title="푸드트럭 설명"
               essential="false"
               ex="푸드트럭의 특징, 맛, 분위기 등을 자유롭게 설명해주세요"
-              onChangeHandler={onChangeFTIntro}
-              value={FTIntro}
+              onChangeHandler={(e) =>
+                handleInputChange("description", e.target.value)
+              }
+              value={formData.description}
               maxRows={7}
               minRows={5}
             />
@@ -338,26 +421,34 @@ const FTInfoCP = () => {
             <div>
               <InputCP
                 title="메뉴 이름"
-                value={menuName}
-                onChangeHandler={onChangeMenuName}
+                value={formData.menuName || ""}
+                onChangeHandler={(e) =>
+                  handleInputChange("menuName", e.target.value)
+                }
                 essential="true"
               />
               <InputCP
                 title="가격"
-                value={menuPrice}
-                onChangeHandler={onChangeMenuPrice}
+                value={formData.menuPrice || ""}
+                onChangeHandler={(e) =>
+                  handleInputChange("menuPrice", e.target.value)
+                }
                 essential="true"
                 ex="숫자만 입력"
               />
               <InputCP
                 title="설명"
-                value={menuInfo}
-                onChangeHandler={onChangeMenuInfo}
+                value={formData.menuInfo}
+                onChangeHandler={(e) =>
+                  handleInputChange("menuInfo", e.target.value)
+                }
               />
               <InputCP
                 title="표시 순서"
-                value={menuNum}
-                onChangeHandler={onChangeMenuNum}
+                value={formData.menuNum}
+                onChangeHandler={(e) =>
+                  handleInputChange("menuNum", e.target.value)
+                }
                 essential="true"
                 ex="숫자가 이어질 필요가 없습니다. 메뉴는 오름차순으로 표시됩니다."
               />
@@ -365,7 +456,7 @@ const FTInfoCP = () => {
             <div className="btnMod">
               {/* 수정모드, 등록모드 버튼 구분 */}
               {!menuModify && (
-                <div onClick={menuAddHandler}>
+                <div onClick={handleAddMenu}>
                   <ButtonCP>등록</ButtonCP>
                 </div>
               )}
