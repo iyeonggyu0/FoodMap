@@ -135,7 +135,11 @@ const MyFTCP = ({ myTruckList = [] }) => {
     }
 
     if (error) {
-      alert("입력값에 문제가 있습니다.");
+      if (errorMsgs.length > 0) {
+        alert(errorMsgs.join("\n"));
+      } else {
+        alert("입력값에 문제가 있습니다.");
+      }
       return;
     }
 
