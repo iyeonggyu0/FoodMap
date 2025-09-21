@@ -436,6 +436,13 @@ const MyFTCP = ({ myTruckList = [] }) => {
     axios
       .get(`${import.meta.env.VITE_API_URL}/user/foodtruck/mine`, { withCredentials: true })
       .then((res) => {
+        if (res.data?.length === 0) {
+          alert("등록된 푸드트럭이 없습니다.");
+          if (window.confirm("푸드트럭을 등록하시겠습니까?")) {
+            window.location.href = "/register";
+          }
+          return;
+        }
         if (Array.isArray(res.data) && res.data.length > 0) {
           const data = res.data[0];
           setOriginData(data); // 원본 데이터 저장
