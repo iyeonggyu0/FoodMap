@@ -112,12 +112,6 @@ const MyFTCP = ({ myTruckList = [] }) => {
             error = true;
           }
         }
-        // 7-3. 주소 10자 이상
-        if (!item.mapAddress || item.mapAddress.length < 10 || !item.userAddress || item.userAddress.length < 10) {
-          newScheduleErrors[idx].address = true;
-          errorMsgs.push(`${item.day}요일 주소는 10자 이상 입력해야 합니다.`);
-          error = true;
-        }
       }
     });
     setScheduleErrors(newScheduleErrors);
@@ -147,20 +141,20 @@ const MyFTCP = ({ myTruckList = [] }) => {
     // 실제 푸드트럭 PK
     const truckId = originData?.id || 1;
 
-    // 변경된 필드만 추출
-    const changedFields = {};
+    // 모든 필드를 보내되, 변경된 값은 수정된 값으로, 변경되지 않은 값은 기존 값(originData)으로 채워서 전송
+    let sendData = {};
     if (!originData) {
       // 최초 등록 시 전체 포함
-      changedFields.name = FTName;
-      changedFields.category = FTCategory || "";
-      changedFields.intro = FTIntro;
-      changedFields.menu = menuList.map((menu) => ({
+      sendData.name = FTName;
+      sendData.category = FTCategory || "";
+      sendData.intro = FTIntro;
+      sendData.menu = menuList.map((menu) => ({
         name: menu.name,
         price: String(menu.price),
         info: menu.info,
         num: String(menu.num),
       }));
-      changedFields.schedule = scheduleList.map((item) => ({
+      sendData.schedule = scheduleList.map((item) => ({
         day: item.day,
         holiday: item.holiday,
         start: item.start.length === 2 ? item.start + ":00" : item.start,
@@ -169,27 +163,29 @@ const MyFTCP = ({ myTruckList = [] }) => {
         userAddress: item.userAddress,
       }));
     } else {
-      if (originData.name !== FTName) changedFields.name = FTName;
-      if (originData.category !== FTCategory) changedFields.category = FTCategory;
-      if (originData.intro !== FTIntro) changedFields.intro = FTIntro;
-      if (JSON.stringify(originData.menu) !== JSON.stringify(menuList)) {
-        changedFields.menu = menuList.map((menu) => ({
-          name: menu.name,
-          price: String(menu.price),
-          info: menu.info,
-          num: String(menu.num),
-        }));
-      }
-      if (JSON.stringify(originData.schedule) !== JSON.stringify(scheduleList)) {
-        changedFields.schedule = scheduleList.map((item) => ({
-          day: item.day,
-          holiday: item.holiday,
-          start: item.start.length === 2 ? item.start + ":00" : item.start,
-          end: item.end.length === 2 ? item.end + ":00" : item.end,
-          mapAddress: item.mapAddress,
-          userAddress: item.userAddress,
-        }));
-      }
+      sendData.name = originData.name !== FTName ? FTName : originData.name;
+      sendData.category = originData.category !== FTCategory ? FTCategory : originData.category;
+      sendData.intro = originData.intro !== FTIntro ? FTIntro : originData.intro;
+      sendData.menu =
+        JSON.stringify(originData.menu) !== JSON.stringify(menuList)
+          ? menuList.map((menu) => ({
+              name: menu.name,
+              price: String(menu.price),
+              info: menu.info,
+              num: String(menu.num),
+            }))
+          : originData.menu;
+      sendData.schedule =
+        JSON.stringify(originData.schedule) !== JSON.stringify(scheduleList)
+          ? scheduleList.map((item) => ({
+              day: item.day,
+              holiday: item.holiday,
+              start: item.start.length === 2 ? item.start + ":00" : item.start,
+              end: item.end.length === 2 ? item.end + ":00" : item.end,
+              mapAddress: item.mapAddress,
+              userAddress: item.userAddress,
+            }))
+          : originData.schedule;
     }
 
     // 이미지 파일만 업로드하는 경우
@@ -217,9 +213,9 @@ const MyFTCP = ({ myTruckList = [] }) => {
     }
 
     // 나머지 정보 수정
-    console.log("전송할 changedFields:", changedFields);
+    console.log("전송할 sendData:", sendData);
     axios
-      .put(`${import.meta.env.VITE_API_URL}/user/foodtruck/${truckId}`, changedFields, {
+      .put(`${import.meta.env.VITE_API_URL}/user/foodtruck/${truckId}`, sendData, {
         withCredentials: true,
         headers: { Accept: "application/json" },
       })
