@@ -19,12 +19,6 @@ const MyFTCP = ({ myTruckList = [] }) => {
   // 이미지 선택 핸들러
   const handleChange = (e) => {
     const selectedFile = e.target.files[0];
-    console.log("MyFTCP - 선택된 파일:", selectedFile);
-    if (selectedFile) {
-      console.log("MyFTCP - 파일명:", selectedFile.name);
-      console.log("MyFTCP - 파일 크기:", selectedFile.size);
-      console.log("MyFTCP - 파일 타입:", selectedFile.type);
-    }
     setFile(selectedFile);
   };
   const isPc = useMedia().isPc;
@@ -174,7 +168,6 @@ const MyFTCP = ({ myTruckList = [] }) => {
         mapAddress: item.mapAddress,
         userAddress: item.userAddress,
       }));
-      changedFields.imageUrl = imageUrl === undefined || imageUrl === null ? "" : imageUrl;
     } else {
       if (originData.name !== FTName) changedFields.name = FTName;
       if (originData.category !== FTCategory) changedFields.category = FTCategory;
@@ -197,33 +190,36 @@ const MyFTCP = ({ myTruckList = [] }) => {
           userAddress: item.userAddress,
         }));
       }
-      // imageUrl은 항상 포함 (빈 문자열도 허용)
-      changedFields.imageUrl = imageUrl === undefined || imageUrl === null ? "" : imageUrl;
     }
 
-    // FormData 생성
-    const formData = new FormData();
-    formData.append("request", JSON.stringify(changedFields));
-
-    console.log("전송할 changedFields:", changedFields);
-    console.log("선택된 파일:", file);
-
+    // 이미지 파일만 업로드하는 경우
     if (file) {
+      const formData = new FormData();
       formData.append("image", file);
-      console.log("이미지 파일이 FormData에 추가됨:", file.name, file.size);
-    } else {
-      // 파일이 없더라도 imageUrl이 빈 문자열이면 서버에서 기존 이미지 삭제로 인식할 수 있음
-      console.log("선택된 이미지 파일이 없음");
+      axios
+        .put(`${import.meta.env.VITE_API_URL}/user/foodtruck/${truckId}/image`, formData, {
+          withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data", Accept: "application/json" },
+        })
+        .then((res) => {
+          if (res.data.message === "updated") {
+            alert("이미지 업로드가 완료되었습니다!");
+            window.location.reload();
+          } else {
+            alert(res.data.message || "이미지 업로드에 실패했습니다. 다시 시도해주세요.");
+          }
+        })
+        .catch((err) => {
+          console.error("이미지 업로드 중 오류 발생:", err);
+          alert("이미지 업로드 중 오류가 발생했습니다. 다시 시도해주세요.");
+        });
+      return;
     }
 
-    // FormData 내용 확인
-    console.log("FormData 내용:");
-    for (let [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
-
+    // 나머지 정보 수정
+    console.log("전송할 changedFields:", changedFields);
     axios
-      .put(`${import.meta.env.VITE_API_URL}/user/foodtruck/${truckId}`, formData, {
+      .put(`${import.meta.env.VITE_API_URL}/user/foodtruck/${truckId}`, changedFields, {
         withCredentials: true,
         headers: { Accept: "application/json" },
       })
@@ -270,7 +266,6 @@ const MyFTCP = ({ myTruckList = [] }) => {
   const [menuPrice, onChangeMenuPrice, setMenuPrice] = useInput("");
   const [menuInfo, onChangeMenuInfo, setMenuInfo] = useInput("");
   const [menuNum, onChangeMenuNum, setMenuNum] = useInput("");
-  const [imageUrl, setImageUrl] = useState(originData?.imageUrl || "");
 
   /**
    * 메뉴 등록 함수
@@ -457,11 +452,7 @@ const MyFTCP = ({ myTruckList = [] }) => {
                 userAddress: "",
               }))
           );
-          // 이미지 미리보기
-          if (data.imageUrl) {
-            setFile(null); // 기존 파일 미리보기 제거
-            setImageUrl(data.imageUrl);
-          }
+          // 이미지 미리보기 제거
         }
       })
       .catch((err) => {
