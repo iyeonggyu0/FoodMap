@@ -7,6 +7,12 @@ export const MyFTCPMainStyle = styled.section`
   overflow-y: scroll;
   z-index: 996;
 
+  .image-upload {
+    padding: 2rem 0;
+    border: 1px solid var(--gray-3);
+    border-radius: 1rem;
+  }
+
   /* 등록 버튼 영역 */
   .axiosButton {
     height: 3rem;

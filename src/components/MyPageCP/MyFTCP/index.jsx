@@ -37,7 +37,6 @@ const MyFTCP = ({ myTruckList = [] }) => {
   const categoryErrorRef = useRef();
   const introErrorRef = useRef();
   const menuErrorRef = useRef();
-  const operatorNumErrorRef = useRef();
   const termsErrorRef = useRef();
   // 요일별 에러는 동적으로 관리
   const [scheduleErrors, setScheduleErrors] = useState(Array(7).fill({ open: false, close: false, address: false }));
@@ -125,14 +124,6 @@ const MyFTCP = ({ myTruckList = [] }) => {
       errorMsgs.push("요일 중 하나 이상 영업 체크가 필요합니다.");
       error = true;
     }
-    // 8. 사업자 등록번호
-    if (!/^\d{3}-\d{2}-\d{5}$/.test(operatorNum)) {
-      operatorNumErrorRef.current.style.visibility = "visible";
-      errorMsgs.push("사업자 등록번호는 000-00-00000 형식이어야 합니다.");
-      error = true;
-    } else {
-      operatorNumErrorRef.current.style.visibility = "hidden";
-    }
     // 9. 약관 동의
     const termsChecked = document.getElementById("terms")?.checked;
     if (!termsChecked) {
@@ -156,7 +147,7 @@ const MyFTCP = ({ myTruckList = [] }) => {
     if (!originData) {
       // 최초 등록 시 전체 포함
       changedFields.name = FTName;
-      changedFields.category = FTCategory;
+      changedFields.category = FTCategory || "";
       changedFields.intro = FTIntro;
       changedFields.menu = menuList.map((menu) => ({
         name: menu.name,
@@ -172,7 +163,6 @@ const MyFTCP = ({ myTruckList = [] }) => {
         mapAddress: item.mapAddress,
         userAddress: item.userAddress,
       }));
-      changedFields.operatorNum = operatorNum;
       changedFields.imageUrl = imageUrl === undefined || imageUrl === null ? "" : imageUrl;
     } else {
       if (originData.name !== FTName) changedFields.name = FTName;
@@ -196,7 +186,6 @@ const MyFTCP = ({ myTruckList = [] }) => {
           userAddress: item.userAddress,
         }));
       }
-      if (originData.operatorNum !== operatorNum) changedFields.operatorNum = operatorNum;
       // imageUrl은 항상 포함 (빈 문자열도 허용)
       changedFields.imageUrl = imageUrl === undefined || imageUrl === null ? "" : imageUrl;
     }
@@ -260,9 +249,6 @@ const MyFTCP = ({ myTruckList = [] }) => {
 
   // 푸드트럭 소개
   const [FTIntro, onChangeFTIntro, setFTIntro] = useInput(originData?.intro || "");
-
-  // 사업자 등록번호
-  const [operatorNum, onChangeOperatorNum, setOperatorNum] = useInput(originData?.operatorNum || "");
 
   const [menuList, setMenuList] = useState(originData?.menu || []);
 
@@ -447,9 +433,7 @@ const MyFTCP = ({ myTruckList = [] }) => {
           const data = res.data[0];
           setOriginData(data); // 원본 데이터 저장
           setFTName(data.name);
-          setFTCategory(data.category);
           setFTIntro(data.intro);
-          setOperatorNum(data.operatorNum || "");
           setMenuList(data.menu || []);
           setScheduleList(
             data.schedule ||
@@ -477,7 +461,6 @@ const MyFTCP = ({ myTruckList = [] }) => {
     // setFTName(ftDummyData.name);
     // setFTCategory(ftDummyData.category);
     // setFTIntro(ftDummyData.intro);
-    // setOperatorNum(ftDummyData.operatorNum || "");
     // setMenuList(ftDummyData.menu || []);
     // setScheduleList(
     //   ftDummyData.schedule ||
@@ -490,7 +473,7 @@ const MyFTCP = ({ myTruckList = [] }) => {
     //       userAddress: "",
     //     }))
     // );
-  }, [setFTName, setFTCategory, setFTIntro, setOperatorNum, dayNames]);
+  }, [setFTName, setFTCategory, setFTIntro, dayNames]);
 
   return (
     <MyFTCPMainStyle isPc={isPc}>
@@ -699,21 +682,7 @@ const MyFTCP = ({ myTruckList = [] }) => {
             </div>
           ))}
         </MyFTCPScheduleStyle>
-        <div>
-          <h2>사업자 정보</h2>
-          <div className="col-full">
-            <InputCP title="사업자 등록번호" essential="true" ex="000-00-00000" value={operatorNum} onChangeHandler={onChangeOperatorNum} />
-            <span className="operatorNumError error" ref={operatorNumErrorRef}>
-              형식이 올바르지 않습니다.
-            </span>
-            <span
-              className="termsError error"
-              ref={termsErrorRef}
-              style={{ display: "block", color: "red", fontSize: "0.9rem", margin: "0.5rem 0", visibility: "hidden" }}>
-              약관에 동의해야 합니다.
-            </span>
-          </div>
-        </div>
+
         <form className="terms flexHeightCenter">
           <input type="checkbox" id="terms" name="terms" />
           <label htmlFor="terms">
