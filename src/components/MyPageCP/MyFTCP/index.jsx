@@ -173,6 +173,7 @@ const MyFTCP = ({ myTruckList = [] }) => {
         userAddress: item.userAddress,
       }));
       changedFields.operatorNum = operatorNum;
+      changedFields.imageUrl = imageUrl === undefined || imageUrl === null ? "" : imageUrl;
     } else {
       if (originData.name !== FTName) changedFields.name = FTName;
       if (originData.category !== FTCategory) changedFields.category = FTCategory;
@@ -196,6 +197,8 @@ const MyFTCP = ({ myTruckList = [] }) => {
         }));
       }
       if (originData.operatorNum !== operatorNum) changedFields.operatorNum = operatorNum;
+      // imageUrl은 항상 포함 (빈 문자열도 허용)
+      changedFields.imageUrl = imageUrl === undefined || imageUrl === null ? "" : imageUrl;
     }
 
     // FormData 생성
@@ -209,6 +212,7 @@ const MyFTCP = ({ myTruckList = [] }) => {
       formData.append("image", file);
       console.log("이미지 파일이 FormData에 추가됨:", file.name, file.size);
     } else {
+      // 파일이 없더라도 imageUrl이 빈 문자열이면 서버에서 기존 이미지 삭제로 인식할 수 있음
       console.log("선택된 이미지 파일이 없음");
     }
 
