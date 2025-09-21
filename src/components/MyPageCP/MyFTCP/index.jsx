@@ -94,22 +94,29 @@ const MyFTCP = ({ myTruckList = [] }) => {
     scheduleList.forEach((item, idx) => {
       if (item.holiday) {
         hasOpenDay = true;
-        // 7-1. 오픈/클로즈 숫자 두자리
-        if (!/^\d{2}$/.test(item.start)) {
+        // 7-1. 오픈/클로즈 00:00 형식(24시간제) 검사
+        const timeRegex = /^([01]\d|2[0-3]):[0-5]\d$/;
+        if (!timeRegex.test(item.start)) {
           newScheduleErrors[idx].open = true;
-          errorMsgs.push(`${item.day}요일 오픈 시간은 두자리 숫자여야 합니다.`);
+          errorMsgs.push(`${item.day}요일 오픈 시간은 00:00 형식(24시간제)으로 입력하세요.`);
           error = true;
         }
-        if (!/^\d{2}$/.test(item.end)) {
+        if (!timeRegex.test(item.end)) {
           newScheduleErrors[idx].close = true;
-          errorMsgs.push(`${item.day}요일 클로징 시간은 두자리 숫자여야 합니다.`);
+          errorMsgs.push(`${item.day}요일 클로징 시간은 00:00 형식(24시간제)으로 입력하세요.`);
           error = true;
         }
         // 7-2. 클로징 >= 오픈
-        if (/^\d{2}$/.test(item.start) && /^\d{2}$/.test(item.end) && Number(item.end) < Number(item.start)) {
-          newScheduleErrors[idx].close = true;
-          errorMsgs.push(`${item.day}요일 클로징 시간은 오픈 시간보다 빠를 수 없습니다.`);
-          error = true;
+        if (timeRegex.test(item.start) && timeRegex.test(item.end)) {
+          const [startH, startM] = item.start.split(":").map(Number);
+          const [endH, endM] = item.end.split(":").map(Number);
+          const startTotal = startH * 60 + startM;
+          const endTotal = endH * 60 + endM;
+          if (endTotal < startTotal) {
+            newScheduleErrors[idx].close = true;
+            errorMsgs.push(`${item.day}요일 클로징 시간은 오픈 시간보다 빠를 수 없습니다.`);
+            error = true;
+          }
         }
         // 7-3. 주소 10자 이상
         if (!item.mapAddress || item.mapAddress.length < 10 || !item.userAddress || item.userAddress.length < 10) {
