@@ -1,77 +1,3 @@
-// 주소 -> 좌표 변환 (Promise)
-const addressToCoords = (address) => {
-  return new Promise((resolve, reject) => {
-    if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services) return reject("Kakao map not loaded");
-    const geocoder = new window.kakao.maps.services.Geocoder();
-    geocoder.addressSearch(address, function (result, status) {
-      if (status === window.kakao.maps.services.Status.OK && result.length > 0) {
-        resolve({ lat: parseFloat(result[0].y), lng: parseFloat(result[0].x) });
-      } else {
-        reject("주소 변환 실패: " + address);
-      }
-    });
-  });
-};
-
-// 좌표 -> 주소 변환 (Promise)
-const coordsToAddress = (lat, lng) => {
-  return new Promise((resolve, reject) => {
-    if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services) return reject("Kakao map not loaded");
-    const geocoder = new window.kakao.maps.services.Geocoder();
-    geocoder.coord2Address(lng, lat, function (result, status) {
-      if (status === window.kakao.maps.services.Status.OK && result.length > 0) {
-        resolve(result[0].address.address_name);
-      } else {
-        reject("좌표 변환 실패: " + lat + "," + lng);
-      }
-    });
-  });
-};
-
-// schedule 배열을 주소->좌표 변환하여 lat/lng 필드 추가 (비동기)
-const enrichScheduleWithCoords = async (scheduleArr) => {
-  const newArr = await Promise.all(
-    scheduleArr.map(async (item) => {
-      if (item.mapAddress && (!item.lat || !item.lng)) {
-        try {
-          const coords = await addressToCoords(item.mapAddress);
-          return { ...item, lat: coords.lat, lng: coords.lng };
-        } catch {
-          return item;
-        }
-      }
-      return item;
-    })
-  );
-  return newArr;
-};
-
-// schedule 배열을 좌표->주소 변환하여 mapAddress 필드 추가 (비동기)
-const enrichScheduleWithAddress = async (scheduleArr) => {
-  const newArr = await Promise.all(
-    scheduleArr.map(async (item) => {
-      if (item.lat && item.lng && !item.mapAddress) {
-        try {
-          const address = await coordsToAddress(item.lat, item.lng);
-          return { ...item, mapAddress: address };
-        } catch {
-          return item;
-        }
-      }
-      return item;
-    })
-  );
-  return newArr;
-};
-
-// 예시: schedule 변환 사용법
-// useEffect(() => {
-//   const testSchedule = [
-//     { day: "월", holiday: false, start: "10:00", end: "18:00", mapAddress: "서울역", userAddress: "서울역 광장" },
-//   ];
-//   enrichScheduleWithCoords(testSchedule).then(console.log);
-//   // 또는 enrichScheduleWithAddress(testSchedule).then(console.log);
-// }, []);
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useMedia } from "../../hooks/useMedia";
 import PcCP from "../../components/MapPageCP/PcCP";
@@ -79,7 +5,6 @@ import PcCP from "../../components/MapPageCP/PcCP";
 import { MapPageMainStyle } from "./style";
 import { useInput } from "../../hooks/useInput";
 import axios from "axios";
-import { ftDummyListData } from "../../_dummyData/ftDummyListData";
 import MobileCP from "../../components/MapPageCP/MobileCP";
 import { useLoginCheck } from "../../hooks/useLoginCheck";
 
@@ -87,70 +12,93 @@ const MapPage = () => {
   const isMedia = useMedia("");
   const [ftData, setFtData] = useState();
   const mapRef = useRef(null); // 지도 객체를 useRef로 관리
-  const [filter, onChangeFilter, setFilter] = useInput("");
+  const [filter, onChangeFilter] = useInput("");
   const [details, setDetails] = useState([]);
   const [onDetails, setOnDetails] = useState(false);
   const [userLocation, setUserLocation] = useState(null); // 사용자 위치 상태 추가
 
+  // 카테고리 목록 (임시)
+  const categoryList = [
+    { value: "분식", data: "분식 (어묵, 떡볶이, 순대)" },
+    { value: "간식", data: "간식 (붕어빵, 타코야끼, 크레페, 츄러스, 와플)" },
+    { value: "튀김", data: "튀김 (감자튀김, 치즈볼, 오징어튀김, 새우튀김)" },
+    { value: "꼬치", data: "꼬치 (닭꼬치, 소시지꼬치)" },
+    { value: "샌드위치/토스트", data: "샌드위치/토스트 (샌드위치, 토스트, 버거)" },
+    { value: "디저트/음료", data: "디저트/음료 (아이스크림, 커피, 음료, 팥빙수)" },
+    { value: "식사", data: "식사 (덮밥, 초밥)" },
+    { value: "기타", data: "기타" },
+  ];
+
   // 로그인 상태 확인
   const isLogin = useLoginCheck();
-  // const isLogin = true; // FIXME: 임시로 true로 설정, useLoginCheck 훅 사용 예정
 
-  const onDeleteLike = useCallback((ftId) => {
-    if (!isLogin) return alert("로그인 후 이용해주세요.");
+  const onDeleteLike = useCallback(
+    (ftId) => {
+      if (!isLogin) return alert("로그인 후 이용해주세요.");
 
-    if (!ftId) {
-      console.error("푸드트럭 ID가 없습니다.");
-      return;
-    }
+      if (!ftId) {
+        console.error("푸드트럭 ID가 없습니다.");
+        return;
+      }
 
-    axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/like/${ftId}`, { withCredentials: true }).catch((err) => {
-      console.error("취소 실패:", err);
-      alert("취소에 실패했습니다.");
-    });
-  });
+      axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/like/${ftId}`, { withCredentials: true }).catch((err) => {
+        console.error("취소 실패:", err);
+        alert("취소에 실패했습니다.");
+      });
+    },
+    [isLogin]
+  );
 
-  const onAddLike = useCallback((ftId) => {
-    if (!isLogin) return alert("로그인 후 이용해주세요.");
+  const onAddLike = useCallback(
+    (ftId) => {
+      if (!isLogin) return alert("로그인 후 이용해주세요.");
 
-    if (!ftId) {
-      console.error("푸드트럭 ID가 없습니다.");
-      return;
-    }
+      if (!ftId) {
+        console.error("푸드트럭 ID가 없습니다.");
+        return;
+      }
 
-    axios.post(`${import.meta.env.VITE_API_URL}/map/ft/like?foodtruckId=${ftId}`, null, { withCredentials: true }).catch((err) => {
-      console.error("찜하기 실패:", err);
-      alert("찜하기에 실패했습니다.");
-    });
-  }, []);
+      axios.post(`${import.meta.env.VITE_API_URL}/map/ft/like?foodtruckId=${ftId}`, null, { withCredentials: true }).catch((err) => {
+        console.error("찜하기 실패:", err);
+        alert("찜하기에 실패했습니다.");
+      });
+    },
+    [isLogin]
+  );
 
-  const onDeleteSms = useCallback((ftId, day) => {
-    if (!isLogin) return alert("로그인 후 이용해주세요.");
+  const onDeleteSms = useCallback(
+    (ftId, day) => {
+      if (!isLogin) return alert("로그인 후 이용해주세요.");
 
-    if (!ftId || !day) {
-      console.error("푸드트럭 ID 또는 요일이 없습니다.");
-      return;
-    }
+      if (!ftId || !day) {
+        console.error("푸드트럭 ID 또는 요일이 없습니다.");
+        return;
+      }
 
-    axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/sms/${ftId}/${day}`, { withCredentials: true }).catch((err) => {
-      console.error("알림 취소 실패:", err);
-      alert("알림 취소에 실패했습니다.");
-    });
-  });
+      axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/sms/${ftId}/${day}`, { withCredentials: true }).catch((err) => {
+        console.error("알림 취소 실패:", err);
+        alert("알림 취소에 실패했습니다.");
+      });
+    },
+    [isLogin]
+  );
 
-  const onAddSms = useCallback((ftId, day) => {
-    if (!isLogin) return alert("로그인 후 이용해주세요.");
+  const onAddSms = useCallback(
+    (ftId, day) => {
+      if (!isLogin) return alert("로그인 후 이용해주세요.");
 
-    if (!ftId || !day) {
-      console.error("푸드트럭 ID 또는 요일이 없습니다.");
-      return;
-    }
+      if (!ftId || !day) {
+        console.error("푸드트럭 ID 또는 요일이 없습니다.");
+        return;
+      }
 
-    axios.post(`${import.meta.env.VITE_API_URL}/map/ft/sms?storeId=${ftId}&day=${day}`, null, { withCredentials: true }).catch((err) => {
-      console.error("알림 등록 실패:", err);
-      alert("알림 등록에 실패했습니다.");
-    });
-  }, []);
+      axios.post(`${import.meta.env.VITE_API_URL}/map/ft/sms?storeId=${ftId}&day=${day}`, null, { withCredentials: true }).catch((err) => {
+        console.error("알림 등록 실패:", err);
+        alert("알림 등록에 실패했습니다.");
+      });
+    },
+    [isLogin]
+  );
 
   // 지도 기반 푸드트럭 조회 API 호출 (명세 준수)
   const onChangeFilterFun = useCallback(() => {
@@ -287,16 +235,6 @@ const MapPage = () => {
     }
   };
 
-  const categoryList = [
-    { value: "분식", data: "분식 (어묵, 떡볶이, 순대)" },
-    { value: "간식", data: "간식 (붕어빵, 타코야끼, 크레페, 츄러스, 와플)" },
-    { value: "튀김", data: "튀김 (감자튀김, 치즈볼, 오징어튀김, 새우튀김)" },
-    { value: "꼬치", data: "꼬치 (닭꼬치, 소시지꼬치)" },
-    { value: "샌드위치/토스트", data: "샌드위치/토스트 (샌드위치, 토스트, 버거)" },
-    { value: "디저트/음료", data: "디저트/음료 (아이스크림, 커피, 음료, 팥빙수)" },
-    { value: "식사", data: "식사 (덮밥, 초밥)" },
-    { value: "기타", data: "기타" },
-  ];
   // 지도 정보 불러오기
   // 주어진 데이터(data)에서 오늘 영업 중인 가게의 위치 정보를 지도에 표시하고, 거리 계산 및 마커를 추가하는 함수
   const onChangeFtData = useCallback(
