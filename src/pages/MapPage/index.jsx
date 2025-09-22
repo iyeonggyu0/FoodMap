@@ -131,6 +131,34 @@ const MapPage = () => {
     });
   }, []);
 
+  const onDeleteSms = useCallback((ftId, day) => {
+    if (!isLogin) return alert("로그인 후 이용해주세요.");
+
+    if (!ftId || !day) {
+      console.error("푸드트럭 ID 또는 요일이 없습니다.");
+      return;
+    }
+
+    axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/sms/${ftId}/${day}`, { withCredentials: true }).catch((err) => {
+      console.error("알림 취소 실패:", err);
+      alert("알림 취소에 실패했습니다.");
+    });
+  });
+
+  const onAddLike = useCallback((ftId) => {
+    if (!isLogin) return alert("로그인 후 이용해주세요.");
+
+    if (!ftId) {
+      console.error("푸드트럭 ID가 없습니다.");
+      return;
+    }
+
+    axios.post(`${import.meta.env.VITE_API_URL}/map/ft/like?foodtruckId=${ftId}`, null, { withCredentials: true }).catch((err) => {
+      console.error("찜하기 실패:", err);
+      alert("찜하기에 실패했습니다.");
+    });
+  }, []);
+
   // 지도 기반 푸드트럭 조회 API 호출 (명세 준수)
   const onChangeFilterFun = useCallback(() => {
     // 현재 지도 중심 좌표 또는 기본 좌표 사용
