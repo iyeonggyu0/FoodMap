@@ -148,56 +148,122 @@ const MyFTCP = ({ myTruckList = [] }) => {
 
     // 모든 필드를 보내되, 변경된 값은 수정된 값으로, 변경되지 않은 값은 기존 값(originData)으로 채워서 전송
     let sendData = {};
-    if (!originData) {
-      // 최초 등록 시 전체 포함
-      // sendData.truckId = truckId;
-      sendData.name = FTName;
-      sendData.category = FTCategory || "";
-      sendData.intro = FTIntro;
-      sendData.menu = menuList.map((menu) => {
-        // numAsInt 등 불필요한 필드 제거
-        const { name, price, info, num } = menu;
-        return {
-          name,
-          price: String(price),
-          info,
-          num: String(num),
-        };
-      });
-      sendData.schedule = scheduleList.map((item) => ({
-        day: item.day,
-        holiday: item.holiday,
-        start: item.start.length === 2 ? item.start + ":00" : item.start,
-        end: item.end.length === 2 ? item.end + ":00" : item.end,
-        mapAddress: item.mapAddress,
-        userAddress: item.userAddress,
-      }));
-    } else {
-      // sendData.truckId = truckId;
-      sendData.name = originData.name !== FTName ? FTName : originData.name;
-      sendData.category = originData.category !== FTCategory ? FTCategory : originData.category;
-      sendData.intro = originData.intro !== FTIntro ? FTIntro : originData.intro;
-      // menu가 수정되지 않았더라도 numAsInt 등 불필요한 필드 제거
-      const cleanMenu = (menuArr) =>
-        menuArr.map(({ name, price, info, num }) => ({
-          name,
-          price: String(price),
-          info,
-          num: String(num),
-        }));
-      sendData.menu = cleanMenu(JSON.stringify(originData.menu) !== JSON.stringify(menuList) ? menuList : originData.menu);
-      sendData.schedule =
-        JSON.stringify(originData.schedule) !== JSON.stringify(scheduleList)
-          ? scheduleList.map((item) => ({
-              day: item.day,
-              holiday: item.holiday,
-              start: item.start.length === 2 ? item.start + ":00" : item.start,
-              end: item.end.length === 2 ? item.end + ":00" : item.end,
-              mapAddress: item.mapAddress,
-              userAddress: item.userAddress,
-            }))
-          : originData.schedule;
-    }
+
+    // 등록페이지와 동일하게 카카오맵 API 활용하여 주소 -> 좌표 변환
+    const buildScheduleWithLatLng = async (list, reverseHoliday = false) => {
+      return Promise.all(
+        list.map(async (item) => {
+          const start = item.start.length === 2 ? item.start + ":00" : item.start;
+          const end = item.end.length === 2 ? item.end + ":00" : item.end;
+          let lat = item.lat,
+            lng = item.lng;
+
+          // lat, lng가 없고 mapAddress가 있으면 카카오맵 API로 좌표 변환
+          if (item.mapAddress && (!lat || !lng)) {
+            try {
+              if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services) throw new Error("Kakao map not loaded");
+              const geocoder = new window.kakao.maps.services.Geocoder();
+              const coords = await new Promise((resolve, reject) => {
+                geocoder.addressSearch(item.mapAddress, function (result, status) {
+                  if (status === window.kakao.maps.services.Status.OK && result.length > 0) {
+                    resolve({ lat: parseFloat(result[0].y), lng: parseFloat(result[0].x) });
+                  } else {
+                    reject("주소 변환 실패: " + item.mapAddress);
+                  }
+                });
+              });
+              lat = coords.lat;
+              lng = coords.lng;
+            } catch (e) {
+              console.warn("주소->좌표 변환 실패:", item.mapAddress, e);
+            }
+          }
+
+          return {
+            day: item.day,
+            holiday: reverseHoliday ? !item.holiday : item.holiday,
+            start,
+            end,
+            mapAddress: item.mapAddress,
+            userAddress: item.userAddress,
+            lat,
+            lng,
+          };
+        })
+      );
+    };
+
+    const buildSendData = async () => {
+      let sendData = {};
+      if (!originData) {
+        sendData.name = FTName;
+        sendData.category = FTCategory || "";
+        sendData.intro = FTIntro;
+        sendData.menu = menuList.map((menu) => {
+          const { name, price, info, num } = menu;
+          return {
+            name,
+            price: String(price),
+            info,
+            num: String(num),
+          };
+        });
+        sendData.schedule = await buildScheduleWithLatLng(scheduleList);
+      } else {
+        sendData.name = originData.name !== FTName ? FTName : originData.name;
+        sendData.category = originData.category !== FTCategory ? FTCategory : originData.category;
+        sendData.intro = originData.intro !== FTIntro ? FTIntro : originData.intro;
+        const cleanMenu = (menuArr) =>
+          menuArr.map(({ name, price, info, num }) => ({
+            name,
+            price: String(price),
+            info,
+            num: String(num),
+          }));
+        sendData.menu = cleanMenu(JSON.stringify(originData.menu) !== JSON.stringify(menuList) ? menuList : originData.menu);
+        sendData.schedule =
+          JSON.stringify(originData.schedule) !== JSON.stringify(scheduleList)
+            ? await buildScheduleWithLatLng(scheduleList, true)
+            : await buildScheduleWithLatLng(originData.schedule, true);
+      }
+      return sendData;
+    };
+
+    // 비동기 처리로 변경
+    (async () => {
+      const sendData = await buildSendData();
+
+      // 등록페이지처럼 모든 데이터를 FormData에 포함해서 전송
+      console.log("전송할 sendData:", sendData);
+      const formData = new FormData();
+      formData.append("request", JSON.stringify(sendData));
+
+      // 이미지 파일이 있으면 FormData에 추가
+      if (file) {
+        formData.append("image", file);
+        console.log("MyFTCP - 이미지 파일이 FormData에 추가됨:", file.name, file.size);
+      } else {
+        console.log("MyFTCP - 선택된 이미지 파일이 없음");
+      }
+
+      axios
+        .put(`${import.meta.env.VITE_API_URL}/user/foodtruck/${truckId}`, formData, {
+          withCredentials: true,
+          headers: { Accept: "application/json" },
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            alert("푸드트럭 정보가 수정되었습니다!");
+            window.location.reload();
+          } else {
+            alert(res.data.message || "푸드트럭 정보 수정에 실패했습니다. 다시 시도해주세요.");
+          }
+        })
+        .catch((err) => {
+          console.error("푸드트럭 정보 수정 중 오류 발생:", err);
+          alert("푸드트럭 정보 수정 중 오류가 발생했습니다. 다시 시도해주세요.");
+        });
+    })();
 
     // 이미지 파일만 업로드하는 경우
     if (file) {
@@ -486,6 +552,33 @@ const MyFTCP = ({ myTruckList = [] }) => {
     // );
   }, [setFTName, setFTCategory, setFTIntro, dayNames]);
 
+  const ftDelecteHandler = (e) => {
+    e.preventDefault();
+    const truckId = originData?.truckId;
+    if (!truckId) {
+      alert("푸드트럭 ID가 없습니다. 다시 시도해주세요.");
+      return;
+    }
+    if (window.confirm("정말로 푸드트럭을 삭제하시겠습니까? 삭제 시 복구할 수 없습니다.")) {
+      axios
+        .delete(`${import.meta.env.VITE_API_URL}/user/foodtruck/${truckId}`, {
+          withCredentials: true,
+          headers: { Accept: "application/json" },
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            alert("푸드트럭이 삭제되었습니다.");
+            window.location.reload();
+          } else {
+            alert(res.data.message || "푸드트럭 삭제에 실패했습니다.\n다시 시도해주세요.");
+          }
+        })
+        .catch((err) => {
+          console.error("푸드트럭 삭제 중 오류 발생:", err);
+          alert("푸드트럭 삭제 중 오류가 발생했습니다.\n다시 시도해주세요.");
+        });
+    }
+  };
   return (
     <MyFTCPMainStyle isPc={isPc}>
       <section>
@@ -716,6 +809,11 @@ const MyFTCP = ({ myTruckList = [] }) => {
         <div className="col-full">
           <div className="axiosButton" onClick={updateSubmitHandler}>
             <ButtonCP>수정 신청</ButtonCP>
+          </div>
+        </div>
+        <div className="col-full">
+          <div className="axiosButton" onClick={ftDelecteHandler}>
+            <ButtonCP color="--red">푸드트럭 삭제</ButtonCP>
           </div>
         </div>
       </section>
