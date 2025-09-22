@@ -121,7 +121,7 @@ const PcCP = ({
         </div>
       </section>
       {onDetails && (
-        <PcCpDetailsStyle id="details" imgUrl={`${import.meta.VITE_API_URL}${details.imageUrl}`}>
+        <PcCpDetailsStyle id="details" imgUrl={`${import.meta.env.VITE_API_URL}${details.imageUrl}`}>
           <p style={{ textAlign: "right", fontSize: "1.6rem" }}>
             <FontAwesomeIcon icon={faXmark} onClick={onDeleteDetails} className="icon" />
           </p>

@@ -80,7 +80,7 @@ const MobileCP = ({
   };
 
   return (
-    <MobileCPMainStyle imgUrl={`${import.meta.VITE_API_URL}${details.imageUrl}`}>
+    <MobileCPMainStyle imgUrl={`${import.meta.env.VITE_API_URL}${details.imageUrl}`}>
       <MobileCPButtonStyle>
         {/* GPS */}
         <div className="gps flexCenter" onClick={currentLocationButton}>
