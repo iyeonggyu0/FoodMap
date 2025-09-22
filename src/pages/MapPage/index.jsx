@@ -375,6 +375,7 @@ const MapPage = () => {
                 review: item.review,
                 truckId: item.truckId, // 푸드트럭 ID 추가
                 like: item.like, // 찜 여부 추가
+                imageUrl: item.imageUrl, // 이미지 URL 추가
               });
               setOnDetails(true);
             });
