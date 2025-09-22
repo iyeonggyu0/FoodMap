@@ -179,7 +179,8 @@ const MapPage = () => {
       .get(`${import.meta.env.VITE_API_URL}/map/ft?${params.toString()}`, { withCredentials: true })
       .then((res) => {
         if (res.data) {
-          setFtData(res.data); // onChangeFtData 대신 직접 setFtData 사용
+          setFtData(res.data); // 데이터 상태 업데이트
+          onChangeFtData(res.data); // 지도 마커 처리
         } else {
           console.error("No data received from API");
         }
@@ -188,7 +189,7 @@ const MapPage = () => {
         console.error("Error fetching data:", err);
       });
     // onChangeFtData(ftDummyListData);
-  }, [filter, userLocation]); // onChangeFtData 의존성 제거
+  }, [filter, userLocation, onChangeFtData]); // onChangeFtData 의존성 추가
 
   useEffect(() => {
     // 사용자 위치가 있을 때만 푸드트럭 데이터 로드
@@ -300,6 +301,8 @@ const MapPage = () => {
   // 주어진 데이터(data)에서 오늘 영업 중인 가게의 위치 정보를 지도에 표시하고, 거리 계산 및 마커를 추가하는 함수
   const onChangeFtData = useCallback(
     (data) => {
+      if (!data || data.length === 0) return;
+
       const today = new Date().getDay(); // 오늘 요일(0:일~6:토)
       const dayMap = ["일", "월", "화", "수", "목", "금", "토"]; // 요일 매핑
       // 카카오 지도 및 주소검색 서비스가 로드되어 있는지 확인
@@ -325,8 +328,8 @@ const MapPage = () => {
 
       // 오늘의 holiday가 false인 푸드트럭을 후순위로 정렬
       resultArr.sort((a, b) => {
-        const todayA = a.schedule.find((sch) => sch.day === dayMap[today]);
-        const todayB = b.schedule.find((sch) => sch.day === dayMap[today]);
+        const todayA = a.schedule?.find((sch) => sch.day === dayMap[today]);
+        const todayB = b.schedule?.find((sch) => sch.day === dayMap[today]);
         // holiday가 false면 후순위
         if (todayA && todayB) {
           if (todayA.holiday === todayB.holiday) return 0;
@@ -339,9 +342,65 @@ const MapPage = () => {
       // 데이터 배열 순회
       resultArr.forEach((item, idx) => {
         // 오늘 영업 중이며, 휴무가 아니고, 지도 주소가 있는 스케줄 찾기
-        const todaySchedule = item.schedule.find((sch) => sch.day === dayMap[today] && sch.holiday && sch.mapAddress && sch.mapAddress.trim() !== "");
+        const todaySchedule = item.schedule?.find((sch) => sch.day === dayMap[today] && sch.holiday && sch.mapAddress && sch.mapAddress.trim() !== "");
         if (!todaySchedule) return;
         total++;
+
+        // lat, lng가 이미 있는 경우 geocoding 건너뛰기
+        if (todaySchedule.lat && todaySchedule.lng) {
+          const lat = parseFloat(todaySchedule.lat);
+          const lng = parseFloat(todaySchedule.lng);
+          const itemLatLng = new window.kakao.maps.LatLng(lat, lng);
+          const polyline = new window.kakao.maps.Polyline({ path: [center, itemLatLng] });
+          const distance = polyline.getLength();
+          resultArr[idx] = {
+            ...item,
+            coords: { lat, lng },
+            distance,
+          };
+
+          // 지도에 기본 마커 추가
+          if (map) {
+            const marker = new window.kakao.maps.Marker({
+              map,
+              position: itemLatLng,
+              title: item.name,
+              clickable: true,
+            });
+
+            // 마커 클릭 이벤트 등록
+            window.kakao.maps.event.addListener(marker, "click", function () {
+              onChangeMapGPS({ lat, lng });
+              setDetails({
+                name: item.name,
+                category: item.category,
+                intro: item.intro,
+                schedule: item.schedule,
+                menu: item.menu,
+                review: item.review,
+                truckId: item.truckId,
+                like: item.like,
+              });
+              setOnDetails(true);
+            });
+          }
+
+          pending++;
+          if (pending === total) {
+            // 거리순 정렬
+            const sortedArr = [...resultArr].sort((a, b) => {
+              if (typeof a.distance === "number" && typeof b.distance === "number") {
+                return a.distance - b.distance;
+              }
+              return 0;
+            });
+            console.log("Map", sortedArr);
+            // setFtData 호출 제거 - 이미 상위에서 설정됨
+          }
+          return;
+        }
+
+        // geocoding이 필요한 경우
         geocoder.addressSearch(todaySchedule.mapAddress, function (result, status) {
           if (status === window.kakao.maps.services.Status.OK && result.length > 0) {
             const lat = parseFloat(result[0].y);
@@ -391,7 +450,7 @@ const MapPage = () => {
               return 0;
             });
             console.log("Map", sortedArr);
-            setFtData(sortedArr);
+            // setFtData 호출 제거 - 이미 상위에서 설정됨
           }
         });
       });
