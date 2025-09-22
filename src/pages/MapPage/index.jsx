@@ -85,12 +85,12 @@ import { useLoginCheck } from "../../hooks/useLoginCheck";
 
 const MapPage = () => {
   const isMedia = useMedia("");
-  const DEFAULT_CENTER = { lat: 33.450701, lng: 126.570667 };
   const [ftData, setFtData] = useState();
   const mapRef = useRef(null); // 지도 객체를 useRef로 관리
   const [filter, onChangeFilter, setFilter] = useInput("");
   const [details, setDetails] = useState([]);
   const [onDetails, setOnDetails] = useState(false);
+  const [userLocation, setUserLocation] = useState(null); // 사용자 위치 상태 추가
 
   // 로그인 상태 확인
   const isLogin = useLoginCheck();
@@ -154,9 +154,12 @@ const MapPage = () => {
 
   // 지도 기반 푸드트럭 조회 API 호출 (명세 준수)
   const onChangeFilterFun = useCallback(() => {
-    // 현재 지도 중심 좌표 또는 기본 좌표 사용
-    let lat = DEFAULT_CENTER.lat;
-    let lng = DEFAULT_CENTER.lng;
+    // 사용자 위치가 없으면 푸드트럭 로드 안함
+    if (!userLocation) return;
+
+    // 현재 지도 중심 좌표 또는 사용자 위치 사용
+    let lat = userLocation.lat;
+    let lng = userLocation.lng;
     if (mapRef.current && mapRef.current.getCenter) {
       const center = mapRef.current.getCenter();
       lat = center.getLat();
@@ -185,20 +188,20 @@ const MapPage = () => {
         console.error("Error fetching data:", err);
       });
     // onChangeFtData(ftDummyListData);
-  }, [filter]);
+  }, [filter, userLocation, onChangeFtData]);
 
   useEffect(() => {
-    onChangeFilterFun();
-  }, [filter]);
+    // 사용자 위치가 있을 때만 푸드트럭 데이터 로드
+    if (userLocation) {
+      onChangeFilterFun();
+    }
+  }, [filter, userLocation, onChangeFilterFun]);
 
   useEffect(() => {
-    onChangeFilterFun();
     // 카카오맵 스크립트가 로드되어 있는지 확인
     if (!window.kakao || !window.kakao.maps) return;
     const container = document.getElementById("map");
     if (!container) return;
-
-    let center = new window.kakao.maps.LatLng(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng);
 
     // 지도 객체 생성
     const createMap = (center) => {
@@ -221,6 +224,10 @@ const MapPage = () => {
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
           const center = new window.kakao.maps.LatLng(lat, lng);
+
+          // 사용자 위치 저장
+          setUserLocation({ lat, lng });
+
           createMap(center);
 
           // 커스텀 마커 이미지 설정
@@ -238,10 +245,20 @@ const MapPage = () => {
           marker.setMap(mapRef.current);
         },
         () => {
+          // 위치 정보 획득 실패 시 기본 위치로 설정 (서울)
+          const defaultLat = 37.5665;
+          const defaultLng = 126.978;
+          const center = new window.kakao.maps.LatLng(defaultLat, defaultLng);
+          setUserLocation({ lat: defaultLat, lng: defaultLng });
           createMap(center);
         }
       );
     } else {
+      // Geolocation을 지원하지 않는 경우 기본 위치로 설정
+      const defaultLat = 37.5665;
+      const defaultLng = 126.978;
+      const center = new window.kakao.maps.LatLng(defaultLat, defaultLng);
+      setUserLocation({ lat: defaultLat, lng: defaultLng });
       createMap(center);
     }
   }, []);
@@ -281,95 +298,106 @@ const MapPage = () => {
   ];
   // 지도 정보 불러오기
   // 주어진 데이터(data)에서 오늘 영업 중인 가게의 위치 정보를 지도에 표시하고, 거리 계산 및 마커를 추가하는 함수
-  const onChangeFtData = useCallback((data) => {
-    const today = new Date().getDay(); // 오늘 요일(0:일~6:토)
-    const dayMap = ["일", "월", "화", "수", "목", "금", "토"]; // 요일 매핑
-    // 카카오 지도 및 주소검색 서비스가 로드되어 있는지 확인
-    if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services) return;
-    const geocoder = new window.kakao.maps.services.Geocoder(); // 주소검색 객체 생성
-    const map = mapRef.current; // 현재 지도 객체
-    // 지도 중심 좌표 가져오기 (없으면 기본 좌표 사용)
-    const center = map ? map.getCenter() : new window.kakao.maps.LatLng(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng);
+  const onChangeFtData = useCallback(
+    (data) => {
+      const today = new Date().getDay(); // 오늘 요일(0:일~6:토)
+      const dayMap = ["일", "월", "화", "수", "목", "금", "토"]; // 요일 매핑
+      // 카카오 지도 및 주소검색 서비스가 로드되어 있는지 확인
+      if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services) return;
+      const geocoder = new window.kakao.maps.services.Geocoder(); // 주소검색 객체 생성
+      const map = mapRef.current; // 현재 지도 객체
 
-    let pending = 0; // 비동기 addressSearch 완료 카운트
-    let total = 0; // addressSearch 호출 총 횟수
-    const resultArr = [...data]; // 결과 데이터 복사본
-
-    // 기본 마커 사용 (커스텀 이미지 제거)
-
-    // 오늘의 holiday가 false인 푸드트럭을 후순위로 정렬
-    resultArr.sort((a, b) => {
-      const todayA = a.schedule.find((sch) => sch.day === dayMap[today]);
-      const todayB = b.schedule.find((sch) => sch.day === dayMap[today]);
-      // holiday가 false면 후순위
-      if (todayA && todayB) {
-        if (todayA.holiday === todayB.holiday) return 0;
-        if (todayA.holiday) return -1;
-        return 1;
+      // 지도 중심 좌표 가져오기 (없으면 사용자 위치 사용)
+      let center;
+      if (map && map.getCenter) {
+        center = map.getCenter();
+      } else if (userLocation) {
+        center = new window.kakao.maps.LatLng(userLocation.lat, userLocation.lng);
+      } else {
+        return; // 위치 정보가 없으면 종료
       }
-      return 0;
-    });
 
-    // 데이터 배열 순회
-    resultArr.forEach((item, idx) => {
-      // 오늘 영업 중이며, 휴무가 아니고, 지도 주소가 있는 스케줄 찾기
-      const todaySchedule = item.schedule.find((sch) => sch.day === dayMap[today] && sch.holiday && sch.mapAddress && sch.mapAddress.trim() !== "");
-      if (!todaySchedule) return;
-      total++;
-      geocoder.addressSearch(todaySchedule.mapAddress, function (result, status) {
-        if (status === window.kakao.maps.services.Status.OK && result.length > 0) {
-          const lat = parseFloat(result[0].y);
-          const lng = parseFloat(result[0].x);
-          const itemLatLng = new window.kakao.maps.LatLng(lat, lng);
-          const polyline = new window.kakao.maps.Polyline({ path: [center, itemLatLng] });
-          const distance = polyline.getLength();
-          resultArr[idx] = {
-            ...item,
-            coords: { lat, lng },
-            distance,
-          };
-          // 지도에 기본 마커 추가
-          if (map) {
-            const marker = new window.kakao.maps.Marker({
-              map,
-              position: itemLatLng,
-              title: item.name,
-              clickable: true, // 마커 클릭 가능하도록 설정
-            });
+      let pending = 0; // 비동기 addressSearch 완료 카운트
+      let total = 0; // addressSearch 호출 총 횟수
+      const resultArr = [...data]; // 결과 데이터 복사본
 
-            // 마커 클릭 이벤트 등록
-            window.kakao.maps.event.addListener(marker, "click", function () {
-              onChangeMapGPS({ lat, lng });
-              setDetails({
-                name: item.name,
-                category: item.category,
-                intro: item.intro,
-                schedule: item.schedule,
-                menu: item.menu,
-                review: item.review,
-                truckId: item.truckId, // 푸드트럭 ID 추가
-                like: item.like, // 찜 여부 추가
-              });
-              setOnDetails(true);
-            });
-          }
+      // 기본 마커 사용 (커스텀 이미지 제거)
+
+      // 오늘의 holiday가 false인 푸드트럭을 후순위로 정렬
+      resultArr.sort((a, b) => {
+        const todayA = a.schedule.find((sch) => sch.day === dayMap[today]);
+        const todayB = b.schedule.find((sch) => sch.day === dayMap[today]);
+        // holiday가 false면 후순위
+        if (todayA && todayB) {
+          if (todayA.holiday === todayB.holiday) return 0;
+          if (todayA.holiday) return -1;
+          return 1;
         }
-        pending++;
-        if (pending === total) {
-          // 거리순 정렬(holiday 우선순위는 이미 반영됨)
-          const sortedArr = [...resultArr].sort((a, b) => {
-            // 둘 다 distance가 있으면 거리순, 아니면 그대로
-            if (typeof a.distance === "number" && typeof b.distance === "number") {
-              return a.distance - b.distance;
-            }
-            return 0;
-          });
-          console.log("Map", sortedArr);
-          setFtData(sortedArr);
-        }
+        return 0;
       });
-    });
-  }, []);
+
+      // 데이터 배열 순회
+      resultArr.forEach((item, idx) => {
+        // 오늘 영업 중이며, 휴무가 아니고, 지도 주소가 있는 스케줄 찾기
+        const todaySchedule = item.schedule.find((sch) => sch.day === dayMap[today] && sch.holiday && sch.mapAddress && sch.mapAddress.trim() !== "");
+        if (!todaySchedule) return;
+        total++;
+        geocoder.addressSearch(todaySchedule.mapAddress, function (result, status) {
+          if (status === window.kakao.maps.services.Status.OK && result.length > 0) {
+            const lat = parseFloat(result[0].y);
+            const lng = parseFloat(result[0].x);
+            const itemLatLng = new window.kakao.maps.LatLng(lat, lng);
+            const polyline = new window.kakao.maps.Polyline({ path: [center, itemLatLng] });
+            const distance = polyline.getLength();
+            resultArr[idx] = {
+              ...item,
+              coords: { lat, lng },
+              distance,
+            };
+            // 지도에 기본 마커 추가
+            if (map) {
+              const marker = new window.kakao.maps.Marker({
+                map,
+                position: itemLatLng,
+                title: item.name,
+                clickable: true, // 마커 클릭 가능하도록 설정
+              });
+
+              // 마커 클릭 이벤트 등록
+              window.kakao.maps.event.addListener(marker, "click", function () {
+                onChangeMapGPS({ lat, lng });
+                setDetails({
+                  name: item.name,
+                  category: item.category,
+                  intro: item.intro,
+                  schedule: item.schedule,
+                  menu: item.menu,
+                  review: item.review,
+                  truckId: item.truckId, // 푸드트럭 ID 추가
+                  like: item.like, // 찜 여부 추가
+                });
+                setOnDetails(true);
+              });
+            }
+          }
+          pending++;
+          if (pending === total) {
+            // 거리순 정렬(holiday 우선순위는 이미 반영됨)
+            const sortedArr = [...resultArr].sort((a, b) => {
+              // 둘 다 distance가 있으면 거리순, 아니면 그대로
+              if (typeof a.distance === "number" && typeof b.distance === "number") {
+                return a.distance - b.distance;
+              }
+              return 0;
+            });
+            console.log("Map", sortedArr);
+            setFtData(sortedArr);
+          }
+        });
+      });
+    },
+    [userLocation, onChangeMapGPS]
+  );
 
   // 하위 컴포넌트에서 지도 위치 이동
   const onChangeMapGPS = useCallback((gps) => {
@@ -390,22 +418,25 @@ const MapPage = () => {
   }, []);
 
   // 푸드트럭 상세 정보 설정 및 표시 함수
-  const onSetDetails = useCallback((data) => {
-    console.log("data", data);
-    // 선택된 푸드트럭의 상세 정보를 설정
-    setDetails({
-      name: data.name, // 푸드트럭 이름
-      category: data.category, // 카테고리
-      intro: data.intro, // 소개
-      schedule: data.schedule, // 영업 스케줄
-      menu: data.menu, // 메뉴 목록
-      review: data.review, // 리뷰 목록
-      truckId: data.truckId, // 푸드트럭 ID (추가된 부분)
-      like: data.like, // 찜 여부 (추가된 부분)
-    });
-    setOnDetails(true); // 상세 정보 창 표시
-    onChangeMapGPS({ lat: data.coords.lat, lng: data.coords.lng });
-  }, []);
+  const onSetDetails = useCallback(
+    (data) => {
+      console.log("data", data);
+      // 선택된 푸드트럭의 상세 정보를 설정
+      setDetails({
+        name: data.name, // 푸드트럭 이름
+        category: data.category, // 카테고리
+        intro: data.intro, // 소개
+        schedule: data.schedule, // 영업 스케줄
+        menu: data.menu, // 메뉴 목록
+        review: data.review, // 리뷰 목록
+        truckId: data.truckId, // 푸드트럭 ID (추가된 부분)
+        like: data.like, // 찜 여부 (추가된 부분)
+      });
+      setOnDetails(true); // 상세 정보 창 표시
+      onChangeMapGPS({ lat: data.coords.lat, lng: data.coords.lng });
+    },
+    [onChangeMapGPS]
+  );
 
   return (
     <MapPageMainStyle>
