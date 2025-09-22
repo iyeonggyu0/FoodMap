@@ -150,6 +150,7 @@ const MyFTCP = ({ myTruckList = [] }) => {
     let sendData = {};
     if (!originData) {
       // 최초 등록 시 전체 포함
+      sendData.truckId = truckId;
       sendData.name = FTName;
       sendData.category = FTCategory || "";
       sendData.intro = FTIntro;
@@ -168,6 +169,7 @@ const MyFTCP = ({ myTruckList = [] }) => {
         userAddress: item.userAddress,
       }));
     } else {
+      sendData.truckId = truckId;
       sendData.name = originData.name !== FTName ? FTName : originData.name;
       sendData.category = originData.category !== FTCategory ? FTCategory : originData.category;
       sendData.intro = originData.intro !== FTIntro ? FTIntro : originData.intro;
