@@ -60,7 +60,7 @@ const PcCP = ({
   console.log(details);
 
   return (
-    <PcCpMainStyled>
+    <PcCpMainStyled imgUrl={`${import.meta.env.VITE_API_URL}${details.imageUrl}`}>
       <PcCpButtonStyled>
         {/* GPS */}
         <div className="gps flexCenter" onClick={currentLocationButton}>
@@ -128,11 +128,7 @@ const PcCP = ({
           <p style={{ textAlign: "right", fontSize: "1.6rem" }}>
             <FontAwesomeIcon icon={faXmark} onClick={onDeleteDetails} className="icon" />
           </p>
-          <div
-            className="imageBox"
-            style={{
-              backgroundImage: `url(${import.meta.env.VITE_API_URL}${details.imageUrl})`,
-            }}></div>
+          <div className="imageBox"></div>
           <div style={{ minHeight: "100px" }}>
             <h3 className="name ">
               <span>{details.name}</span>

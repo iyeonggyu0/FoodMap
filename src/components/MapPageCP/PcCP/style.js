@@ -181,6 +181,7 @@ export const PcCpDetailsStyle = styled.section`
 
   /* image */
   & > div:nth-child(2) {
+    background-image: url(${(props) => props.imgUrl}) !important;
     background-size: cover;
     background-position: center;
     width: 100%;
