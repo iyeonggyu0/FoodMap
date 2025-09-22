@@ -128,7 +128,7 @@ const MapPage = () => {
       .then((res) => {
         if (res.data) {
           setFtData(res.data); // 데이터 상태 업데이트
-          onChangeFtData(res.data); // 지도 마커 처리
+          // onChangeFtData는 별도 useEffect에서 처리
         } else {
           console.error("No data received from API");
         }
@@ -137,7 +137,7 @@ const MapPage = () => {
         console.error("Error fetching data:", err);
       });
     // onChangeFtData(ftDummyListData);
-  }, [filter, userLocation, onChangeFtData]); // onChangeFtData 의존성 추가
+  }, [filter, userLocation]); // onChangeFtData 의존성 제거
 
   useEffect(() => {
     // 사용자 위치가 있을 때만 푸드트럭 데이터 로드
@@ -145,6 +145,13 @@ const MapPage = () => {
       onChangeFilterFun();
     }
   }, [filter, userLocation, onChangeFilterFun]);
+
+  // ftData가 변경될 때마다 지도 마커 업데이트
+  useEffect(() => {
+    if (ftData && ftData.length > 0) {
+      onChangeFtData(ftData);
+    }
+  }, [ftData, onChangeFtData]);
 
   useEffect(() => {
     // 카카오맵 스크립트가 로드되어 있는지 확인
