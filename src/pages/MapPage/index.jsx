@@ -196,6 +196,10 @@ const MapPage = () => {
 
   useEffect(() => {
     onChangeFilterFun();
+  }, [mapRef]);
+
+  useEffect(() => {
+    onChangeFilterFun();
   }, [filter]);
 
   // 지도 중심이 바뀔 때마다 getMapInfo 자동 실행
@@ -217,8 +221,6 @@ const MapPage = () => {
     const container = document.getElementById("map");
     if (!container) return;
 
-    let center = new window.kakao.maps.LatLng(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng);
-
     // 지도 객체 생성
     const createMap = (center) => {
       mapRef.current = new window.kakao.maps.Map(container, {
@@ -234,7 +236,8 @@ const MapPage = () => {
         marker.setRange(100);
         mapRef.current.addOverlay(marker);
       }
-      // 지도가 생성된 후에 마커 추가 함수 실행
+      // 지도 생성 후 반드시 지도 중심값으로 데이터 불러오기
+      onChangeFilterFun();
     };
 
     if (navigator.geolocation) {
@@ -242,8 +245,8 @@ const MapPage = () => {
         (position) => {
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
-          const center = new window.kakao.maps.LatLng(lat, lng);
-          createMap(center);
+          const userCenter = new window.kakao.maps.LatLng(lat, lng);
+          createMap(userCenter);
 
           // 커스텀 마커 이미지 설정
           const imageSrc = "/img/myLocation.png"; // public 폴더 기준 경로
@@ -253,19 +256,21 @@ const MapPage = () => {
 
           // 내 위치 마커 생성 및 지도에 표시
           const marker = new window.kakao.maps.Marker({
-            position: center,
+            position: userCenter,
             image: markerImage,
             title: "내 위치",
           });
           marker.setMap(mapRef.current);
         },
         () => {
-          createMap(center);
+          // 위치 정보 못 가져오면 기본값 사용
+          const fallbackCenter = new window.kakao.maps.LatLng(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng);
+          createMap(fallbackCenter);
         }
       );
-      onChangeFilterFun();
     } else {
-      createMap(center);
+      const fallbackCenter = new window.kakao.maps.LatLng(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng);
+      createMap(fallbackCenter);
     }
   }, []);
 
