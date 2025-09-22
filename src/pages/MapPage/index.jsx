@@ -179,7 +179,7 @@ const MapPage = () => {
       .get(`${import.meta.env.VITE_API_URL}/map/ft?${params.toString()}`, { withCredentials: true })
       .then((res) => {
         if (res.data) {
-          onChangeFtData(res.data);
+          setFtData(res.data); // onChangeFtData 대신 직접 setFtData 사용
         } else {
           console.error("No data received from API");
         }
@@ -188,7 +188,7 @@ const MapPage = () => {
         console.error("Error fetching data:", err);
       });
     // onChangeFtData(ftDummyListData);
-  }, [filter, userLocation, onChangeFtData]);
+  }, [filter, userLocation]); // onChangeFtData 의존성 제거
 
   useEffect(() => {
     // 사용자 위치가 있을 때만 푸드트럭 데이터 로드
