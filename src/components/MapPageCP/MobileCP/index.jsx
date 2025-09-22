@@ -34,6 +34,8 @@ const MobileCP = ({
   onAddSms,
   isLogin,
 }) => {
+  console.log(details);
+
   const nav = useNavigate();
   const [onFTList, setOnFTList] = useState(false);
   const [isOnDetails, setIsOnDetails] = useState(false);

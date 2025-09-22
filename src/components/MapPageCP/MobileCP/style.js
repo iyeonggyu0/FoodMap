@@ -19,12 +19,6 @@ export const MobileCPMainStyle = styled.section`
     transition: all 0.2s ease-in-out;
   }
 
-  & .imageBox {
-    background-image: url(${(props) => props.imgUrl});
-    background-size: cover;
-    background-position: center;
-  }
-
   & > .ftList {
     padding-right: 0;
   }
@@ -59,10 +53,12 @@ export const MobileCPMainStyle = styled.section`
   /* 기본정보 */
   & .ftDetails > section.info {
     & > div:first-child {
+      background-image: url(${(props) => props.imgUrl});
+      background-size: cover;
+      background-position: center;
       width: 100%;
       height: 28%;
       max-height: 170px;
-      background-color: var(--gray-2);
       color: var(--gray-3);
       border-radius: 12px;
     }
