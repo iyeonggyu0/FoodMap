@@ -166,8 +166,7 @@ const MyFTCP = ({ myTruckList = [] }) => {
       });
       sendData.schedule = scheduleList.map((item) => ({
         day: item.day,
-        // holiday: true(휴무) -> false(영업), false(영업) -> true(휴무)로 반전
-        holiday: !item.holiday,
+        holiday: item.holiday,
         start: item.start.length === 2 ? item.start + ":00" : item.start,
         end: item.end.length === 2 ? item.end + ":00" : item.end,
         mapAddress: item.mapAddress,
@@ -191,17 +190,13 @@ const MyFTCP = ({ myTruckList = [] }) => {
         JSON.stringify(originData.schedule) !== JSON.stringify(scheduleList)
           ? scheduleList.map((item) => ({
               day: item.day,
-              // holiday: true(휴무) -> false(영업), false(영업) -> true(휴무)로 반전
-              holiday: !item.holiday,
+              holiday: item.holiday,
               start: item.start.length === 2 ? item.start + ":00" : item.start,
               end: item.end.length === 2 ? item.end + ":00" : item.end,
               mapAddress: item.mapAddress,
               userAddress: item.userAddress,
             }))
-          : originData.schedule.map((item) => ({
-              ...item,
-              holiday: !item.holiday,
-            }));
+          : originData.schedule;
     }
 
     // 이미지 파일만 업로드하는 경우
