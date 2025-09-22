@@ -124,11 +124,15 @@ const PcCP = ({
         </div>
       </section>
       {onDetails && (
-        <PcCpDetailsStyle id="details" imgUrl={`${details.imageUrl}`}>
+        <PcCpDetailsStyle id="details">
           <p style={{ textAlign: "right", fontSize: "1.6rem" }}>
             <FontAwesomeIcon icon={faXmark} onClick={onDeleteDetails} className="icon" />
           </p>
-          <div className="imageBox"></div>
+          <div
+            className="imageBox"
+            style={{
+              backgroundImage: details.imageUrl ? `url(${import.meta.env.VITE_API_URL}${details.imageUrl})` : "none",
+            }}></div>
           <div style={{ minHeight: "100px" }}>
             <h3 className="name ">
               <span>{details.name}</span>

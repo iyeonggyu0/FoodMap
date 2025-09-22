@@ -82,7 +82,7 @@ const MobileCP = ({
   };
 
   return (
-    <MobileCPMainStyle imgUrl={`${import.meta.env.VITE_API_URL}${details.imageUrl}`}>
+    <MobileCPMainStyle>
       <MobileCPButtonStyle>
         {/* GPS */}
         <div className="gps flexCenter" onClick={currentLocationButton}>
@@ -160,7 +160,11 @@ const MobileCP = ({
         {/* 0: 기본정보 */}
         {detailsPage === 0 && (
           <section className="info flexBetweenCol">
-            <div className="imageBox"></div>
+            <div
+              className="imageBox"
+              style={{
+                backgroundImage: details.imageUrl ? `url(${import.meta.env.VITE_API_URL}${details.imageUrl})` : "none",
+              }}></div>
             <div style={{ minHeight: "100px" }}>
               <h3 className="name ">
                 <span>{details.name}</span>
