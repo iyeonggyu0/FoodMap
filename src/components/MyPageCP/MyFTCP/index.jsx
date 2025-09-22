@@ -139,7 +139,12 @@ const MyFTCP = ({ myTruckList = [] }) => {
     }
 
     // 실제 푸드트럭 PK
-    const truckId = originData?.id || 1;
+    const truckId = originData?.truckId;
+
+    if (!truckId) {
+      alert("푸드트럭 ID가 없습니다. 다시 시도해주세요.");
+      return;
+    }
 
     // 모든 필드를 보내되, 변경된 값은 수정된 값으로, 변경되지 않은 값은 기존 값(originData)으로 채워서 전송
     let sendData = {};
