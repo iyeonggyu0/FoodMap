@@ -219,10 +219,12 @@ const MyFTCP = ({ myTruckList = [] }) => {
       return;
     }
 
-    // 나머지 정보 수정
+    // 나머지 정보 수정 (FormData로 전송)
     console.log("전송할 sendData:", sendData);
+    const formData = new FormData();
+    formData.append("request", JSON.stringify(sendData));
     axios
-      .put(`${import.meta.env.VITE_API_URL}/user/foodtruck/${truckId}`, sendData, {
+      .put(`${import.meta.env.VITE_API_URL}/user/foodtruck/${truckId}`, formData, {
         withCredentials: true,
         headers: { Accept: "application/json" },
       })
