@@ -177,19 +177,15 @@ const MyFTCP = ({ myTruckList = [] }) => {
       sendData.name = originData.name !== FTName ? FTName : originData.name;
       sendData.category = originData.category !== FTCategory ? FTCategory : originData.category;
       sendData.intro = originData.intro !== FTIntro ? FTIntro : originData.intro;
-      sendData.menu =
-        JSON.stringify(originData.menu) !== JSON.stringify(menuList)
-          ? menuList.map((menu) => {
-              // numAsInt 등 불필요한 필드 제거
-              const { name, price, info, num } = menu;
-              return {
-                name,
-                price: String(price),
-                info,
-                num: String(num),
-              };
-            })
-          : originData.menu;
+      // menu가 수정되지 않았더라도 numAsInt 등 불필요한 필드 제거
+      const cleanMenu = (menuArr) =>
+        menuArr.map(({ name, price, info, num }) => ({
+          name,
+          price: String(price),
+          info,
+          num: String(num),
+        }));
+      sendData.menu = cleanMenu(JSON.stringify(originData.menu) !== JSON.stringify(menuList) ? menuList : originData.menu);
       sendData.schedule =
         JSON.stringify(originData.schedule) !== JSON.stringify(scheduleList)
           ? scheduleList.map((item) => ({
