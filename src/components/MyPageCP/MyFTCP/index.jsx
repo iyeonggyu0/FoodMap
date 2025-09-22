@@ -155,6 +155,7 @@ const MyFTCP = ({ myTruckList = [] }) => {
       sendData.category = FTCategory || "";
       sendData.intro = FTIntro;
       sendData.menu = menuList.map((menu) => {
+        // numAsInt 등 불필요한 필드 제거
         const { name, price, info, num } = menu;
         return {
           name,
@@ -179,6 +180,7 @@ const MyFTCP = ({ myTruckList = [] }) => {
       sendData.menu =
         JSON.stringify(originData.menu) !== JSON.stringify(menuList)
           ? menuList.map((menu) => {
+              // numAsInt 등 불필요한 필드 제거
               const { name, price, info, num } = menu;
               return {
                 name,
