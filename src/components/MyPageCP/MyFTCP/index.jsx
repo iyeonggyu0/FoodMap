@@ -166,7 +166,8 @@ const MyFTCP = ({ myTruckList = [] }) => {
       });
       sendData.schedule = scheduleList.map((item) => ({
         day: item.day,
-        holiday: item.holiday,
+        // holiday: true(휴무) -> false(영업), false(영업) -> true(휴무)로 반전
+        holiday: !item.holiday,
         start: item.start.length === 2 ? item.start + ":00" : item.start,
         end: item.end.length === 2 ? item.end + ":00" : item.end,
         mapAddress: item.mapAddress,
@@ -190,13 +191,17 @@ const MyFTCP = ({ myTruckList = [] }) => {
         JSON.stringify(originData.schedule) !== JSON.stringify(scheduleList)
           ? scheduleList.map((item) => ({
               day: item.day,
-              holiday: item.holiday,
+              // holiday: true(휴무) -> false(영업), false(영업) -> true(휴무)로 반전
+              holiday: !item.holiday,
               start: item.start.length === 2 ? item.start + ":00" : item.start,
               end: item.end.length === 2 ? item.end + ":00" : item.end,
               mapAddress: item.mapAddress,
               userAddress: item.userAddress,
             }))
-          : originData.schedule;
+          : originData.schedule.map((item) => ({
+              ...item,
+              holiday: !item.holiday,
+            }));
     }
 
     // 이미지 파일만 업로드하는 경우
@@ -233,7 +238,7 @@ const MyFTCP = ({ myTruckList = [] }) => {
         headers: { Accept: "application/json" },
       })
       .then((res) => {
-        if (res.data.message === "updated") {
+        if (res.status === 200) {
           alert("푸드트럭 정보가 수정되었습니다!");
           window.location.reload();
         } else {
