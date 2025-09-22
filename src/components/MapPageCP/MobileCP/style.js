@@ -19,6 +19,12 @@ export const MobileCPMainStyle = styled.section`
     transition: all 0.2s ease-in-out;
   }
 
+  & .imageBox {
+    background-image: url(${(props) => props.imgUrl});
+    background-size: cover;
+    background-position: center;
+  }
+
   & > .ftList {
     padding-right: 0;
   }

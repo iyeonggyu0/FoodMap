@@ -121,15 +121,12 @@ const PcCP = ({
         </div>
       </section>
       {onDetails && (
-        <PcCpDetailsStyle id="details">
+        <PcCpDetailsStyle id="details" imgUrl={`${import.meta.VITE_API_URL}${details.imageUrl}`}>
           <p style={{ textAlign: "right", fontSize: "1.6rem" }}>
             <FontAwesomeIcon icon={faXmark} onClick={onDeleteDetails} className="icon" />
           </p>
 
-          <div className="flexCenter">
-            {/* 이미지 */}
-            <FontAwesomeIcon icon={faImage} className="imageIcon" />
-          </div>
+          <div className="imageBox"></div>
           <div style={{ minHeight: "100px" }}>
             <h3 className="name ">
               <span>{details.name}</span>

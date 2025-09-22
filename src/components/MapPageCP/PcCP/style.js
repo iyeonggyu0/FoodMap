@@ -164,6 +164,12 @@ export const PcCpDetailsStyle = styled.section`
     display: none;
   }
 
+  & .imageBox {
+    background-image: url(${(props) => props.imgUrl});
+    background-size: cover;
+    background-position: center;
+  }
+
   /* X Mark */
   & > p {
     margin-bottom: 1rem;
