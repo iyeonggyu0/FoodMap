@@ -164,12 +164,6 @@ export const PcCpDetailsStyle = styled.section`
     display: none;
   }
 
-  & .imageBox {
-    background-image: url(${(props) => props.imgUrl});
-    background-size: cover;
-    background-position: center;
-  }
-
   /* X Mark */
   & > p {
     margin-bottom: 1rem;
@@ -187,13 +181,13 @@ export const PcCpDetailsStyle = styled.section`
 
   /* image */
   & > div:nth-child(2) {
+    background-image: url(${(props) => props.imgUrl});
+    background-size: cover;
+    background-position: center;
     width: 100%;
     height: 28%;
     max-height: 170px;
-    background-color: var(--gray-2);
     font-size: 2rem;
-    color: var(--gray-3);
-    margin: 2rem 0;
     border-radius: 12px;
   }
 
