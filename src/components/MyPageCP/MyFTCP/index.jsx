@@ -154,12 +154,15 @@ const MyFTCP = ({ myTruckList = [] }) => {
       sendData.name = FTName;
       sendData.category = FTCategory || "";
       sendData.intro = FTIntro;
-      sendData.menu = menuList.map((menu) => ({
-        name: menu.name,
-        price: String(menu.price),
-        info: menu.info,
-        num: String(menu.num),
-      }));
+      sendData.menu = menuList.map((menu) => {
+        const { name, price, info, num } = menu;
+        return {
+          name,
+          price: String(price),
+          info,
+          num: String(num),
+        };
+      });
       sendData.schedule = scheduleList.map((item) => ({
         day: item.day,
         holiday: item.holiday,
@@ -175,12 +178,15 @@ const MyFTCP = ({ myTruckList = [] }) => {
       sendData.intro = originData.intro !== FTIntro ? FTIntro : originData.intro;
       sendData.menu =
         JSON.stringify(originData.menu) !== JSON.stringify(menuList)
-          ? menuList.map((menu) => ({
-              name: menu.name,
-              price: String(menu.price),
-              info: menu.info,
-              num: String(menu.num),
-            }))
+          ? menuList.map((menu) => {
+              const { name, price, info, num } = menu;
+              return {
+                name,
+                price: String(price),
+                info,
+                num: String(num),
+              };
+            })
           : originData.menu;
       sendData.schedule =
         JSON.stringify(originData.schedule) !== JSON.stringify(scheduleList)
