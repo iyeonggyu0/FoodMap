@@ -125,6 +125,7 @@ const MobileCP = ({
                       review: item.review, // 리뷰 목록
                       truckId: item.truckId, // 푸드트럭 ID (추가된 부분)
                       like: item.like, // 찜 여부 (추가된 부분)
+                      imageUrl: item.imageUrl, // 이미지 URL (추가된 부분)
                     });
                   }}>
                   <FTList data={item} isLogin={isLogin} />

@@ -428,6 +428,7 @@ const MapPage = () => {
       review: data.review, // 리뷰 목록
       truckId: data.truckId, // 푸드트럭 ID (추가된 부분)
       like: data.like, // 찜 여부 (추가된 부분)
+      imageUrl: data.imageUrl, // 이미지 URL (추가된 부분)
     });
     setOnDetails(true); // 상세 정보 창 표시
     onChangeMapGPS({ lat: data.coords.lat, lng: data.coords.lng });

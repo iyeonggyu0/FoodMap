@@ -5,7 +5,6 @@ import TextareaAutosize from "react-textarea-autosize";
 import { useNavigate } from "react-router-dom";
 import { PcCpButtonStyled, PcCpDetailsStyle, PcCpMainStyled } from "./style";
 import FTList from "../_common/FTList";
-import { faBell as faBellRegular, faImage } from "@fortawesome/free-regular-svg-icons";
 import { useCallback, useEffect, useState } from "react";
 import PcReviewCP from "../_common/ReviewCP";
 
@@ -112,6 +111,7 @@ const PcCP = ({
                         review: item.review, // 리뷰 목록
                         truckId: item.truckId, // 푸드트럭 ID (추가된 부분)
                         like: item.like, // 찜 여부 (추가된 부분)
+                        imageUrl: item.imageUrl, // 이미지 URL (추가된 부분)
                       });
                     }}>
                     <FTList data={item} isLogin={isLogin} />
