@@ -88,6 +88,7 @@ const MapPage = () => {
   const DEFAULT_CENTER = { lat: 33.450701, lng: 126.570667 };
   const [ftData, setFtData] = useState();
   const mapRef = useRef(null); // 지도 객체를 useRef로 관리
+  const mapTypeControlRef = useRef(null); // 지도 타입 컨트롤 객체
   const [filter, onChangeFilter, setFilter] = useInput("");
   const [details, setDetails] = useState([]);
   const [onDetails, setOnDetails] = useState(false);
@@ -107,34 +108,6 @@ const MapPage = () => {
     axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/like/${ftId}`, { withCredentials: true }).catch((err) => {
       console.error("취소 실패:", err);
       alert("취소에 실패했습니다.");
-    });
-  });
-
-  const onAddLike = useCallback((ftId) => {
-    if (!isLogin) return alert("로그인 후 이용해주세요.");
-
-    if (!ftId) {
-      console.error("푸드트럭 ID가 없습니다.");
-      return;
-    }
-
-    axios.post(`${import.meta.env.VITE_API_URL}/map/ft/like?foodtruckId=${ftId}`, null, { withCredentials: true }).catch((err) => {
-      console.error("찜하기 실패:", err);
-      alert("찜하기에 실패했습니다.");
-    });
-  }, []);
-
-  const onDeleteSms = useCallback((ftId, day) => {
-    if (!isLogin) return alert("로그인 후 이용해주세요.");
-
-    if (!ftId || !day) {
-      console.error("푸드트럭 ID 또는 요일이 없습니다.");
-      return;
-    }
-
-    axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/sms/${ftId}/${day}`, { withCredentials: true }).catch((err) => {
-      console.error("알림 취소 실패:", err);
-      alert("알림 취소에 실패했습니다.");
     });
   });
 
@@ -192,7 +165,6 @@ const MapPage = () => {
   }, [filter]);
 
   useEffect(() => {
-    onChangeFilterFun();
     // 카카오맵 스크립트가 로드되어 있는지 확인
     if (!window.kakao || !window.kakao.maps) return;
     const container = document.getElementById("map");
@@ -206,6 +178,9 @@ const MapPage = () => {
         center,
         level: 3,
       });
+      // 지도 타입 컨트롤 생성 및 지도에 추가
+      mapTypeControlRef.current = new window.kakao.maps.MapTypeControl();
+      mapRef.current.addControl(mapTypeControlRef.current, window.kakao.maps.ControlPosition.TOPRIGHT);
       // 마커 생성 및 가시반경 설정
       if (window.kakao.maps.RoadviewMarker) {
         const marker = new window.kakao.maps.RoadviewMarker({ position: center });
@@ -213,6 +188,23 @@ const MapPage = () => {
         mapRef.current.addOverlay(marker);
       }
       // 지도가 생성된 후에 마커 추가 함수 실행
+    };
+    // 지도 정보 확인 함수 (getInfo)
+    const getMapInfo = () => {
+      if (!mapRef.current) return;
+      const map = mapRef.current;
+      const center = map.getCenter();
+      const level = map.getLevel();
+      const mapTypeId = map.getMapTypeId();
+      const bounds = map.getBounds();
+      const swLatLng = bounds.getSouthWest();
+      const neLatLng = bounds.getNorthEast();
+      let message = `지도 중심좌표는 위도 ${center.getLat()}, 경도 ${center.getLng()}\n`;
+      message += `지도 레벨은 ${level} 입니다\n`;
+      message += `지도 타입은 ${mapTypeId} 이고\n`;
+      message += `지도의 남서쪽 좌표는 ${swLatLng.getLat()}, ${swLatLng.getLng()} 이고\n`;
+      message += `북동쪽 좌표는 ${neLatLng.getLat()}, ${neLatLng.getLng()} 입니다`;
+      alert(message);
     };
 
     if (navigator.geolocation) {
@@ -241,6 +233,7 @@ const MapPage = () => {
           createMap(center);
         }
       );
+      onChangeFilterFun();
     } else {
       createMap(center);
     }
@@ -294,8 +287,6 @@ const MapPage = () => {
     let pending = 0; // 비동기 addressSearch 완료 카운트
     let total = 0; // addressSearch 호출 총 횟수
     const resultArr = [...data]; // 결과 데이터 복사본
-
-    // 기본 마커 사용 (커스텀 이미지 제거)
 
     // 오늘의 holiday가 false인 푸드트럭을 후순위로 정렬
     resultArr.sort((a, b) => {
