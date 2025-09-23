@@ -38,18 +38,14 @@ const MyReviewCPDiv = ({ rv }) => {
     const data = {
       truckId: rv.ftData.truckId,
       content: content,
-      rating: Number(rating).toFixed(1),
+      rating: Number(Number(rating).toFixed(1)),
     };
 
     axios
-      .put(
-        `${import.meta.env.VITE_API_URL}/api/review`,
-        data,
-        {
-          withCredentials: true,
-          headers: { "Content-Type": "application/json" },
-        }
-      )
+      .put(`${import.meta.env.VITE_API_URL}/api/review`, data, {
+        withCredentials: true,
+        headers: { "Content-Type": "application/json" },
+      })
       .then((res) => {
         if (res.data.success) {
           alert("리뷰가 수정되었습니다.");
