@@ -76,7 +76,7 @@ const PcReviewCP = ({ isLogin, offReviewClick, details }) => {
         console.error("리뷰 작성 중 오류 발생:", err);
         alert("리뷰 작성에 실패했습니다. 다시 시도해주세요.");
       });
-  }, [reviewText, rating]);
+  }, [reviewText, rating, isLogin]);
 
   const isPc = useMedia().isPc;
 
