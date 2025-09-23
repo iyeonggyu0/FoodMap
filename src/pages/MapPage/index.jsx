@@ -142,10 +142,19 @@ const MapPage = () => {
         return;
       }
 
-      axios.post(`${import.meta.env.VITE_API_URL}/map/ft/sms?truckId=${ftId}&day=${day}`, null, { withCredentials: true }).catch((err) => {
-        console.error("알림 등록 실패:", err);
-        alert("알림 등록에 실패했습니다.");
-      });
+      axios
+        .post(`${import.meta.env.VITE_API_URL}/map/ft/sms?truckId=${ftId}&day=${day}`, null, { withCredentials: true })
+        .then(() => {
+          // details.schedule의 해당 요일 sms 값을 true로 변경
+          setDetails((prev) => ({
+            ...prev,
+            schedule: prev.schedule.map((sch) => (sch.day === day ? { ...sch, sms: true } : sch)),
+          }));
+        })
+        .catch((err) => {
+          console.error("알림 등록 실패:", err);
+          alert("알림 등록에 실패했습니다.");
+        });
     },
     [isLogin]
   );
@@ -160,10 +169,19 @@ const MapPage = () => {
         return;
       }
 
-      axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/sms/${ftId}/${day}`, { withCredentials: true }).catch((err) => {
-        console.error("알림 취소 실패:", err);
-        alert("알림 취소에 실패했습니다.");
-      });
+      axios
+        .delete(`${import.meta.env.VITE_API_URL}/map/ft/sms?truckId=${ftId}&day=${day}`, { withCredentials: true })
+        .then(() => {
+          // details.schedule의 해당 요일 sms 값을 false로 변경
+          setDetails((prev) => ({
+            ...prev,
+            schedule: prev.schedule.map((sch) => (sch.day === day ? { ...sch, sms: false } : sch)),
+          }));
+        })
+        .catch((err) => {
+          console.error("알림 취소 실패:", err);
+          alert("알림 취소에 실패했습니다.");
+        });
     },
     [isLogin]
   );
