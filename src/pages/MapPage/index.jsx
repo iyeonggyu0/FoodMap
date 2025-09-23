@@ -1,3 +1,5 @@
+import "./style.css";
+
 // 주소 -> 좌표 변환 (Promise)
 const addressToCoords = (address) => {
   return new Promise((resolve, reject) => {
