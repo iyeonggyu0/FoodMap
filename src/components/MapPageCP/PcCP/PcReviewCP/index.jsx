@@ -52,7 +52,7 @@ const PcReviewCP = ({ isLogin, offReviewClick, details }) => {
     const data = {
       truckId: details.truckId,
       content: reviewText,
-      rating: Number(Number(rating).toFixed(1)),
+      // rating: Number(Number(rating).toFixed(1)),
     };
     axios
       .post(`${import.meta.env.VITE_API_URL}/api/review`, data, { withCredentials: true })
