@@ -34,18 +34,22 @@ const MyReviewCPDiv = ({ rv }) => {
       return alert("변경된 내용이 없습니다.");
     }
 
-    // FormData 생성
-    const formData = new FormData();
-    formData.append("truckId", rv.ftData.truckId); // string
-    formData.append("content", content); // string
-    // 항상 소수점 첫째 자리까지 문자열로 변환
-    formData.append("rating", Number(rating).toFixed(1));
+    // JSON 데이터 생성
+    const data = {
+      truckId: rv.ftData.truckId,
+      content: content,
+      rating: Number(rating).toFixed(1),
+    };
 
     axios
-      .put(`${import.meta.env.VITE_API_URL}/api/review`, formData, {
-        withCredentials: true,
-        headers: { "Content-Type": "multipart/form-data" },
-      })
+      .put(
+        `${import.meta.env.VITE_API_URL}/api/review`,
+        data,
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "application/json" },
+        }
+      )
       .then((res) => {
         if (res.data.success) {
           alert("리뷰가 수정되었습니다.");
