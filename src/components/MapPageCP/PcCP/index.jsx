@@ -128,7 +128,9 @@ const PcCP = ({
           <p style={{ textAlign: "right", fontSize: "1.6rem" }}>
             <FontAwesomeIcon icon={faXmark} onClick={onDeleteDetails} className="icon" />
           </p>
-          <div className="imageBox"></div>
+          <div className="imageBox">
+            {import.meta.env.VITE_API_URL} {details.imageUrl || "없음"}
+          </div>
           <div style={{ minHeight: "100px" }}>
             <h3 className="name ">
               <span>{details.name}</span>

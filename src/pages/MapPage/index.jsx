@@ -103,6 +103,9 @@ const MapPage = () => {
   // 로그인 상태 확인
   const isLogin = useLoginCheck();
 
+  // 디버깅용 로그
+  console.log("MapPage isLogin:", isLogin);
+
   const onDeleteLike = useCallback((ftId) => {
     console.log("좋아요: " + isLogin);
     if (!isLogin) return alert("로그인 후 이용해주세요.");

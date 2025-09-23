@@ -8,6 +8,11 @@ import axios from "axios";
 export function useLoginCheck() {
   const [isLoginCheck, setIsLoginCheck] = useState(false);
 
+  // 상태 변경 감지용 useEffect
+  useEffect(() => {
+    console.log("useLoginCheck - isLoginCheck 상태 변경됨:", isLoginCheck);
+  }, [isLoginCheck]);
+
   useEffect(() => {
     let isMounted = true;
     const checkLogin = async () => {
@@ -15,7 +20,11 @@ export function useLoginCheck() {
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/login/check`, { withCredentials: true });
         // FIXME:
         console.log("로그인 상태 확인 응답:", res);
-        if (isMounted) setIsLoginCheck(!!res.data.loggedIn);
+        console.log("res.data.loggedIn:", res.data.loggedIn);
+        if (isMounted) {
+          setIsLoginCheck(!!res.data.loggedIn);
+          console.log("setIsLoginCheck 호출됨:", !!res.data.loggedIn);
+        }
       } catch (err) {
         if (isMounted) setIsLoginCheck(false);
         console.error("로그인 상태 확인 실패:", err);
