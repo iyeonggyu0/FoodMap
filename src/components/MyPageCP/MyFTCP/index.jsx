@@ -150,7 +150,7 @@ const MyFTCP = ({ myTruckList = [] }) => {
     let sendData = {};
 
     // 등록페이지와 동일하게 카카오맵 API 활용하여 주소 -> 좌표 변환
-    const buildScheduleWithLatLng = async (list, reverseHoliday = false) => {
+    const buildScheduleWithLatLng = async (list) => {
       return Promise.all(
         list.map(async (item) => {
           const start = item.start.length === 2 ? item.start + ":00" : item.start;
@@ -181,7 +181,7 @@ const MyFTCP = ({ myTruckList = [] }) => {
 
           return {
             day: item.day,
-            holiday: reverseHoliday ? !item.holiday : item.holiday,
+            holiday: item.holiday,
             start,
             end,
             mapAddress: item.mapAddress,
@@ -223,8 +223,8 @@ const MyFTCP = ({ myTruckList = [] }) => {
         sendData.menu = cleanMenu(JSON.stringify(originData.menu) !== JSON.stringify(menuList) ? menuList : originData.menu);
         sendData.schedule =
           JSON.stringify(originData.schedule) !== JSON.stringify(scheduleList)
-            ? await buildScheduleWithLatLng(scheduleList, true)
-            : await buildScheduleWithLatLng(originData.schedule, true);
+            ? await buildScheduleWithLatLng(scheduleList)
+            : await buildScheduleWithLatLng(originData.schedule);
       }
       return sendData;
     };
