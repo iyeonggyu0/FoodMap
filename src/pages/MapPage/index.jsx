@@ -104,6 +104,7 @@ const MapPage = () => {
   const isLogin = useLoginCheck();
 
   const onDeleteLike = useCallback((ftId) => {
+    console.log("좋아요: " + isLogin);
     if (!isLogin) return alert("로그인 후 이용해주세요.");
 
     if (!ftId) {
@@ -118,6 +119,7 @@ const MapPage = () => {
   }, []);
 
   const onAddSms = useCallback((ftId, day) => {
+    console.log("알림: " + isLogin);
     if (!isLogin) return alert("로그인 후 이용해주세요.");
 
     if (!ftId || !day) {
@@ -132,6 +134,7 @@ const MapPage = () => {
   }, []);
 
   const onDeleteSms = useCallback((ftId, day) => {
+    console.log("알림 취소: " + isLogin);
     if (!isLogin) return alert("로그인 후 이용해주세요.");
 
     if (!ftId || !day) {
@@ -146,6 +149,7 @@ const MapPage = () => {
   });
 
   const onAddLike = useCallback((ftId) => {
+    console.log("좋아요: " + isLogin);
     if (!isLogin) return alert("로그인 후 이용해주세요.");
 
     if (!ftId) {
