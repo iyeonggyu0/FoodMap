@@ -48,6 +48,12 @@ const PcReviewCP = ({ isLogin, offReviewClick, details }) => {
       return alert("리뷰 내용을 입력해주세요.");
     }
 
+    // FormData 생성
+    const formData = new FormData();
+    formData.append("truckId", details.truckId); // string
+    formData.append("content", reviewText); // string
+    formData.append("rating", Number(rating).toFixed(1)); // string(소수점 한자리)
+
     axios
       .post(
         `${import.meta.env.VITE_API_URL}/api/review`,

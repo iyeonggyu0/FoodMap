@@ -51,7 +51,6 @@ const PcReviewCP = ({ isLogin, offReviewClick, details }) => {
     // FormData 생성
     const formData = new FormData();
     formData.append("truckId", details.truckId); // string
-    formData.append("nickName", details.nickName || "익명"); // string (닉네임 정보가 없으면 익명)
     formData.append("content", reviewText); // string
     formData.append("rating", Number(rating).toFixed(1)); // string(소수점 한자리)
 

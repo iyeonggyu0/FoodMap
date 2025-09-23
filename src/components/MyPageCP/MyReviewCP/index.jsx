@@ -37,7 +37,6 @@ const MyReviewCPDiv = ({ rv }) => {
     // FormData 생성
     const formData = new FormData();
     formData.append("truckId", rv.ftData.truckId); // string
-    formData.append("nickName", rv.nickName); // string
     formData.append("content", content); // string
     // 항상 소수점 첫째 자리까지 문자열로 변환
     formData.append("rating", Number(rating).toFixed(1));
