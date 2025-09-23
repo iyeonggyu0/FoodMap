@@ -116,10 +116,16 @@ const MapPage = () => {
         return;
       }
 
-      axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/like?truckId=${ftId}`, { withCredentials: true }).catch((err) => {
-        console.error("취소 실패:", err);
-        alert("취소에 실패했습니다.");
-      });
+      axios
+        .delete(`${import.meta.env.VITE_API_URL}/map/ft/like?truckId=${ftId}`, { withCredentials: true })
+        .then(() => {
+          // details.like 값을 false로 변경
+          setDetails((prev) => ({ ...prev, like: false }));
+        })
+        .catch((err) => {
+          console.error("취소 실패:", err);
+          alert("취소에 실패했습니다.");
+        });
     },
     [isLogin]
   );
@@ -170,10 +176,16 @@ const MapPage = () => {
         return;
       }
 
-      axios.post(`${import.meta.env.VITE_API_URL}/map/ft/like?truckId=${ftId}`, null, { withCredentials: true }).catch((err) => {
-        console.error("찜하기 실패:", err);
-        alert("찜하기에 실패했습니다.");
-      });
+      axios
+        .post(`${import.meta.env.VITE_API_URL}/map/ft/like?truckId=${ftId}`, null, { withCredentials: true })
+        .then(() => {
+          // details.like 값을 true로 변경
+          setDetails((prev) => ({ ...prev, like: true }));
+        })
+        .catch((err) => {
+          console.error("찜하기 실패:", err);
+          alert("찜하기에 실패했습니다.");
+        });
     },
     [isLogin]
   );
