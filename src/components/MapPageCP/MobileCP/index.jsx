@@ -160,11 +160,19 @@ const MobileCP = ({
         {/* 0: 기본정보 */}
         {detailsPage === 0 && (
           <section className="info flexBetweenCol">
-            <div
-              className="imageBox"
-              style={{
-                backgroundImage: details.imageUrl ? `url(${import.meta.env.VITE_API_URL}${details.imageUrl})` : "none",
-              }}></div>
+            <div className="imageBox">
+              {details.imageUrl && (
+                <img
+                  src={`${import.meta.env.VITE_API_URL}${details.imageUrl}`}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    objectPosition: "center",
+                  }}
+                />
+              )}
+            </div>
             <div style={{ minHeight: "100px" }}>
               <h3 className="name ">
                 <span>{details.name}</span>
