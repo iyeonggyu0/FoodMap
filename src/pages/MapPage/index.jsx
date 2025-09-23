@@ -259,7 +259,7 @@ const MapPage = () => {
         level: 3,
       });
       // 지도 타입 컨트롤 생성 및 지도에 추가
-      // mapTypeControlRef.current = new window.kakao.maps.MapTypeControl();
+      mapTypeControlRef.current = new window.kakao.maps.MapTypeControl();
       mapRef.current.addControl(mapTypeControlRef.current, window.kakao.maps.ControlPosition.TOPRIGHT);
       // 마커 생성 및 가시반경 설정
       if (window.kakao.maps.RoadviewMarker) {
