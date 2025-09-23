@@ -3,6 +3,7 @@ import InputCP from "@/components/_common/InputCP";
 import SelectInputCP from "@/components/_common/SelectInputCP";
 import TextAreaInputCP from "@/components/_common/TextAreaInputCP";
 import ButtonCP from "@/components/_common/ButtonCP";
+import { Pencil, Eraser } from "lucide-react";
 import { useCallback, useState, useRef } from "react";
 import { useInput } from "@/hooks/useInput";
 import axios from "axios";
@@ -12,12 +13,14 @@ const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
   const [categoryError, setCategoryError] = useState(false);
   const [introError, setIntroError] = useState(false);
   const [menuError, setMenuError] = useState(false);
+  const [menuList, setMenuList] = useState([]);
+  const [menuModify, setMenuModify] = useState(false);
+  const [editMenuNum, setEditMenuNum] = useState(""); // 수정 중인 메뉴 번호
 
   // 푸드트럭 이름
   const [FTName, onChangeFTName, setFTName] = useInput("");
   // 푸드트럭 카테고리
   const [FTCategory, onChangeFTCategory, setFTCategory] = useInput("");
-
   // 푸드트럭 카테고리 리스트
   const FTCategoryList = [
     { value: "분식", data: "분식 (어묵, 떡볶이, 순대)" },
@@ -39,41 +42,14 @@ const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
     { value: "기타", data: "기타" },
   ];
 
-  // 푸드트럭 소개
-  const [FTIntro, onChangeFTIntro, setFTIntro] = useInput("");
-
-  const [menuList, setMenuList] = useState([]);
-
-  const [menuModify, setMenuModify] = useState(false);
-  const [editMenuNum, setEditMenuNum] = useState(""); // 수정 중인 메뉴 번호
-
-  const [menuName, onChangeMenuName, setMenuName] = useInput("");
-  const [menuPrice, onChangeMenuPrice, setMenuPrice] = useInput("");
-  const [menuInfo, onChangeMenuInfo, setMenuInfo] = useInput("");
-  const [menuNum, onChangeMenuNum, setMenuNum] = useInput("");
-
-  const menuCondition = () => {
-    if (!formData.menuName || formData.menuName.length < 3) {
-      alert("메뉴 이름은 3글자 이상 입력해야 합니다.");
-      return false;
-    }
-    // menuPrice 숫자만 허용, 1 이상
-    const price = Number((formData.menuPrice || "").trim());
-    if (!price || !Number.isInteger(price) || Number(price) < 1) {
-      alert("가격은 1 이상의 숫자만 입력해야 합니다.");
-      return false;
-    }
-    // menuNum 중복 체크 (수정 중인 메뉴 제외)
-    if (
-      formData.menuItems.some(
-        (menu) => menu.num === formData.menuNum && menu.num !== editMenuNum
-      )
-    ) {
-      alert("이미 해당 번호에 메뉴가 존재합니다.");
-      return false;
-    }
-  };
-
+  /**
+   * 메뉴 등록 함수
+   * - menuName: 3글자 이상
+   * - menuPrice: 숫자가 아닌 문자가 포함되면 등록 불가, 빈 값도 등록 불가
+   * - menuInfo: 조건 없음
+   * - menuNum: 이미 menuList에 존재하면 등록 불가
+   * 에러 발생 시 alert로 안내
+   */
   const handleAddMenu = () => {
     // menuName 3글자 이상 체크
     if (!formData.menuName || formData.menuName.length < 3) {
@@ -84,6 +60,11 @@ const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
     const price = Number((formData.menuPrice || "").trim());
     if (!price || !Number.isInteger(price) || Number(price) < 1) {
       alert("가격은 1 이상의 숫자만 입력해야 합니다.");
+      return;
+    }
+    // menuNum 입력 체크
+    if (!formData.menuNum) {
+      alert("메뉴 번호를 입력해야 합니다.");
       return;
     }
     // menuNum 중복 체크
@@ -111,58 +92,34 @@ const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
   };
 
   /**
-   * 메뉴 등록 함수
-   * - menuName: 3글자 이상
-   * - menuPrice: 숫자가 아닌 문자가 포함되면 등록 불가, 빈 값도 등록 불가
-   * - menuInfo: 조건 없음
-   * - menuNum: 이미 menuList에 존재하면 등록 불가
-   * 에러 발생 시 alert로 안내
+   * 메뉴 수정 함수
+   * @returns {void}
+   * - 수정 중인 메뉴의 정보를 formData로 업데이트
+   * - 수정 성공 시 입력값 초기화 및 수정모드 해제
    */
-  const menuAddHandler = useCallback(() => {
+  const handleEditMenu = (editNum) => {
     // menuName 3글자 이상 체크
-    if (!menuName || menuName.length < 3) {
+    if (!formData.menuName || formData.menuName.length < 3) {
       alert("메뉴 이름은 3글자 이상 입력해야 합니다.");
       return;
     }
     // menuPrice 숫자만 허용, 1 이상
-    if (!menuPrice || !/^[0-9]+$/.test(menuPrice) || Number(menuPrice) < 1) {
+    const price = Number((formData.menuPrice || "").trim());
+    if (!price || !Number.isInteger(price) || Number(price) < 1) {
       alert("가격은 1 이상의 숫자만 입력해야 합니다.");
       return;
     }
-    // menuNum 중복 체크
-    if (menuList.some((menu) => menu.num === menuNum)) {
+    // menuNum 중복 체크 (수정 중인 메뉴 제외)
+    if (
+      formData.menuItems.some(
+        (menu) => menu.num === formData.menuNum && menu.num !== editNum
+      )
+    ) {
       alert("이미 해당 번호에 메뉴가 존재합니다.");
-      return;
+      console.log(`formData:: ${formData.menuNum}, editNum: ${editNum}`);
+      return false;
     }
-
-    // 메뉴 정보 객체 생성
-    const newMenu = {
-      name: menuName,
-      price: menuPrice,
-      info: menuInfo,
-      num: menuNum,
-    };
-    // menuList에 추가
-    setMenuList((prev) => [...prev, newMenu]);
-    alert("메뉴가 등록되었습니다!");
-    // 입력값 초기화
-    setMenuName("");
-    setMenuPrice("");
-    setMenuInfo("");
-    setMenuNum("");
-  }, [
-    menuName,
-    menuPrice,
-    menuInfo,
-    menuNum,
-    menuList,
-    setMenuName,
-    setMenuPrice,
-    setMenuInfo,
-    setMenuNum,
-  ]);
-
-  const handleEditMenu = (editNum) => {
+    alert("메뉴가 수정되었습니다!");
     setFormData((prev) => ({
       ...prev,
       menuItems: prev.menuItems.map((item) =>
@@ -181,56 +138,9 @@ const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
       menuPrice: "",
       menuInfo: "",
     }));
-  };
-
-  /**
-   * 메뉴 수정 함수
-   * @returns {void}
-   * - 수정 중인 메뉴의 정보를 menuList에서 업데이트
-   * - 수정 성공 시 입력값 초기화 및 수정모드 해제
-   */
-  const menuEditHandler = useCallback(() => {
-    if (!editMenuNum) return;
-    // menuName 3글자 이상 체크
-    if (!menuName || menuName.length < 3) {
-      alert("메뉴 이름은 3글자 이상 입력해야 합니다.");
-      return;
-    }
-    // menuPrice 숫자만 허용, 1 이상
-    if (!menuPrice || !/^[0-9]+$/.test(menuPrice) || Number(menuPrice) < 1) {
-      alert("가격은 1 이상의 숫자만 입력해야 합니다.");
-      return;
-    }
-    // menuNum 중복 체크 (수정 중인 메뉴 제외)
-    if (
-      menuList.some((menu) => menu.num === menuNum && menu.num !== editMenuNum)
-    ) {
-      alert("이미 해당 번호에 메뉴가 존재합니다.");
-      return;
-    }
-    // menuList에서 해당 메뉴 정보 수정
-    setMenuList((prev) =>
-      prev.map((menu) =>
-        menu.num === editMenuNum
-          ? {
-              ...menu,
-              name: menuName,
-              price: menuPrice,
-              info: menuInfo,
-              num: menuNum,
-            }
-          : menu
-      )
-    );
-    alert("메뉴가 수정되었습니다!");
-    // 입력값 초기화 및 수정모드 해제
-    setMenuName("");
-    setMenuPrice("");
-    setMenuInfo("");
-    setMenuNum("");
+    console.log(formData.menuItems);
     setMenuModify(false);
-    setEditMenuNum("");
-  }, [editMenuNum, menuName, menuPrice, menuInfo, menuNum, menuList]);
+  };
 
   /**
    * 메뉴 삭제 함수
@@ -241,18 +151,25 @@ const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
    */
   const menuDeleteHandler = useCallback(
     (num) => {
-      setMenuList((prev) => prev.filter((menu) => menu.num !== num));
-      // 만약 수정모드에서 삭제한 메뉴가 현재 수정 중이라면 수정모드 해제
+      setFormData((prev) => ({
+        ...prev,
+        menuItems: prev.menuItems.filter((menu) => menu.num !== num),
+        // 만약 수정모드에서 삭제한 메뉴가 현재 수정 중이라면 수정모드 해제
+        ...(menuModify && editMenuNum === num
+          ? {
+              menuName: "",
+              menuPrice: "",
+              menuInfo: "",
+              menuNum: "",
+            }
+          : {}),
+      }));
       if (menuModify && editMenuNum === num) {
         setMenuModify(false);
         setEditMenuNum("");
-        setMenuName("");
-        setMenuPrice("");
-        setMenuInfo("");
-        setMenuNum("");
       }
     },
-    [menuModify, editMenuNum]
+    [menuModify, editMenuNum, setFormData]
   );
 
   // 에러 span refs
@@ -369,10 +286,14 @@ const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
             <p>
               메뉴 리스트<span className="essential">*</span>
             </p>
-            <div className={menuList.length === 0 ? "flexCenter" : "flexCol"}>
-              {menuList.length === 0 && <p>메뉴를 등록하세요</p>}
+            <div
+              className={
+                formData.menuItems.length === 0 ? "flexCenter" : "flexCol"
+              }
+            >
+              {formData.menuItems.length === 0 && <p>메뉴를 등록하세요</p>}
               {/* menuList를 num 오름차순으로 정렬하여 출력 */}
-              {menuList
+              {formData.menuItems
                 .slice()
                 .sort((a, b) => Number(a.num) - Number(b.num))
                 .map((menu, idx) => (
@@ -390,19 +311,22 @@ const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
                           onClick={() => {
                             setMenuModify(true);
                             setEditMenuNum(menu.num);
-                            setMenuName(menu.name);
-                            setMenuPrice(menu.price);
-                            setMenuInfo(menu.info);
-                            setMenuNum(menu.num);
+                            setFormData((prev) => ({
+                              ...prev,
+                              menuName: menu.name,
+                              menuPrice: menu.price,
+                              menuInfo: menu.info,
+                              menuNum: menu.num,
+                            }));
                           }}
                         >
-                          <FontAwesomeIcon icon={faPen} />
+                          <Pencil />
                         </span>
                         <span
                           style={{ cursor: "pointer" }}
                           onClick={() => menuDeleteHandler(menu.num)}
                         >
-                          <FontAwesomeIcon icon={faEraser} />
+                          <Eraser />
                         </span>
                       </p>
                     </div>
@@ -461,7 +385,7 @@ const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
                 </div>
               )}
               {menuModify && (
-                <div onClick={menuEditHandler}>
+                <div onClick={() => handleEditMenu(editMenuNum)}>
                   <ButtonCP>수정</ButtonCP>
                 </div>
               )}
