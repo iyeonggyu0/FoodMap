@@ -48,15 +48,18 @@ const PcReviewCP = ({ isLogin, offReviewClick, details }) => {
       return alert("리뷰 내용을 입력해주세요.");
     }
 
+    // FormData 생성
+    const formData = new FormData();
+    formData.append("truckId", details.truckId); // string
+    formData.append("nickName", details.nickName || "익명"); // string (닉네임 정보가 없으면 익명)
+    formData.append("content", reviewText); // string
+    formData.append("rating", Number(rating).toFixed(1)); // string(소수점 한자리)
+
     axios
-      .post(
-        `${import.meta.env.VITE_API_URL}/api/review`,
-        {
-          content: reviewText,
-          rating: rating,
-        },
-        { withCredentials: true }
-      )
+      .post(`${import.meta.env.VITE_API_URL}/api/review`, formData, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
+      })
       .then((res) => {
         if (res.data.message) {
           alert(res.data.message);
@@ -70,7 +73,7 @@ const PcReviewCP = ({ isLogin, offReviewClick, details }) => {
         console.error("리뷰 작성 중 오류 발생:", err);
         alert("리뷰 작성에 실패했습니다. 다시 시도해주세요.");
       });
-  }, [reviewText, rating]);
+  }, [reviewText, rating, isLogin, details]);
 
   const isPc = useMedia().isPc;
 
