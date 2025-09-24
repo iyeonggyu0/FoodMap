@@ -38,7 +38,7 @@ const MyReviewCPDiv = ({ rv }) => {
     const data = {
       truckId: rv.ftData.truckId,
       content: content,
-      rating: Number(rating).toFixed(1),
+      rating: Number(Number(rating).toFixed(1)),
     };
 
     axios
