@@ -5,13 +5,12 @@ import axios from "axios";
  * 로그인 상태를 비동기로 확인하는 커스텀 훅
  * @returns {boolean} 로그인 여부 반환
  */
-export function useLoginCheck({ isRoleCheck = false }) {
-  const [isLoginCheck, setIsLoginCheck] = useState(false);
+export function useLoginCheck({ isRoleCheck = false } = {}) {
+  const [state, setState] = useState({ isLogin: false, role: null });
 
-  // 상태 변경 감지용 useEffect
   useEffect(() => {
-    console.log("useLoginCheck - isLoginCheck 상태 변경됨:", isLoginCheck);
-  }, [isLoginCheck]);
+    console.log("useLoginCheck - 상태 변경됨:", state);
+  }, [state]);
 
   useEffect(() => {
     let isMounted = true;
@@ -21,19 +20,12 @@ export function useLoginCheck({ isRoleCheck = false }) {
         // FIXME:
         console.log("로그인 상태 확인 응답:", res);
         console.log("res.data.loggedIn:", res.data.loggedIn);
-
-        if (isRoleCheck) {
-          if (res.data.role) {
-            return res.data.role;
-          }
-        }
-
         if (isMounted) {
-          setIsLoginCheck(!!res.data.loggedIn);
-          console.log("setIsLoginCheck 호출됨:", !!res.data.loggedIn);
+          setState({ isLogin: !!res.data.loggedIn, role: res.data.role || null });
+          console.log("setState 호출됨:", { isLogin: !!res.data.loggedIn, role: res.data.role || null });
         }
       } catch (err) {
-        if (isMounted) setIsLoginCheck(false);
+        if (isMounted) setState({ isLogin: false, role: null });
         console.error("로그인 상태 확인 실패:", err);
       }
     };
@@ -43,5 +35,5 @@ export function useLoginCheck({ isRoleCheck = false }) {
     };
   }, []);
 
-  return isLoginCheck;
+  return isRoleCheck ? state.role : state.isLogin;
 }
