@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useState, useRef, useEffect } from "react";
 import DaumPostcode from "react-daum-postcode";
 import InputCP from "../../components/_common/InputCP";
 import SelectInputCP from "../../components/_common/SelectInputCP";
@@ -14,9 +14,28 @@ import { faEraser, faPen } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useMedia } from "../../hooks/useMedia";
 import { useNavigate } from "react-router-dom";
+import { useLoginCheck } from "../../hooks/useLoginCheck";
 
 const RegisterPage = () => {
   const isPc = useMedia().isPc;
+
+  const isLogin = useLoginCheck();
+  const isRole = useLoginCheck({ isRoleCheck: true });
+
+  useEffect(() => {
+    if (isLogin === false) {
+      return window.confirm("로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?") && (window.location.href = "/login");
+    }
+    if (isRole !== "president") {
+      return alert("푸드트럭 사장님만 접근할 수 있는 페이지입니다."), (window.location.href = "/");
+    }
+
+    axios.get(`${import.meta.env.VITE_API_URL}/user/foodtruck/mine`, { withCredentials: true }).then((res) => {
+      if (res.data?.length > 1) {
+        return alert("하나 이상 등록이 불가능합니다");
+      }
+    });
+  }, []);
 
   const nav = useNavigate();
   // 주소찾기 모달 상태 및 선택된 요일 인덱스

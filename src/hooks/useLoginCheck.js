@@ -5,7 +5,7 @@ import axios from "axios";
  * 로그인 상태를 비동기로 확인하는 커스텀 훅
  * @returns {boolean} 로그인 여부 반환
  */
-export function useLoginCheck() {
+export function useLoginCheck({ isRoleCheck = false }) {
   const [isLoginCheck, setIsLoginCheck] = useState(false);
 
   // 상태 변경 감지용 useEffect
@@ -21,6 +21,13 @@ export function useLoginCheck() {
         // FIXME:
         console.log("로그인 상태 확인 응답:", res);
         console.log("res.data.loggedIn:", res.data.loggedIn);
+
+        if (isRoleCheck) {
+          if (res.data.role) {
+            return res.data.role;
+          }
+        }
+
         if (isMounted) {
           setIsLoginCheck(!!res.data.loggedIn);
           console.log("setIsLoginCheck 호출됨:", !!res.data.loggedIn);
