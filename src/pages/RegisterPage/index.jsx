@@ -37,8 +37,9 @@ const RegisterPage = () => {
     }
 
     axios.get(`${import.meta.env.VITE_API_URL}/user/foodtruck/mine`, { withCredentials: true }).then((res) => {
-      if (res.data?.length > 1) {
+      if (res.data?.length === 1) {
         alert("하나 이상 등록이 불가능합니다");
+        window.location.href = "/";
       }
     });
   }, [isLogin, isRole]);
