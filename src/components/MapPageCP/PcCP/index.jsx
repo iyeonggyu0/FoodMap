@@ -128,7 +128,7 @@ const PcCP = ({
           <p style={{ textAlign: "right", fontSize: "1.6rem" }}>
             <FontAwesomeIcon icon={faXmark} onClick={onDeleteDetails} className="icon" />
           </p>
-          <div className="imageBox">
+          <div className="imageBox" style={{ marginBottom: "1rem" }}>
             {details.imageUrl && (
               <img
                 src={`${import.meta.env.VITE_API_URL}${details.imageUrl}`}

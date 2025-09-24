@@ -3,9 +3,13 @@ import { MyLikeCPMainStyle } from "./style";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faStar, faBell as faBellSolid } from "@fortawesome/free-solid-svg-icons";
 import { faBell as faBellRegular } from "@fortawesome/free-regular-svg-icons";
+import { useCallback } from "react";
+import axios from "axios";
+import { useLoginCheck } from "../../../hooks/useLoginCheck";
 
 // likeList, smsList를 props로 받음
 const MyLikeCP = ({ likeList = [], smsList = [] }) => {
+  const isLogin = useLoginCheck();
   const isPc = useMedia().isPc;
   // 오늘 요일 확인
   const today = (new Date().getDay() + 6) % 7; // 0:월~6:일
