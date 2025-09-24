@@ -1,4 +1,14 @@
 import { ReportPageMenuStyle } from "./style";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectItem,
+  SelectContent,
+} from "@/components/ui/select";
 import InputCP from "@/components/_common/InputCP";
 import SelectInputCP from "@/components/_common/SelectInputCP";
 import TextAreaInputCP from "@/components/_common/TextAreaInputCP";
@@ -227,14 +237,14 @@ const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
       <div className="flex flex-col gap-6">
         <div className="flex gap-6 flex-col lg:flex-row">
           <div className="flex-1 ">
-            <InputCP
-              title="푸드트럭 이름"
-              essential="true"
+            <Label htmlFor="truckName">푸드트럭 이름 *</Label>
+            <Input
+              className="border border-solid mt-2"
+              id="truckName"
+              placeholder="황금 잉어빵"
               value={formData.truckName}
-              ex="황금 잉어빵"
-              onChangeHandler={(e) =>
-                handleInputChange("truckName", e.target.value)
-              }
+              onChange={(e) => handleInputChange("truckName", e.target.value)}
+              required
             />
             {nameError && (
               <span className="nameError error" ref={nameErrorRef}>
@@ -243,12 +253,21 @@ const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
             )}
           </div>
           <div className="flex-1">
-            <SelectInputCP
-              title="카테고리"
-              essential="true"
-              listData={FTCategoryList}
-              onChangeHandler={onChangeFTCategory}
-            />
+            <Label htmlFor="category">카테고리 *</Label>
+            <Select
+              onValueChange={(value) => handleInputChange("category", value)}
+            >
+              <SelectTrigger className="border border-solid mt-2">
+                <SelectValue placeholder="카테고리 선택" />
+              </SelectTrigger>
+              <SelectContent className="border border-solid border-gray-3">
+                {FTCategoryList.map((items) => (
+                  <SelectItem key={items.value} value={items.data}>
+                    {items.data}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             {categoryError && (
               <span className="categoryError error" ref={categoryErrorRef}>
                 카테고리를 선택하세요
@@ -258,16 +277,14 @@ const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
         </div>
         <div className="col-full">
           <div>
-            <TextAreaInputCP
-              title="푸드트럭 설명"
-              essential="false"
-              ex="푸드트럭의 특징, 맛, 분위기 등을 자유롭게 설명해주세요"
-              onChangeHandler={(e) =>
-                handleInputChange("description", e.target.value)
-              }
+            <Label htmlFor="description">푸드트럭 설명</Label>
+            <Textarea
+              className="border border-solid mt-2"
+              id="description"
+              placeholder="푸드트럭의 특징, 맛, 분위기 등을 자유롭게 설명해주세요"
               value={formData.description}
-              maxRows={7}
-              minRows={5}
+              onChange={(e) => handleInputChange("description", e.target.value)}
+              rows={5}
             />
             {introError && (
               <span className="introError error" ref={introErrorRef}>
