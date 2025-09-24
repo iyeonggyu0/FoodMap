@@ -78,15 +78,15 @@ const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
       return;
     }
     // menuNum 중복 체크
-    if (formData.menuItems.some((menu) => menu.num === formData.menuNum)) {
+    if (formData.menu.some((menu) => menu.num === formData.menuNum)) {
       alert("이미 해당 번호에 메뉴가 존재합니다.");
       return;
     }
     alert("메뉴가 등록되었습니다!");
     setFormData((prev) => ({
       ...prev,
-      menuItems: [
-        ...prev.menuItems,
+      menu: [
+        ...prev.menu,
         {
           num: formData.menuNum,
           name: formData.menuName,
@@ -121,7 +121,7 @@ const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
     }
     // menuNum 중복 체크 (수정 중인 메뉴 제외)
     if (
-      formData.menuItems.some(
+      formData.menu.some(
         (menu) => menu.num === formData.menuNum && menu.num !== editNum
       )
     ) {
@@ -132,7 +132,7 @@ const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
     alert("메뉴가 수정되었습니다!");
     setFormData((prev) => ({
       ...prev,
-      menuItems: prev.menuItems.map((item) =>
+      menu: prev.menu.map((item) =>
         item.num === editNum
           ? {
               ...item,
@@ -148,7 +148,6 @@ const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
       menuPrice: "",
       menuInfo: "",
     }));
-    console.log(formData.menuItems);
     setMenuModify(false);
   };
 
@@ -163,7 +162,7 @@ const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
     (num) => {
       setFormData((prev) => ({
         ...prev,
-        menuItems: prev.menuItems.filter((menu) => menu.num !== num),
+        menu: prev.menu.filter((menu) => menu.num !== num),
         // 만약 수정모드에서 삭제한 메뉴가 현재 수정 중이라면 수정모드 해제
         ...(menuModify && editMenuNum === num
           ? {
@@ -237,13 +236,13 @@ const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
       <div className="flex flex-col gap-6">
         <div className="flex gap-6 flex-col lg:flex-row">
           <div className="flex-1 ">
-            <Label htmlFor="truckName">푸드트럭 이름 *</Label>
+            <Label htmlFor="name">푸드트럭 이름 *</Label>
             <Input
               className="border border-solid mt-2"
-              id="truckName"
+              id="name"
               placeholder="황금 잉어빵"
-              value={formData.truckName}
-              onChange={(e) => handleInputChange("truckName", e.target.value)}
+              value={formData.name}
+              onChange={(e) => handleInputChange("name", e.target.value)}
               required
             />
             {nameError && (
@@ -277,13 +276,13 @@ const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
         </div>
         <div className="col-full">
           <div>
-            <Label htmlFor="description">푸드트럭 설명</Label>
+            <Label htmlFor="intro">푸드트럭 설명</Label>
             <Textarea
               className="border border-solid mt-2"
-              id="description"
+              id="intro"
               placeholder="푸드트럭의 특징, 맛, 분위기 등을 자유롭게 설명해주세요"
-              value={formData.description}
-              onChange={(e) => handleInputChange("description", e.target.value)}
+              value={formData.intro}
+              onChange={(e) => handleInputChange("intro", e.target.value)}
               rows={5}
             />
             {introError && (
@@ -304,13 +303,11 @@ const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
               메뉴 리스트<span className="essential">*</span>
             </p>
             <div
-              className={
-                formData.menuItems.length === 0 ? "flexCenter" : "flexCol"
-              }
+              className={formData.menu.length === 0 ? "flexCenter" : "flexCol"}
             >
-              {formData.menuItems.length === 0 && <p>메뉴를 등록하세요</p>}
+              {formData.menu.length === 0 && <p>메뉴를 등록하세요</p>}
               {/* menuList를 num 오름차순으로 정렬하여 출력 */}
-              {formData.menuItems
+              {formData.menu
                 .slice()
                 .sort((a, b) => Number(a.num) - Number(b.num))
                 .map((menu, idx) => (

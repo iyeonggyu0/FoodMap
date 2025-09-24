@@ -21,10 +21,10 @@ import ReporterInfoCP from "@/components/ReportPageCP/ReporterInfoCP";
 
 const ReportPage = () => {
   const [formData, setFormData] = useState({
-    truckName: "",
+    name: "",
     category: "",
-    description: "",
-    menuItems: [], //등록된 메뉴들의 리스트 { num, name, price, info }
+    intro: "",
+    menu: [], //등록된 메뉴들의 리스트 { num, name, price, info }
     menuNum: "", //현재 입력 중인 메뉴의 임시 값
     menuName: "",
     menuPrice: "",
