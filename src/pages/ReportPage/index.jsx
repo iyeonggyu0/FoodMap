@@ -17,6 +17,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Star, AlertCircle, Camera, CheckCircle } from "lucide-react";
+import ReporterInfoCP from "@/components/ReportPageCP/ReporterInfoCP";
 
 const ReportPage = () => {
   const [formData, setFormData] = useState({
@@ -116,7 +117,11 @@ const ReportPage = () => {
           {/* 사진 업로드 카드 */}
           <PhotoUploadCP formData={formData} setFormData={setFormData} />
 
-          {/* FIXME: 제보자 정보 카드 */}
+          {/* 제보자 정보 카드 */}
+          <ReporterInfoCP
+            formData={formData}
+            handleInputChange={handleInputChange}
+          />
 
           <div className="cards p-6">
             {/* 이용약관 */}
