@@ -23,19 +23,25 @@ const RegisterPage = () => {
   const isRole = useLoginCheck({ isRoleCheck: true });
 
   useEffect(() => {
+    // 값이 아직 확정되지 않은 경우(비동기 응답 대기 중)에는 아무것도 하지 않음
+    if (isLogin === null || isRole === null) return;
+
     if (isLogin === false) {
-      return window.confirm("로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?") && (window.location.href = "/login");
+      window.confirm("로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?") && (window.location.href = "/login");
+      return;
     }
     if (isRole !== "president") {
-      return alert("푸드트럭 사장님만 접근할 수 있는 페이지입니다."), (window.location.href = "/");
+      alert("푸드트럭 사장님만 접근할 수 있는 페이지입니다.");
+      window.location.href = "/";
+      return;
     }
 
     axios.get(`${import.meta.env.VITE_API_URL}/user/foodtruck/mine`, { withCredentials: true }).then((res) => {
       if (res.data?.length > 1) {
-        return alert("하나 이상 등록이 불가능합니다");
+        alert("하나 이상 등록이 불가능합니다");
       }
     });
-  }, []);
+  }, [isLogin, isRole]);
 
   const nav = useNavigate();
   // 주소찾기 모달 상태 및 선택된 요일 인덱스
