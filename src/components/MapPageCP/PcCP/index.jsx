@@ -227,7 +227,7 @@ const PcCP = ({
               {details.review.slice().map((review, index) => (
                 <li key={index} className="reviewItem">
                   <p className="flexBetween">
-                    <span>{review.nickName}</span>
+                    <span>{review.userName}</span>
                     <span>
                       <FontAwesomeIcon icon={faStar} className="icon" /> {review.rating}
                     </span>

@@ -96,10 +96,6 @@ const MyLikeCP = ({ likeList = [], smsList = [] }) => {
     });
   }, []);
 
-  if (!likeList) {
-    return <div>알림/찜 목록이 없습니다.</div>;
-  }
-
   console.log(likeList);
 
   return (

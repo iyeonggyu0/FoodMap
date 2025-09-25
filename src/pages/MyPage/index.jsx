@@ -41,6 +41,7 @@ const MyPage = () => {
       .then((res) => {
         setLikeList(res.data.likes || []);
         setSmsList(res.data.sms || []);
+        console.log(res.data);
       })
       .catch((err) => {
         console.error("찜/알림 목록 로드 중 오류 발생:", err);
