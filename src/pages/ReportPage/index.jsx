@@ -18,6 +18,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Star, AlertCircle, Camera, CheckCircle } from "lucide-react";
 import ReporterInfoCP from "@/components/ReportPageCP/ReporterInfoCP";
+import axios from "axios";
 
 const ReportPage = () => {
   const [formData, setFormData] = useState({
@@ -39,6 +40,7 @@ const ReportPage = () => {
     photos: [],
     agreeTerms: false,
   });
+  const [errors, setErrors] = useState({});
 
   /**
    * 인풋값 변할 때 formData로 바뀐거 전달하는 함수
@@ -50,6 +52,42 @@ const ReportPage = () => {
       ...prev,
       [key]: value,
     }));
+  };
+
+  /**
+   * 폼 제출 핸들러
+   */
+  const handleSubmit = async (e) => {
+    // 필수 입력값 유효성 체크
+    e.preventDefault();
+    let _errors = {};
+    if (!formData.name || formData.name.length < 2) {
+      _errors.name = "푸드트럭 이름(2글자 이상)을 입력해주세요.";
+    }
+    if (!formData.category) {
+      _errors.category = "카테고리를 선택해 주세요.";
+    }
+    if (!formData.intro || formData.intro.length < 10) {
+      _errors.intro = "푸드트럭 설명(10글자 이상)을 입력해주세요.";
+    }
+    setErrors(_errors);
+    if (Object.keys(_errors).length > 0) return; // 에러 있으면 제출 막기
+
+    // 서버에 formData 전송
+    try {
+      const res = await axios.post("서버 API 주소", formData, {
+        // withCredentials: true, // 필요시 사용
+        headers: { "Content-Type": "application/json" },
+      });
+      if (res.data.success) {
+        alert("성공!");
+      } else {
+        alert("실패: " + res.data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("서버 오류");
+    }
   };
 
   return (
