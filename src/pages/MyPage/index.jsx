@@ -39,7 +39,23 @@ const MyPage = () => {
       .get(`${import.meta.env.VITE_API_URL}/api/review/mine`, { withCredentials: true })
       .then((res) => {
         setLikeList(res.data || []);
+        console.log("===== [MyPage] 찜/알림 목록 API 응답 =====");
         console.log(res.data);
+        if (Array.isArray(res.data)) {
+          res.data.forEach((item, idx) => {
+            console.log(`--- [${idx}] truckId:`, item.truckId);
+            console.log(`    name:`, item.name);
+            console.log(`    intro:`, item.intro);
+            console.log(`    schedule:`, item.schedule);
+            if (item.schedule) {
+              item.schedule.forEach((sch, sidx) => {
+                console.log(`      [${sidx}] day:`, sch.day, "holiday:", sch.holiday, "start:", sch.start, "end:", sch.end, "userAddress:", sch.userAddress);
+              });
+            }
+            console.log(`    review:`, item.review);
+          });
+        }
+        console.log("========================================");
       })
       .catch((err) => {
         console.error("찜/알림 목록 로드 중 오류 발생:", err);

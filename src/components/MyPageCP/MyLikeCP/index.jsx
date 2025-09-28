@@ -9,24 +9,6 @@ import { useLoginCheck } from "../../../hooks/useLoginCheck";
 
 // likeList, smsList를 props로 받음
 const MyLikeCP = ({ likeList = [] }) => {
-  // 디버깅용 콘솔로그
-  console.log("===== [MyLikeCP] likeList 전체 =====");
-  console.log(likeList);
-  if (Array.isArray(likeList)) {
-    likeList.forEach((ft, idx) => {
-      console.log(`--- [${idx}] truckId:`, ft.truckId);
-      console.log(`    name:`, ft.name);
-      console.log(`    intro:`, ft.intro);
-      console.log(`    schedule:`, ft.schedule);
-      if (ft.schedule) {
-        ft.schedule.forEach((sch, sidx) => {
-          console.log(`      [${sidx}] day:`, sch.day, "holiday:", sch.holiday, "start:", sch.start, "end:", sch.end, "userAddress:", sch.userAddress);
-        });
-      }
-      console.log(`    review:`, ft.review);
-    });
-  }
-  console.log("=====================================");
   const isLogin = useLoginCheck();
   const isPc = useMedia().isPc;
   // 오늘 요일 확인
