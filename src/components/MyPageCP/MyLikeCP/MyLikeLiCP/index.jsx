@@ -71,46 +71,50 @@ const MyLikeLiCP = ({ ftId, onDeleteLike, onDeleteSms, onAddSms }) => {
   });
 
   return (
-    <li className="ftListIndexLi">
-      <div className="ftListIndex">
-        <p className="flexBetween">
-          <span className="name">{ftData.name}</span>
-          <span className="isHolidayToday" style={{ backgroundColor: businessInfo.color }}>
-            {businessInfo.status}
-          </span>
-        </p>
-        <p className="intro">{ftData.intro}</p>
-        <p>{ftData.schedule?.[today]?.userAddress}</p>
-        <p className="flexBetween">
-          <span>
-            {ftData.schedule?.[today]?.start}시 ~ {ftData.schedule?.[today]?.end}시
-          </span>
-          <span style={{ fontSize: "1rem" }}>
-            <FontAwesomeIcon icon={faHeart} style={{ color: "var(--red)", paddingRight: "0.5rem" }} />
-            <FontAwesomeIcon icon={faStar} className="icon" /> {avgRating(ft) || "리뷰 없음"}
-          </span>
-        </p>
-      </div>
-      <div className="ftScheduleDiv flexBetween">
-        <ul className="schedule">
-          {ftData.schedule?.slice().map((schedule, idx) => (
-            <li
-              key={idx}
-              style={{
-                color: !schedule.holiday ? "var(--red)" : idx === today ? "var(--green-accent)" : "",
-              }}>
-              <span>
-                {!schedule.holiday ? <FontAwesomeIcon icon={faBellRegular} style={{ visibility: "hidden" }} /> : ""}
-                {/* 알림 토글은 생략, 필요시 구현 */}
+    <div>
+      {ftData && (
+        <li className="ftListIndexLi">
+          <div className="ftListIndex">
+            <p className="flexBetween">
+              <span className="name">{ftData.name}</span>
+              <span className="isHolidayToday" style={{ backgroundColor: businessInfo?.color || "#999" }}>
+                {businessInfo?.status || "휴무"}
               </span>
-              <span>{schedule.day}요일</span>
-              <span>{!schedule.holiday ? "휴일" : `${schedule.start}시 ~ ${schedule.end}시`}</span>
-              <span>{!schedule.holiday ? "" : `${schedule.userAddress}`}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </li>
+            </p>
+            <p className="intro">{ftData.intro}</p>
+            <p>{ftData.schedule?.[today]?.userAddress}</p>
+            <p className="flexBetween">
+              <span>
+                {ftData.schedule?.[today]?.start}시 ~ {ftData.schedule?.[today]?.end}시
+              </span>
+              <span style={{ fontSize: "1rem" }}>
+                <FontAwesomeIcon icon={faHeart} style={{ color: "var(--red)", paddingRight: "0.5rem" }} />
+                <FontAwesomeIcon icon={faStar} className="icon" /> {avgRating(ftData) || "리뷰 없음"}
+              </span>
+            </p>
+          </div>
+          <div className="ftScheduleDiv flexBetween">
+            <ul className="schedule">
+              {ftData.schedule?.slice().map((schedule, idx) => (
+                <li
+                  key={idx}
+                  style={{
+                    color: !schedule.holiday ? "var(--red)" : idx === today ? "var(--green-accent)" : "",
+                  }}>
+                  <span>
+                    {!schedule.holiday ? <FontAwesomeIcon icon={faBellRegular} style={{ visibility: "hidden" }} /> : ""}
+                    {/* 알림 토글은 생략, 필요시 구현 */}
+                  </span>
+                  <span>{schedule.day}요일</span>
+                  <span>{!schedule.holiday ? "휴일" : `${schedule.start}시 ~ ${schedule.end}시`}</span>
+                  <span>{!schedule.holiday ? "" : `${schedule.userAddress}`}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </li>
+      )}
+    </div>
   );
 };
 export default MyLikeLiCP;
