@@ -158,12 +158,13 @@ const MyReviewCP = () => {
     axios
       .get(`${import.meta.env.VITE_API_URL}/api/review/mine`, { withCredentials: true })
       .then((res) => {
-        if (res.data.success) {
-          // 리뷰 목록을 상태에 저장
+        // API가 배열을 직접 반환하므로 success 체크 없이 바로 사용
+        if (Array.isArray(res.data)) {
           setReviewList(res.data);
-          console.log(res);
+          console.log(res.data);
         } else {
-          console.error("리뷰 목록 로드 실패:", res.data.message);
+          console.error("예상하지 못한 응답 형식:", res.data);
+          setReviewList([]);
         }
       })
       .catch((err) => {
