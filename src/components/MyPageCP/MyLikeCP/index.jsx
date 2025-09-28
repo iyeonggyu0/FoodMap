@@ -114,6 +114,7 @@ const MyLikeCP = ({ likeList = [] }) => {
         {likeList && likeList.length > 0 ? (
           likeList.map((ft) => {
             const businessInfo = getBusinessStatus(ft);
+            const todaySchedule = ft.schedule?.find((sch) => sch.day === todayKorean);
             return (
               <li className="ftListIndexLi" key={ft.truckId}>
                 <div className="ftListIndex">
@@ -124,10 +125,10 @@ const MyLikeCP = ({ likeList = [] }) => {
                     </span>
                   </p>
                   <p className="intro">{ft.intro}</p>
-                  <p>{ft.schedule?.[today]?.userAddress}</p>
+                  <p>{todaySchedule?.userAddress}</p>
                   <p className="flexBetween">
                     <span>
-                      {ft.schedule?.[today]?.start}시 ~ {ft.schedule?.[today]?.end}시
+                      {todaySchedule?.start}시 ~ {todaySchedule?.end}시
                     </span>
                     <span style={{ fontSize: "1rem" }}>
                       <FontAwesomeIcon icon={faHeart} style={{ color: "var(--red)", paddingRight: "0.5rem" }} />
