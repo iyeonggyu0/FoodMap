@@ -60,7 +60,13 @@ const MyPage = () => {
     if (isPc) {
       setOnMenu(true);
     }
+
+    setPaging(Number(localStorage.getItem("mypage-paging")) || 0); // 기본값 0 (내 정보)
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("mypage-paging", paging);
+  }, [paging]);
 
   const onLogoutClick = () => {
     // 로그아웃 API 호출
