@@ -146,9 +146,6 @@ const MyFTCP = ({ myTruckList = [] }) => {
       return;
     }
 
-    // 모든 필드를 보내되, 변경된 값은 수정된 값으로, 변경되지 않은 값은 기존 값(originData)으로 채워서 전송
-    let sendData = {};
-
     // 등록페이지와 동일하게 카카오맵 API 활용하여 주소 -> 좌표 변환
     const buildScheduleWithLatLng = async (list) => {
       return Promise.all(
@@ -229,7 +226,7 @@ const MyFTCP = ({ myTruckList = [] }) => {
       return sendData;
     };
 
-    // 비동기 처리로 변경
+    // 비동기 처리로 변경 (단일 요청으로 통합)
     (async () => {
       const sendData = await buildSendData();
 
@@ -264,52 +261,6 @@ const MyFTCP = ({ myTruckList = [] }) => {
           alert("푸드트럭 정보 수정 중 오류가 발생했습니다. 다시 시도해주세요.");
         });
     })();
-
-    // // 이미지 파일만 업로드하는 경우
-    // if (file) {
-    //   const formData = new FormData();
-    //   formData.append("image", file);
-    //   axios
-    //     .put(`${import.meta.env.VITE_API_URL}/user/foodtruck/${truckId}/image`, formData, {
-    //       withCredentials: true,
-    //       headers: { "Content-Type": "multipart/form-data", Accept: "application/json" },
-    //     })
-    //     .then((res) => {
-    //       if (res.data.message === "updated") {
-    //         alert("이미지 업로드가 완료되었습니다!");
-    //         window.location.reload();
-    //       } else {
-    //         alert(res.data.message || "이미지 업로드에 실패했습니다. 다시 시도해주세요.");
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       console.error("이미지 업로드 중 오류 발생:", err);
-    //       alert("이미지 업로드 중 오류가 발생했습니다. 다시 시도해주세요.");
-    //     });
-    //   return;
-    // }
-
-    // // 나머지 정보 수정 (FormData로 전송)
-    // console.log("전송할 sendData:", sendData);
-    // const formData = new FormData();
-    // formData.append("request", JSON.stringify(sendData));
-    // axios
-    //   .put(`${import.meta.env.VITE_API_URL}/user/foodtruck/${truckId}`, formData, {
-    //     withCredentials: true,
-    //     headers: { Accept: "application/json" },
-    //   })
-    //   .then((res) => {
-    //     if (res.status === 200) {
-    //       alert("푸드트럭 정보가 수정되었습니다!");
-    //       window.location.reload();
-    //     } else {
-    //       alert(res.data.message || "푸드트럭 정보 수정에 실패했습니다. 다시 시도해주세요.");
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.error("푸드트럭 정보 수정 중 오류 발생:", err);
-    //     alert("푸드트럭 정보 수정 중 오류가 발생했습니다. 다시 시도해주세요.");
-    //   });
   };
 
   // 푸드트럭 이름
