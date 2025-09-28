@@ -36,7 +36,7 @@ const MyReviewCPDiv = ({ rv }) => {
 
     // JSON 데이터 생성
     const data = {
-      truckId: rv.ftData.truckId,
+      truckId: rv.register.id,
       content: content,
       rating: Number(Number(rating).toFixed(1)),
     };
@@ -84,7 +84,7 @@ const MyReviewCPDiv = ({ rv }) => {
   return (
     <div className="reviewItem flexCol" style={{ marginBottom: "3rem", padding: "2rem", border: "1px solid var(--gray-3)", borderRadius: "16px", gap: "1rem" }}>
       <p className="flexBetween">
-        <span style={{ fontSize: "1.2rem", fontWeight: "600" }}>{rv.ftData.name}</span>
+        <span style={{ fontSize: "1.2rem", fontWeight: "600" }}>{rv.register.name}</span>
         <span>
           {upDateMode && (
             <FontAwesomeIcon
@@ -156,11 +156,11 @@ const MyReviewCP = () => {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/api/review`, { withCredentials: true })
+      .get(`${import.meta.env.VITE_API_URL}/api/review/mine`, { withCredentials: true })
       .then((res) => {
         if (res.data.success) {
           // 리뷰 목록을 상태에 저장
-          setReviewList(res.data.reviews);
+          setReviewList(res.data);
         } else {
           console.error("리뷰 목록 로드 실패:", res.data.message);
         }

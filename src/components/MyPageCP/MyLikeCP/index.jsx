@@ -8,7 +8,7 @@ import axios from "axios";
 import { useLoginCheck } from "../../../hooks/useLoginCheck";
 
 // likeList, smsList를 props로 받음
-const MyLikeCP = ({ likeList = [], smsList = [] }) => {
+const MyLikeCP = ({ likeList = [] }) => {
   const isLogin = useLoginCheck();
   const isPc = useMedia().isPc;
   // 오늘 요일 확인
