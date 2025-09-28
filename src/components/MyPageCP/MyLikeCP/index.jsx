@@ -19,23 +19,34 @@ const MyLikeCP = ({ likeList = [] }) => {
   // 각 푸드트럭별 영업상태 계산 함수
   const getBusinessStatus = (ft) => {
     const todaySchedule = ft.schedule?.find((sch) => sch.day === todayKorean);
-    const isHolidayToday = !todaySchedule || todaySchedule.holiday;
-    if (!isHolidayToday) {
+
+    // todaySchedule이 없거나 holiday가 false면 휴무
+    if (!todaySchedule || !todaySchedule.holiday) {
       return { status: "휴무", color: "#999" };
     }
+
+    // start, end가 없으면 휴무 처리
+    if (!todaySchedule.start || !todaySchedule.end) {
+      return { status: "휴무", color: "#999" };
+    }
+
     const now = new Date();
     const currentTime = now.getHours().toString().padStart(2, "0") + ":" + now.getMinutes().toString().padStart(2, "0");
     const startTime = todaySchedule.start;
     const endTime = todaySchedule.end;
+
     const timeToMinutes = (time) => {
+      if (!time) return 0;
       const timeParts = time.split(":");
-      const hours = parseInt(timeParts[0]);
-      const minutes = timeParts.length > 1 ? parseInt(timeParts[1]) : 0;
+      const hours = parseInt(timeParts[0]) || 0;
+      const minutes = timeParts.length > 1 ? parseInt(timeParts[1]) || 0 : 0;
       return hours * 60 + minutes;
     };
+
     const currentMinutes = timeToMinutes(currentTime);
     const startMinutes = timeToMinutes(startTime);
     const endMinutes = timeToMinutes(endTime);
+
     if (currentMinutes < startMinutes) {
       return { status: "준비", color: "#fba33e" };
     } else if (currentMinutes >= startMinutes && currentMinutes <= endMinutes) {
