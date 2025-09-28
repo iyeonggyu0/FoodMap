@@ -84,7 +84,7 @@ const MyLikeLiCP = ({ ftId, onDeleteLike, onDeleteSms, onAddSms }) => {
                 {ftData.schedule?.[today]?.start}시 ~ {ftData.schedule?.[today]?.end}시
               </span>
               <span style={{ fontSize: "1rem" }}>
-                <span onClick={() => onDeleteLike(ftData.truckId)}>
+                <span style={{ cursor: "pointer" }} onClick={() => onDeleteLike(ftData.truckId)}>
                   <FontAwesomeIcon icon={faHeart} style={{ color: "var(--red)", paddingRight: "0.5rem" }} />
                 </span>
                 <FontAwesomeIcon icon={faStar} className="icon" /> {avgRating(ftData) || "리뷰 없음"}
