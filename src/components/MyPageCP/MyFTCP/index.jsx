@@ -229,23 +229,19 @@ const MyFTCP = ({ myTruckList = [] }) => {
       return sendData;
     };
 
-    // 비동기 처리로 변경
+    // 비동기 처리로 변경 (중복 요청 제거)
     (async () => {
       const sendData = await buildSendData();
-
       // 등록페이지처럼 모든 데이터를 FormData에 포함해서 전송
       console.log("전송할 sendData:", sendData);
       const formData = new FormData();
       formData.append("request", JSON.stringify(sendData));
-
-      // 이미지 파일이 있으면 FormData에 추가
       if (file) {
         formData.append("image", file);
         console.log("MyFTCP - 이미지 파일이 FormData에 추가됨:", file.name, file.size);
       } else {
         console.log("MyFTCP - 선택된 이미지 파일이 없음");
       }
-
       axios
         .put(`${import.meta.env.VITE_API_URL}/user/foodtruck/${truckId}`, formData, {
           withCredentials: true,
@@ -264,52 +260,6 @@ const MyFTCP = ({ myTruckList = [] }) => {
           alert("푸드트럭 정보 수정 중 오류가 발생했습니다. 다시 시도해주세요.");
         });
     })();
-
-    // 이미지 파일만 업로드하는 경우
-    if (file) {
-      const formData = new FormData();
-      formData.append("image", file);
-      axios
-        .put(`${import.meta.env.VITE_API_URL}/user/foodtruck/${truckId}/image`, formData, {
-          withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data", Accept: "application/json" },
-        })
-        .then((res) => {
-          if (res.data.message === "updated") {
-            alert("이미지 업로드가 완료되었습니다!");
-            window.location.reload();
-          } else {
-            alert(res.data.message || "이미지 업로드에 실패했습니다. 다시 시도해주세요.");
-          }
-        })
-        .catch((err) => {
-          console.error("이미지 업로드 중 오류 발생:", err);
-          alert("이미지 업로드 중 오류가 발생했습니다. 다시 시도해주세요.");
-        });
-      return;
-    }
-
-    // 나머지 정보 수정 (FormData로 전송)
-    console.log("전송할 sendData:", sendData);
-    const formData = new FormData();
-    formData.append("request", JSON.stringify(sendData));
-    axios
-      .put(`${import.meta.env.VITE_API_URL}/user/foodtruck/${truckId}`, formData, {
-        withCredentials: true,
-        headers: { Accept: "application/json" },
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          alert("푸드트럭 정보가 수정되었습니다!");
-          window.location.reload();
-        } else {
-          alert(res.data.message || "푸드트럭 정보 수정에 실패했습니다. 다시 시도해주세요.");
-        }
-      })
-      .catch((err) => {
-        console.error("푸드트럭 정보 수정 중 오류 발생:", err);
-        alert("푸드트럭 정보 수정 중 오류가 발생했습니다. 다시 시도해주세요.");
-      });
   };
 
   // 푸드트럭 이름
@@ -846,12 +796,7 @@ const MyFTCP = ({ myTruckList = [] }) => {
           </div>
         </div>
       )}
-      <div>
-        <h2>수정 안내사항</h2>
-        <p>ㆍ허위 정보 입력 시 서비스 이용이 제한될 수 있습니다.</p>
-        <p>ㆍ수정 신청 후 관리자 승인까지 1~2일 소요될 수 있습니다.</p>
-        <p>ㆍ문의사항은 Q&A 게시판으로 연락해주세요.</p>
-      </div>
+      {/* 수정 안내사항 영역 삭제됨 */}
     </MyFTCPMainStyle>
   );
 };
