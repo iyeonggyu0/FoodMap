@@ -36,13 +36,12 @@ const MyReviewCPDiv = ({ rv }) => {
 
     // JSON 데이터 생성
     const data = {
-      truckId: rv.truckId,
       content: content,
       rating: Number(Number(rating).toFixed(1)),
     };
 
     axios
-      .put(`${import.meta.env.VITE_API_URL}/api/review`, data, {
+      .put(`${import.meta.env.VITE_API_URL}/api/review/${rv.id}`, data, {
         withCredentials: true,
         headers: { "Content-Type": "application/json" },
       })
@@ -67,7 +66,7 @@ const MyReviewCPDiv = ({ rv }) => {
       axios
         .delete(`${import.meta.env.VITE_API_URL}/api/review/${rv.id}`, { withCredentials: true })
         .then((res) => {
-          if (res.data.success) {
+          if (res.status === 200) {
             alert("리뷰가 삭제되었습니다.");
             window.location.reload(); // 페이지 새로고침
           } else {
