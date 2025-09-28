@@ -54,47 +54,56 @@ const MyLikeCP = ({ likeList = [] }) => {
     return "리뷰 없음";
   };
 
-  const onDeleteLike = useCallback((ftId) => {
-    if (!isLogin) return alert("로그인 후 이용해주세요.");
+  const onDeleteLike = useCallback(
+    (ftId) => {
+      if (!isLogin) return alert("로그인 후 이용해주세요.");
 
-    if (!ftId) {
-      console.error("푸드트럭 ID가 없습니다.");
-      return;
-    }
+      if (!ftId) {
+        console.error("푸드트럭 ID가 없습니다.");
+        return;
+      }
 
-    axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/like/${ftId}`, { withCredentials: true }).catch((err) => {
-      console.error("취소 실패:", err);
-      alert("취소에 실패했습니다.");
-    });
-  });
+      axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/like/${ftId}`, { withCredentials: true }).catch((err) => {
+        console.error("취소 실패:", err);
+        alert("취소에 실패했습니다.");
+      });
+    },
+    [isLogin]
+  );
 
-  const onDeleteSms = useCallback((ftId, day) => {
-    if (!isLogin) return alert("로그인 후 이용해주세요.");
+  const onDeleteSms = useCallback(
+    (ftId, day) => {
+      if (!isLogin) return alert("로그인 후 이용해주세요.");
 
-    if (!ftId || !day) {
-      console.error("푸드트럭 ID 또는 요일이 없습니다.");
-      return;
-    }
+      if (!ftId || !day) {
+        console.error("푸드트럭 ID 또는 요일이 없습니다.");
+        return;
+      }
 
-    axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/sms/${ftId}/${day}`, { withCredentials: true }).catch((err) => {
-      console.error("알림 취소 실패:", err);
-      alert("알림 취소에 실패했습니다.");
-    });
-  });
+      axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/sms/${ftId}/${day}`, { withCredentials: true }).catch((err) => {
+        console.error("알림 취소 실패:", err);
+        alert("알림 취소에 실패했습니다.");
+      });
+    },
+    [isLogin]
+  );
 
-  const onAddSms = useCallback((ftId, day) => {
-    if (!isLogin) return alert("로그인 후 이용해주세요.");
+  const onAddSms = useCallback(
+    (ftId, day) => {
+      if (!isLogin) return alert("로그인 후 이용해주세요.");
 
-    if (!ftId || !day) {
-      console.error("푸드트럭 ID 또는 요일이 없습니다.");
-      return;
-    }
+      if (!ftId || !day) {
+        console.error("푸드트럭 ID 또는 요일이 없습니다.");
+        return;
+      }
 
-    axios.post(`${import.meta.env.VITE_API_URL}/map/ft/sms?storeId=${ftId}&day=${day}`, null, { withCredentials: true }).catch((err) => {
-      console.error("알림 등록 실패:", err);
-      alert("알림 등록에 실패했습니다.");
-    });
-  }, []);
+      axios.post(`${import.meta.env.VITE_API_URL}/map/ft/sms?storeId=${ftId}&day=${day}`, null, { withCredentials: true }).catch((err) => {
+        console.error("알림 등록 실패:", err);
+        alert("알림 등록에 실패했습니다.");
+      });
+    },
+    [isLogin]
+  );
 
   console.log(likeList);
 
@@ -103,10 +112,10 @@ const MyLikeCP = ({ likeList = [] }) => {
       <h2>알림/찜 목록</h2>
       <ul>
         {likeList && likeList.length > 0 ? (
-          likeList.map((ft, index) => {
+          likeList.map((ft) => {
             const businessInfo = getBusinessStatus(ft);
             return (
-              <li className="ftListIndexLi" key={index}>
+              <li className="ftListIndexLi" key={ft.truckId}>
                 <div className="ftListIndex">
                   <p className="flexBetween">
                     <span className="name">{ft.name}</span>

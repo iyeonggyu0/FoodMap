@@ -46,7 +46,7 @@ const MyReviewCPDiv = ({ rv }) => {
         headers: { "Content-Type": "application/json" },
       })
       .then((res) => {
-        if (res.data.success) {
+        if (res.status === 200) {
           alert("리뷰가 수정되었습니다.");
           setUpdateMode(false);
           setContent(res.data.review.content);

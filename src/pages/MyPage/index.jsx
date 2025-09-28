@@ -20,7 +20,6 @@ const MyPage = () => {
 
   // 찜/알림, 내 트럭 상태 추가
   const [likeList, setLikeList] = useState([]);
-  const [smsList, setSmsList] = useState([]);
   const [myTruckList, setMyTruckList] = useState([]);
 
   useEffect(() => {
@@ -39,8 +38,7 @@ const MyPage = () => {
     axios
       .get(`${import.meta.env.VITE_API_URL}/api/review/mine`, { withCredentials: true })
       .then((res) => {
-        setLikeList(res.data.likes || []);
-        setSmsList(res.data.sms || []);
+        setLikeList(res.data || []);
         console.log(res.data);
       })
       .catch((err) => {
@@ -152,7 +150,7 @@ const MyPage = () => {
           <section className="mainSection">
             {paging === 0 && <MyPageInfoCP userData={userData} />}
             {paging === 1 && <MyFTCP myTruckList={myTruckList} />}
-            {paging === 2 && <MyLikeCP likeList={likeList} smsList={smsList} />}
+            {paging === 2 && <MyLikeCP likeList={likeList} />}
             {paging === 3 && <MyReviewCP />}
           </section>
         </MyPageMainStyle>
