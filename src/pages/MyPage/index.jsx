@@ -37,7 +37,7 @@ const MyPage = () => {
 
     // 2. 찜/알림 목록
     axios
-      .get(`${import.meta.env.VITE_API_URL}/map/ft/mine`, { withCredentials: true })
+      .get(`${import.meta.env.VITE_API_URL}/api/review/mine`, { withCredentials: true })
       .then((res) => {
         setLikeList(res.data.likes || []);
         setSmsList(res.data.sms || []);
