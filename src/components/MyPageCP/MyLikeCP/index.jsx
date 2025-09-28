@@ -16,47 +16,53 @@ const MyLikeCP = ({ likeList = [], smsList = [] }) => {
   const isLogin = useLoginCheck();
   const isPc = useMedia().isPc;
 
-  const onDeleteLike = useCallback((ftId) => {
-    if (!isLogin) return alert("로그인 후 이용해주세요.");
+  // 좋아요 삭제
+  const onDeleteLike = useCallback(
+    (ftId) => {
+      if (!isLogin) return alert("로그인 후 이용해주세요.");
+      if (!ftId) {
+        console.error("푸드트럭 ID가 없습니다.");
+        return;
+      }
+      axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/like?truckId=${ftId}`, { withCredentials: true }).catch((err) => {
+        console.error("취소 실패:", err);
+        alert("취소에 실패했습니다.");
+      });
+    },
+    [isLogin]
+  );
 
-    if (!ftId) {
-      console.error("푸드트럭 ID가 없습니다.");
-      return;
-    }
+  // 알림 추가
+  const onAddSms = useCallback(
+    (ftId, day) => {
+      if (!isLogin) return alert("로그인 후 이용해주세요.");
+      if (!ftId || !day) {
+        console.error("푸드트럭 ID 또는 요일이 없습니다.");
+        return;
+      }
+      axios.post(`${import.meta.env.VITE_API_URL}/map/ft/sms?truckId=${ftId}&day=${day}`, null, { withCredentials: true }).catch((err) => {
+        console.error("알림 등록 실패:", err);
+        alert("알림 등록에 실패했습니다.");
+      });
+    },
+    [isLogin]
+  );
 
-    axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/like/${ftId}`, { withCredentials: true }).catch((err) => {
-      console.error("취소 실패:", err);
-      alert("취소에 실패했습니다.");
-    });
-  });
-
-  const onDeleteSms = useCallback((ftId, day) => {
-    if (!isLogin) return alert("로그인 후 이용해주세요.");
-
-    if (!ftId || !day) {
-      console.error("푸드트럭 ID 또는 요일이 없습니다.");
-      return;
-    }
-
-    axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/sms/${ftId}/${day}`, { withCredentials: true }).catch((err) => {
-      console.error("알림 취소 실패:", err);
-      alert("알림 취소에 실패했습니다.");
-    });
-  });
-
-  const onAddSms = useCallback((ftId, day) => {
-    if (!isLogin) return alert("로그인 후 이용해주세요.");
-
-    if (!ftId || !day) {
-      console.error("푸드트럭 ID 또는 요일이 없습니다.");
-      return;
-    }
-
-    axios.post(`${import.meta.env.VITE_API_URL}/map/ft/sms?storeId=${ftId}&day=${day}`, null, { withCredentials: true }).catch((err) => {
-      console.error("알림 등록 실패:", err);
-      alert("알림 등록에 실패했습니다.");
-    });
-  }, []);
+  // 알림 삭제
+  const onDeleteSms = useCallback(
+    (ftId, day) => {
+      if (!isLogin) return alert("로그인 후 이용해주세요.");
+      if (!ftId || !day) {
+        console.error("푸드트럭 ID 또는 요일이 없습니다.");
+        return;
+      }
+      axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/sms?truckId=${ftId}&day=${day}`, { withCredentials: true }).catch((err) => {
+        console.error("알림 취소 실패:", err);
+        alert("알림 취소에 실패했습니다.");
+      });
+    },
+    [isLogin]
+  );
 
   console.log(likeList);
 
