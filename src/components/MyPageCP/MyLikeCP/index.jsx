@@ -127,9 +127,7 @@ const MyLikeCP = ({ likeList = [] }) => {
                   <p className="intro">{ft.intro}</p>
                   <p>{todaySchedule?.userAddress}</p>
                   <p className="flexBetween">
-                    <span>
-                      {todaySchedule?.start}시 ~ {todaySchedule?.end}시
-                    </span>
+                    <span>{todaySchedule?.holiday ? `${todaySchedule?.start || ""}시 ~ ${todaySchedule?.end || ""}시` : "휴무"}</span>
                     <span style={{ fontSize: "1rem" }}>
                       <FontAwesomeIcon icon={faHeart} style={{ color: "var(--red)", paddingRight: "0.5rem" }} />
                       <FontAwesomeIcon icon={faStar} className="icon" /> {avgRating(ft) || "리뷰 없음"}
@@ -149,8 +147,8 @@ const MyLikeCP = ({ likeList = [] }) => {
                           {/* 알림 토글은 생략, 필요시 구현 */}
                         </span>
                         <span>{schedule.day}요일</span>
-                        <span>{!schedule.holiday ? "휴일" : `${schedule.start}시 ~ ${schedule.end}시`}</span>
-                        <span>{!schedule.holiday ? "" : `${schedule.userAddress}`}</span>
+                        <span>{!schedule.holiday ? "휴일" : `${schedule.start || ""}시 ~ ${schedule.end || ""}시`}</span>
+                        <span>{!schedule.holiday ? "" : `${schedule.userAddress || ""}`}</span>
                       </li>
                     ))}
                   </ul>
