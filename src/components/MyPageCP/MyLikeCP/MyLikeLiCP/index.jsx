@@ -62,6 +62,7 @@ const MyLikeLiCP = ({ ftId, onDeleteLike, onDeleteSms, onAddSms }) => {
       .then((res) => {
         setFtData(res.data);
         setBusinessInfo(getBusinessStatus(res.data));
+        console.log("푸드트럭 데이터:", res.data);
       })
       .catch((err) => {
         console.error("푸드트럭 정보 로드 중 오류 발생:", err);
