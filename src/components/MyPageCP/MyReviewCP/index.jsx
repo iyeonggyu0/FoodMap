@@ -161,6 +161,7 @@ const MyReviewCP = () => {
         if (res.data.success) {
           // 리뷰 목록을 상태에 저장
           setReviewList(res.data);
+          console.log(res);
         } else {
           console.error("리뷰 목록 로드 실패:", res.data.message);
         }
