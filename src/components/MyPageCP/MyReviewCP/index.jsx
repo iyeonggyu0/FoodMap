@@ -36,7 +36,7 @@ const MyReviewCPDiv = ({ rv }) => {
 
     // JSON 데이터 생성
     const data = {
-      truckId: rv.register.id,
+      truckId: rv.truckId,
       content: content,
       rating: Number(Number(rating).toFixed(1)),
     };
@@ -84,7 +84,7 @@ const MyReviewCPDiv = ({ rv }) => {
   return (
     <div className="reviewItem flexCol" style={{ marginBottom: "3rem", padding: "2rem", border: "1px solid var(--gray-3)", borderRadius: "16px", gap: "1rem" }}>
       <p className="flexBetween">
-        <span style={{ fontSize: "1.2rem", fontWeight: "600" }}>{rv.register.name}</span>
+        <span style={{ fontSize: "1.2rem", fontWeight: "600" }}>{rv.truckName}</span>
         <span>
           {upDateMode && (
             <FontAwesomeIcon
@@ -108,7 +108,7 @@ const MyReviewCPDiv = ({ rv }) => {
               style={{ marginLeft: "1rem", cursor: "pointer" }}
               onClick={() => {
                 const changeData = rating + 0.5;
-                if (changeData < 5) {
+                if (changeData <= 5) {
                   setRating(changeData);
                 }
               }}
