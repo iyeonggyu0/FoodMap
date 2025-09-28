@@ -8,7 +8,9 @@ import axios from "axios";
 import { useLoginCheck } from "../../../hooks/useLoginCheck";
 
 // likeList, smsList를 props로 받음
-const MyLikeCP = ({ likeList = [] }) => {
+const MyLikeCP = ({ likeList = [], smsList = [] }) => {
+  console.log("likeList in MyLikeCP:", likeList);
+  console.log("smsList in MyLikeCP:", smsList);
   const isLogin = useLoginCheck();
   const isPc = useMedia().isPc;
   // 오늘 요일 확인
@@ -19,33 +21,23 @@ const MyLikeCP = ({ likeList = [] }) => {
   // 각 푸드트럭별 영업상태 계산 함수
   const getBusinessStatus = (ft) => {
     const todaySchedule = ft.schedule?.find((sch) => sch.day === todayKorean);
-    // todaySchedule이 없거나 holiday가 false면 휴무 (반대로: true가 영업)
-    if (!todaySchedule || todaySchedule.holiday !== true) {
+    const isHolidayToday = !todaySchedule || todaySchedule.holiday;
+    if (!isHolidayToday) {
       return { status: "휴무", color: "#999" };
     }
-
-    // start, end가 없으면 휴무 처리
-    if (!todaySchedule.start || !todaySchedule.end) {
-      return { status: "휴무", color: "#999" };
-    }
-
     const now = new Date();
     const currentTime = now.getHours().toString().padStart(2, "0") + ":" + now.getMinutes().toString().padStart(2, "0");
     const startTime = todaySchedule.start;
     const endTime = todaySchedule.end;
-
     const timeToMinutes = (time) => {
-      if (!time) return 0;
       const timeParts = time.split(":");
-      const hours = parseInt(timeParts[0]) || 0;
-      const minutes = timeParts.length > 1 ? parseInt(timeParts[1]) || 0 : 0;
+      const hours = parseInt(timeParts[0]);
+      const minutes = timeParts.length > 1 ? parseInt(timeParts[1]) : 0;
       return hours * 60 + minutes;
     };
-
     const currentMinutes = timeToMinutes(currentTime);
     const startMinutes = timeToMinutes(startTime);
     const endMinutes = timeToMinutes(endTime);
-
     if (currentMinutes < startMinutes) {
       return { status: "준비", color: "#fba33e" };
     } else if (currentMinutes >= startMinutes && currentMinutes <= endMinutes) {
@@ -64,56 +56,47 @@ const MyLikeCP = ({ likeList = [] }) => {
     return "리뷰 없음";
   };
 
-  const onDeleteLike = useCallback(
-    (ftId) => {
-      if (!isLogin) return alert("로그인 후 이용해주세요.");
+  const onDeleteLike = useCallback((ftId) => {
+    if (!isLogin) return alert("로그인 후 이용해주세요.");
 
-      if (!ftId) {
-        console.error("푸드트럭 ID가 없습니다.");
-        return;
-      }
+    if (!ftId) {
+      console.error("푸드트럭 ID가 없습니다.");
+      return;
+    }
 
-      axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/like/${ftId}`, { withCredentials: true }).catch((err) => {
-        console.error("취소 실패:", err);
-        alert("취소에 실패했습니다.");
-      });
-    },
-    [isLogin]
-  );
+    axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/like/${ftId}`, { withCredentials: true }).catch((err) => {
+      console.error("취소 실패:", err);
+      alert("취소에 실패했습니다.");
+    });
+  });
 
-  const onDeleteSms = useCallback(
-    (ftId, day) => {
-      if (!isLogin) return alert("로그인 후 이용해주세요.");
+  const onDeleteSms = useCallback((ftId, day) => {
+    if (!isLogin) return alert("로그인 후 이용해주세요.");
 
-      if (!ftId || !day) {
-        console.error("푸드트럭 ID 또는 요일이 없습니다.");
-        return;
-      }
+    if (!ftId || !day) {
+      console.error("푸드트럭 ID 또는 요일이 없습니다.");
+      return;
+    }
 
-      axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/sms/${ftId}/${day}`, { withCredentials: true }).catch((err) => {
-        console.error("알림 취소 실패:", err);
-        alert("알림 취소에 실패했습니다.");
-      });
-    },
-    [isLogin]
-  );
+    axios.delete(`${import.meta.env.VITE_API_URL}/map/ft/sms/${ftId}/${day}`, { withCredentials: true }).catch((err) => {
+      console.error("알림 취소 실패:", err);
+      alert("알림 취소에 실패했습니다.");
+    });
+  });
 
-  const onAddSms = useCallback(
-    (ftId, day) => {
-      if (!isLogin) return alert("로그인 후 이용해주세요.");
+  const onAddSms = useCallback((ftId, day) => {
+    if (!isLogin) return alert("로그인 후 이용해주세요.");
 
-      if (!ftId || !day) {
-        console.error("푸드트럭 ID 또는 요일이 없습니다.");
-        return;
-      }
+    if (!ftId || !day) {
+      console.error("푸드트럭 ID 또는 요일이 없습니다.");
+      return;
+    }
 
-      axios.post(`${import.meta.env.VITE_API_URL}/map/ft/sms?storeId=${ftId}&day=${day}`, null, { withCredentials: true }).catch((err) => {
-        console.error("알림 등록 실패:", err);
-        alert("알림 등록에 실패했습니다.");
-      });
-    },
-    [isLogin]
-  );
+    axios.post(`${import.meta.env.VITE_API_URL}/map/ft/sms?storeId=${ftId}&day=${day}`, null, { withCredentials: true }).catch((err) => {
+      console.error("알림 등록 실패:", err);
+      alert("알림 등록에 실패했습니다.");
+    });
+  }, []);
 
   console.log(likeList);
 
@@ -122,22 +105,23 @@ const MyLikeCP = ({ likeList = [] }) => {
       <h2>알림/찜 목록</h2>
       <ul>
         {likeList && likeList.length > 0 ? (
-          likeList.map((ft) => {
+          likeList.map((ft, index) => {
             const businessInfo = getBusinessStatus(ft);
-            const todaySchedule = ft.schedule?.find((sch) => sch.day === todayKorean);
             return (
-              <li className="ftListIndexLi" key={ft.truckId}>
+              <li className="ftListIndexLi" key={index}>
                 <div className="ftListIndex">
                   <p className="flexBetween">
-                    <span className="name">{ft.name || "푸드트럭 이름"}</span>
+                    <span className="name">{ft.name}</span>
                     <span className="isHolidayToday" style={{ backgroundColor: businessInfo.color }}>
-                      {businessInfo.status || "-"}
+                      {businessInfo.status}
                     </span>
                   </p>
-                  <p className="intro">{ft.intro || "intro"}</p>
-                  <p>{todaySchedule?.userAddress || "-"}</p>
+                  <p className="intro">{ft.intro}</p>
+                  <p>{ft.schedule?.[today]?.userAddress}</p>
                   <p className="flexBetween">
-                    <span>{todaySchedule?.holiday ? `${todaySchedule?.start || ""}시 ~ ${todaySchedule?.end || ""}시` : "휴무"}</span>
+                    <span>
+                      {ft.schedule?.[today]?.start}시 ~ {ft.schedule?.[today]?.end}시
+                    </span>
                     <span style={{ fontSize: "1rem" }}>
                       <FontAwesomeIcon icon={faHeart} style={{ color: "var(--red)", paddingRight: "0.5rem" }} />
                       <FontAwesomeIcon icon={faStar} className="icon" /> {avgRating(ft) || "리뷰 없음"}
@@ -156,9 +140,9 @@ const MyLikeCP = ({ likeList = [] }) => {
                           {!schedule.holiday ? <FontAwesomeIcon icon={faBellRegular} style={{ visibility: "hidden" }} /> : ""}
                           {/* 알림 토글은 생략, 필요시 구현 */}
                         </span>
-                        <span>{schedule.day ? `${schedule.day}요일` : "-"}</span>
-                        <span>{!schedule.holiday ? "휴일" : `${schedule.start || "-"}시 ~ ${schedule.end || "-"}시`}</span>
-                        <span>{!schedule.holiday ? "" : `${schedule.userAddress || "-"}`}</span>
+                        <span>{schedule.day}요일</span>
+                        <span>{!schedule.holiday ? "휴일" : `${schedule.start}시 ~ ${schedule.end}시`}</span>
+                        <span>{!schedule.holiday ? "" : `${schedule.userAddress}`}</span>
                       </li>
                     ))}
                   </ul>

@@ -20,6 +20,7 @@ const MyPage = () => {
 
   // 찜/알림, 내 트럭 상태 추가
   const [likeList, setLikeList] = useState([]);
+  const [smsList, setSmsList] = useState([]);
   const [myTruckList, setMyTruckList] = useState([]);
 
   useEffect(() => {
@@ -36,26 +37,11 @@ const MyPage = () => {
 
     // 2. 찜/알림 목록
     axios
-      .get(`${import.meta.env.VITE_API_URL}/api/review/mine`, { withCredentials: true })
+      .get(`${import.meta.env.VITE_API_URL}/map/ft/mine`, { withCredentials: true })
       .then((res) => {
-        setLikeList(res.data || []);
-        console.log("===== [MyPage] 찜/알림 목록 API 응답 =====");
+        setLikeList(res.data.likes || []);
+        setSmsList(res.data.sms || []);
         console.log(res.data);
-        if (Array.isArray(res.data)) {
-          res.data.forEach((item, idx) => {
-            console.log(`--- [${idx}] truckId:`, item.truckId);
-            console.log(`    name:`, item.name);
-            console.log(`    intro:`, item.intro);
-            console.log(`    schedule:`, item.schedule);
-            if (item.schedule) {
-              item.schedule.forEach((sch, sidx) => {
-                console.log(`      [${sidx}] day:`, sch.day, "holiday:", sch.holiday, "start:", sch.start, "end:", sch.end, "userAddress:", sch.userAddress);
-              });
-            }
-            console.log(`    review:`, item.review);
-          });
-        }
-        console.log("========================================");
       })
       .catch((err) => {
         console.error("찜/알림 목록 로드 중 오류 발생:", err);
@@ -166,7 +152,7 @@ const MyPage = () => {
           <section className="mainSection">
             {paging === 0 && <MyPageInfoCP userData={userData} />}
             {paging === 1 && <MyFTCP myTruckList={myTruckList} />}
-            {paging === 2 && <MyLikeCP likeList={likeList} />}
+            {paging === 2 && <MyLikeCP likeList={likeList} smsList={smsList} />}
             {paging === 3 && <MyReviewCP />}
           </section>
         </MyPageMainStyle>
