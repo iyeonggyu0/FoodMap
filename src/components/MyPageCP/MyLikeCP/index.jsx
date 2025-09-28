@@ -19,9 +19,8 @@ const MyLikeCP = ({ likeList = [] }) => {
   // 각 푸드트럭별 영업상태 계산 함수
   const getBusinessStatus = (ft) => {
     const todaySchedule = ft.schedule?.find((sch) => sch.day === todayKorean);
-
-    // todaySchedule이 없거나 holiday가 false면 휴무
-    if (!todaySchedule || !todaySchedule.holiday) {
+    // todaySchedule이 없거나 holiday가 false면 휴무 (반대로: true가 영업)
+    if (!todaySchedule || todaySchedule.holiday !== true) {
       return { status: "휴무", color: "#999" };
     }
 
@@ -130,13 +129,13 @@ const MyLikeCP = ({ likeList = [] }) => {
               <li className="ftListIndexLi" key={ft.truckId}>
                 <div className="ftListIndex">
                   <p className="flexBetween">
-                    <span className="name">{ft.name}</span>
+                    <span className="name">{ft.name || "푸드트럭 이름"}</span>
                     <span className="isHolidayToday" style={{ backgroundColor: businessInfo.color }}>
-                      {businessInfo.status}
+                      {businessInfo.status || "-"}
                     </span>
                   </p>
-                  <p className="intro">{ft.intro}</p>
-                  <p>{todaySchedule?.userAddress}</p>
+                  <p className="intro">{ft.intro || "intro"}</p>
+                  <p>{todaySchedule?.userAddress || "-"}</p>
                   <p className="flexBetween">
                     <span>{todaySchedule?.holiday ? `${todaySchedule?.start || ""}시 ~ ${todaySchedule?.end || ""}시` : "휴무"}</span>
                     <span style={{ fontSize: "1rem" }}>
@@ -157,9 +156,9 @@ const MyLikeCP = ({ likeList = [] }) => {
                           {!schedule.holiday ? <FontAwesomeIcon icon={faBellRegular} style={{ visibility: "hidden" }} /> : ""}
                           {/* 알림 토글은 생략, 필요시 구현 */}
                         </span>
-                        <span>{schedule.day}요일</span>
-                        <span>{!schedule.holiday ? "휴일" : `${schedule.start || ""}시 ~ ${schedule.end || ""}시`}</span>
-                        <span>{!schedule.holiday ? "" : `${schedule.userAddress || ""}`}</span>
+                        <span>{schedule.day ? `${schedule.day}요일` : "-"}</span>
+                        <span>{!schedule.holiday ? "휴일" : `${schedule.start || "-"}시 ~ ${schedule.end || "-"}시`}</span>
+                        <span>{!schedule.holiday ? "" : `${schedule.userAddress || "-"}`}</span>
                       </li>
                     ))}
                   </ul>
