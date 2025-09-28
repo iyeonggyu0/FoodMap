@@ -49,6 +49,9 @@ export const MyLikeCPMainStyle = styled.section`
 
         & > li > span:nth-child(1) {
           font-weight: 600;
+          /* display: inline-block;
+          min-width: 120px;
+          text-align: center; */
         }
 
         & > li > span:nth-child(4) {

@@ -1,15 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faStar, faBell as faBellSolid } from "@fortawesome/free-solid-svg-icons";
 import { faBell as faBellRegular } from "@fortawesome/free-regular-svg-icons";
-import { useLoginCheck } from "../../../../hooks/useLoginCheck";
-import { useMedia } from "../../../../hooks/useMedia";
+
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 const MyLikeLiCP = ({ ftId, onDeleteLike, onDeleteSms, onAddSms }) => {
-  const isLogin = useLoginCheck();
-  const isPc = useMedia().isPc;
-  // 오늘 요일 확인
   const today = (new Date().getDay() + 6) % 7; // 0:월~6:일
   const dayMap = ["월", "화", "수", "목", "금", "토", "일"];
   const todayKorean = dayMap[today];
@@ -88,7 +84,9 @@ const MyLikeLiCP = ({ ftId, onDeleteLike, onDeleteSms, onAddSms }) => {
                 {ftData.schedule?.[today]?.start}시 ~ {ftData.schedule?.[today]?.end}시
               </span>
               <span style={{ fontSize: "1rem" }}>
-                <FontAwesomeIcon icon={faHeart} style={{ color: "var(--red)", paddingRight: "0.5rem" }} />
+                <span onClick={() => onDeleteLike(ftData.truckId)}>
+                  <FontAwesomeIcon icon={faHeart} style={{ color: "var(--red)", paddingRight: "0.5rem" }} />
+                </span>
                 <FontAwesomeIcon icon={faStar} className="icon" /> {avgRating(ftData) || "리뷰 없음"}
               </span>
             </p>
@@ -103,7 +101,12 @@ const MyLikeLiCP = ({ ftId, onDeleteLike, onDeleteSms, onAddSms }) => {
                   }}>
                   <span>
                     {!schedule.holiday ? <FontAwesomeIcon icon={faBellRegular} style={{ visibility: "hidden" }} /> : ""}
-                    {/* 알림 토글은 생략, 필요시 구현 */}
+                    {!schedule.sms && schedule.holiday && (
+                      <FontAwesomeIcon icon={faBellRegular} onClick={() => onAddSms(ftData.truckId, schedule.day)} style={{ cursor: "pointer" }} />
+                    )}
+                    {schedule.sms && schedule.holiday && (
+                      <FontAwesomeIcon icon={faBellSolid} onClick={() => onDeleteSms(ftData.truckId, schedule.day)} style={{ cursor: "pointer" }} />
+                    )}
                   </span>
                   <span>{schedule.day}요일</span>
                   <span>{!schedule.holiday ? "휴일" : `${schedule.start}시 ~ ${schedule.end}시`}</span>
