@@ -64,7 +64,7 @@ const MyLikeLiCP = ({ ftId, onDeleteLike, onDeleteSms, onAddSms }) => {
         console.error("푸드트럭 정보 로드 중 오류 발생:", err);
         alert("푸드트럭 정보를 불러오는 데 실패했습니다.");
       });
-  });
+  }, [ftId]);
 
   return (
     <div>
