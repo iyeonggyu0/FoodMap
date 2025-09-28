@@ -49,16 +49,19 @@ export const MyLikeCPMainStyle = styled.section`
 
         & > li > span:nth-child(1) {
           font-weight: 600;
-          /* display: inline-block;
-          min-width: 120px;
-          text-align: center; */
-        }
-
-        & > li > span:nth-child(4) {
-          flex: 0.5;
+          flex: 0.15;
           text-align: center;
         }
-
+        & > li > span:nth-child(2),
+        & > li > span:nth-child(3) {
+          flex: 0.2;
+          text-align: center;
+        }
+        & > li > span:nth-child(4) {
+          flex: 1 1 0%;
+          max-width: 100%;
+          text-align: center;
+        }
         @media screen and (max-width: 768px) {
           & > li > span:nth-child(4) {
             flex: 1;
