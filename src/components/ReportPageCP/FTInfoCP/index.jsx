@@ -18,7 +18,7 @@ import { useCallback, useState, useRef } from "react";
 import { useInput } from "@/hooks/useInput";
 import axios from "axios";
 
-const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
+const FTInfoCP = ({ formData, setFormData, handleInputChange, errors }) => {
   const [nameError, setNameError] = useState(false);
   const [categoryError, setCategoryError] = useState(false);
   const [introError, setIntroError] = useState(false);
@@ -245,10 +245,8 @@ const FTInfoCP = ({ formData, setFormData, handleInputChange }) => {
               onChange={(e) => handleInputChange("name", e.target.value)}
               required
             />
-            {nameError && (
-              <span className="nameError error" ref={nameErrorRef}>
-                2글자 이상 입력하세요
-              </span>
+            {errors.name && (
+              <span className="text-red-500 text-sm">{errors.name}</span>
             )}
           </div>
           <div className="flex-1">

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import MainLayOut from "@/layout/MainLayOut";
 import { ReportPageMainStyle, ButtonStyle } from "./style";
@@ -41,6 +41,30 @@ const ReportPage = () => {
     agreeTerms: false,
   });
   const [errors, setErrors] = useState({});
+
+  // 에러 span refs
+  const refs = {
+    name: useRef(null),
+    category: useRef(null),
+    intro: useRef(null),
+    menu: useRef(null),
+  };
+
+  /** 유효성 검사 함수들
+   * - key: formData 키, v: 값
+   * - true면 통과, false면 에러
+   * */
+  const validators = {
+    name: (v) => v?.length > 1,
+    category: (v) => v,
+    intro: (v) => v?.length > 10,
+  };
+
+  const errorMessages = {
+    name: "푸드트럭 이름(2글자 이상)을 입력해주세요.",
+    category: "카테고리를 선택해주세요.",
+    intro: "푸드트럭 설명글을 10글자 이상 입력해주세요.",
+  };
 
   /**
    * 인풋값 변할 때 formData로 바뀐거 전달하는 함수
@@ -143,6 +167,7 @@ const ReportPage = () => {
             formData={formData}
             setFormData={setFormData}
             handleInputChange={handleInputChange}
+            errors={errors}
           />
 
           {/* 푸드트럭 위치 정보 카드 */}
@@ -200,7 +225,7 @@ const ReportPage = () => {
 
             {/* 제보버튼 */}
             <ButtonStyle>
-              <ButtonCP disabled={!formData.agreeTerms}>
+              <ButtonCP disabled={!formData.agreeTerms} onClick={handleSubmit}>
                 푸드트럭 제보하기
               </ButtonCP>
               <OutLineButtonCP color="black">취소</OutLineButtonCP>
