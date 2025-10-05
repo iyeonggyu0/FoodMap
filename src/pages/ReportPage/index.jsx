@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import MainLayOut from "@/layout/MainLayOut";
 import { ReportPageMainStyle, ButtonStyle } from "./style";
@@ -41,6 +41,19 @@ const ReportPage = () => {
     agreeTerms: false,
   });
   const [errors, setErrors] = useState({});
+  const [firstErrorKey, setFirstErrorKey] = useState(null);
+
+  // errors 바뀔 때마다 첫 에러 위치로 스크롤
+  useEffect(() => {
+    if (firstErrorKey && refs[firstErrorKey]?.current) {
+      setTimeout(() => {
+        refs[firstErrorKey].current.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }, 100);
+    }
+  }, [firstErrorKey]);
 
   // 에러 span refs
   const refs = {
@@ -48,6 +61,24 @@ const ReportPage = () => {
     category: useRef(null),
     intro: useRef(null),
     menu: useRef(null),
+    location: useRef(null),
+    detailedAddress: useRef(null),
+    reporterName: useRef(null),
+    reporterEmail: useRef(null),
+    reporterPhone: useRef(null),
+  };
+
+  // 에러 메시지
+  const errorMessages = {
+    name: "푸드트럭 이름(2글자 이상)을 입력해주세요.",
+    category: "카테고리를 선택해주세요.",
+    intro: "푸드트럭 설명글을 10글자 이상 입력해주세요.",
+    menu: "메뉴를 1개 이상 등록해주세요.",
+    location: "푸드트럭 위치를 선택해주세요.",
+    detailedAddress: "상세 주소를 입력해주세요.",
+    reporterName: "제보자 이름은 한글 또는 영문 2글자 이상만 입력 가능합니다.",
+    reporterEmail: "유효한 이메일 주소를 입력해주세요.",
+    reporterPhone: "연락처는 숫자만 입력 가능하며, 10~11자리여야 합니다.",
   };
 
   /** 유효성 검사 함수들
@@ -55,15 +86,24 @@ const ReportPage = () => {
    * - true면 통과, false면 에러
    * */
   const validators = {
-    name: (v) => v?.length > 1,
-    category: (v) => v,
-    intro: (v) => v?.length > 10,
-  };
-
-  const errorMessages = {
-    name: "푸드트럭 이름(2글자 이상)을 입력해주세요.",
-    category: "카테고리를 선택해주세요.",
-    intro: "푸드트럭 설명글을 10글자 이상 입력해주세요.",
+    name: (v) => v?.length > 1, //존재하고, 2글자 이상이면 통과
+    category: (v) => v, //존재하면 통과
+    intro: (v) => v?.length > 10, //존재하고, 10글자 이상이면 통과
+    menu: (v) => v.length > 0, //메뉴 1개 이상 등록해야 통과
+    location: (v) => v, //존재하면 통과
+    detailedAddress: (v) => v, //존재하면 통과
+    reporterName: (v) => {
+      const nameRegex = /^[가-힣a-zA-Z]{2,}$/;
+      return nameRegex.test(v);
+    }, //한글, 영문만 입력 가능(자음, 모음도 안됨), 빈값이면 안되고 2글자 이상이어야 함
+    reporterEmail: (v) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(v);
+    }, //이메일 형식이면 통과
+    reporterPhone: (v) => {
+      const phoneRegex = /^\d{10,11}$/;
+      return phoneRegex.test(v);
+    }, //숫자만 입력 가능, 10~11자리여야 함
   };
 
   /**
@@ -84,18 +124,21 @@ const ReportPage = () => {
   const handleSubmit = async (e) => {
     // 필수 입력값 유효성 체크
     e.preventDefault();
-    let _errors = {};
-    if (!formData.name || formData.name.length < 2) {
-      _errors.name = "푸드트럭 이름(2글자 이상)을 입력해주세요.";
+    const errors = {};
+
+    Object.entries(validators).forEach(([key, validate]) => {
+      if (!validate(formData[key])) {
+        errors[key] = errorMessages[key];
+      }
+    });
+
+    // 에러 alert 띄우기
+    if (Object.keys(errors).length > 0) {
+      setErrors(errors);
+      setFirstErrorKey(Object.keys(errors)[0]);
+      alert(Object.values(errors).join("\n"));
+      return; // 오류 있을 경우 제출 중단
     }
-    if (!formData.category) {
-      _errors.category = "카테고리를 선택해 주세요.";
-    }
-    if (!formData.intro || formData.intro.length < 10) {
-      _errors.intro = "푸드트럭 설명(10글자 이상)을 입력해주세요.";
-    }
-    setErrors(_errors);
-    if (Object.keys(_errors).length > 0) return; // 에러 있으면 제출 막기
 
     // 서버에 formData 전송
     try {
@@ -111,6 +154,7 @@ const ReportPage = () => {
     } catch (err) {
       console.error(err);
       alert("서버 오류");
+      console.log(formData);
     }
   };
 
@@ -168,6 +212,7 @@ const ReportPage = () => {
             setFormData={setFormData}
             handleInputChange={handleInputChange}
             errors={errors}
+            ref={refs}
           />
 
           {/* 푸드트럭 위치 정보 카드 */}
@@ -184,6 +229,8 @@ const ReportPage = () => {
           <ReporterInfoCP
             formData={formData}
             handleInputChange={handleInputChange}
+            errors={errors}
+            ref={refs}
           />
 
           <div className="cards p-6">
