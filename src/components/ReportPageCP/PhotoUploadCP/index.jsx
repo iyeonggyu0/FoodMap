@@ -9,11 +9,13 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Camera, Upload, X } from "lucide-react";
+
 const PhotoUploadCP = ({ formData, setFormData }) => {
   const [dragActive, setDragActive] = useState(false);
 
   /**
-   *
+   * 이미 업로드된 사진 + 새로 업로드된 사진이 5장을 넘지 않도록 제한.
+   * 넘칠 경우 초과된 사진은 무시
    * @param {Array} files
    */
   const handleFileUpload = (files) => {
@@ -40,6 +42,7 @@ const PhotoUploadCP = ({ formData, setFormData }) => {
   /**
    *
    * @param {React.DragEvent} e
+   *
    */
   const handleDrag = (e) => {
     e.preventDefault();
@@ -52,7 +55,8 @@ const PhotoUploadCP = ({ formData, setFormData }) => {
   };
 
   /**
-   *
+   * 파일이 드롭되면 dragActive 상태를 false로 설정하고,
+   * e.dataTransfer.files에서 파일 목록을 가져와 handleFileUpload 함수에 전달
    * @param {React.DragEvent} e
    */
   const handleDrop = (e) => {
