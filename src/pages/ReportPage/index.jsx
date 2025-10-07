@@ -23,10 +23,10 @@ import axios from "axios";
 const ReportPage = () => {
   const [formData, setFormData] = useState({
     name: "",
-    category: "", //FIXME: value만 들어와야 함
+    category: "",
     intro: "",
     menu: [], //등록된 메뉴들의 리스트 { num, name, price, info }
-    menuNum: "", //현재 입력 중인 메뉴의 임시 값 FIXME: formData에서 분리하는게 맞음
+    menuNum: "", //현재 입력 중인 메뉴의 임시 값
     menuName: "",
     menuPrice: "",
     menuInfo: "",
@@ -142,9 +142,28 @@ const ReportPage = () => {
       return; // 오류 있을 경우 제출 중단
     }
 
-    // 서버에 formData 전송
+    // 임시 데이터 제거
+    const submissionData = {
+      name: formData.name,
+      category: formData.category,
+      intro: formData.intro,
+      menu: formData.menu,
+      location: formData.location,
+      mapAddress: formData.mapAddress,
+      userAddress: formData.userAddress,
+      openHours: formData.openHours,
+      closeHours: formData.closeHours,
+      phone: formData.phone,
+      reporterName: formData.reporterName,
+      reporterEmail: formData.reporterEmail,
+      reporterPhone: formData.reporterPhone,
+      photos: formData.photos,
+      agreeTerms: formData.agreeTerms,
+    };
+
+    // 서버에 submissionData 전송
     try {
-      const res = await axios.post("서버 API 주소", formData, {
+      const res = await axios.post("서버 API 주소", submissionData, {
         // withCredentials: true, // 필요시 사용
         headers: { "Content-Type": "application/json" },
       });

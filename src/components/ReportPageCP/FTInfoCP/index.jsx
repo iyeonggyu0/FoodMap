@@ -201,10 +201,21 @@ const FTInfoCP = forwardRef(
               <Label htmlFor="category">카테고리 *</Label>
               <Select
                 ref={refs.category}
-                onValueChange={(value) => handleInputChange("category", value)}
+                onValueChange={(value) => {
+                  const selected = categoryList.find(
+                    (item) => item.data === value
+                  );
+                  handleInputChange("category", selected.value);
+                }}
               >
                 <SelectTrigger className="border border-solid mt-2">
-                  <SelectValue placeholder="카테고리 선택" />
+                  <SelectValue placeholder="카테고리 선택">
+                    {formData.category
+                      ? categoryList.find(
+                          (item) => item.value === formData.category
+                        )?.data
+                      : "카테고리 선택"}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent className="border border-solid border-gray-3">
                   {categoryList.map((items) => (
