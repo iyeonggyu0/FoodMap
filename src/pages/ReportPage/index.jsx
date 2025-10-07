@@ -23,16 +23,18 @@ import axios from "axios";
 const ReportPage = () => {
   const [formData, setFormData] = useState({
     name: "",
-    category: "",
+    category: "", //FIXME: value만 들어와야 함
     intro: "",
     menu: [], //등록된 메뉴들의 리스트 { num, name, price, info }
-    menuNum: "", //현재 입력 중인 메뉴의 임시 값
+    menuNum: "", //현재 입력 중인 메뉴의 임시 값 FIXME: formData에서 분리하는게 맞음
     menuName: "",
     menuPrice: "",
     menuInfo: "",
     location: "",
-    detailedAddress: "",
-    operatingHours: "",
+    mapAddress: "",
+    userAddress: "",
+    openHours: "",
+    closeHours: "",
     phone: "",
     reporterName: "",
     reporterEmail: "",
@@ -75,7 +77,7 @@ const ReportPage = () => {
     intro: "푸드트럭 설명글을 10글자 이상 입력해주세요.",
     menu: "메뉴를 1개 이상 등록해주세요.",
     location: "푸드트럭 위치를 선택해주세요.",
-    detailedAddress: "상세 주소를 입력해주세요.",
+    mapAddress: "지도상 주소를 입력해주세요.",
     reporterName: "제보자 이름은 한글 또는 영문 2글자 이상만 입력 가능합니다.",
     reporterEmail: "유효한 이메일 주소를 입력해주세요.",
     reporterPhone: "연락처는 숫자만 입력 가능하며, 10~11자리여야 합니다.",
@@ -91,7 +93,7 @@ const ReportPage = () => {
     intro: (v) => v?.length > 10, //존재하고, 10글자 이상이면 통과
     menu: (v) => v.length > 0, //메뉴 1개 이상 등록해야 통과
     location: (v) => v, //존재하면 통과
-    detailedAddress: (v) => v, //존재하면 통과
+    mapAddress: (v) => v, //존재하면 통과
     reporterName: (v) => {
       const nameRegex = /^[가-힣a-zA-Z]{2,}$/;
       return nameRegex.test(v);
@@ -154,7 +156,7 @@ const ReportPage = () => {
     } catch (err) {
       console.error(err);
       alert("서버 오류");
-      console.log(formData);
+      console.log(formData); //FIXME: formData 확인용, 나중에 지우기
     }
   };
 

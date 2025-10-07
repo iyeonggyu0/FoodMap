@@ -21,7 +21,7 @@ const FTInfoCP = forwardRef(
     const [editMenuNum, setEditMenuNum] = useState(""); // 수정 중인 메뉴 번호
 
     // 푸드트럭 카테고리 리스트
-    const FTCategoryList = [
+    const categoryList = [
       { value: "분식", data: "분식 (어묵, 떡볶이, 순대)" },
       { value: "간식", data: "간식 (붕어빵, 타코야끼, 크레페, 츄러스, 와플)" },
       {
@@ -207,7 +207,7 @@ const FTInfoCP = forwardRef(
                   <SelectValue placeholder="카테고리 선택" />
                 </SelectTrigger>
                 <SelectContent className="border border-solid border-gray-3">
-                  {FTCategoryList.map((items) => (
+                  {categoryList.map((items) => (
                     <SelectItem key={items.value} value={items.data}>
                       {items.data}
                     </SelectItem>

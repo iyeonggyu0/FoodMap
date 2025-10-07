@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { MapPin } from "lucide-react";
+import OutLineButtonCP from "@/components/_common/OutLineButtonCP";
 
 const locations = [
   "강남구",
@@ -75,28 +76,55 @@ const FTPositionInfoCP = ({ formData, setFormData, handleInputChange }) => {
           </div>
           <div>
             <Label htmlFor="operatingHours">운영 시간</Label>
+            <div className="flex items-center space-x-2 mt-2">
+              <Input
+                type="time"
+                className="border border-solid"
+                id="openHours"
+                placeholder="예: 11:00 - 20:00"
+                value={formData.openHours}
+                onChange={(e) => handleInputChange("openHours", e.target.value)}
+              />
+              <span>-</span>
+              <Input
+                type="time"
+                className="border border-solid"
+                id="closeHours"
+                placeholder="예: 11:00 - 20:00"
+                value={formData.closeHours}
+                onChange={(e) =>
+                  handleInputChange("closeHours", e.target.value)
+                }
+              />
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="mapAddress">지도상 주소 *</Label>
+          <div className="flex items-center space-x-2 mt-2">
+            <OutLineButtonCP width="8rem" color="brown">
+              주소 찾기
+            </OutLineButtonCP>
             <Input
-              className="border border-solid mt-2"
-              id="operatingHours"
-              placeholder="예: 11:00 - 20:00"
-              value={formData.operatingHours}
-              onChange={(e) =>
-                handleInputChange("operatingHours", e.target.value)
-              }
+              className="border border-solid flex-1"
+              id="mapAddress"
+              placeholder="지도상 주소를 입력해주세요"
+              value={formData.mapAddress}
+              onChange={(e) => handleInputChange("mapAddress", e.target.value)}
+              required
             />
           </div>
         </div>
 
         <div>
-          <Label htmlFor="detailedAddress">상세 위치 *</Label>
+          <Label htmlFor="userAddress">사용자 안내용 위치</Label>
           <Input
             className="border border-solid mt-2"
-            id="detailedAddress"
+            id="userAddress"
             placeholder="예: 강남역 2번 출구 앞, 신촌 연세대 정문 근처"
-            value={formData.detailedAddress}
-            onChange={(e) =>
-              handleInputChange("detailedAddress", e.target.value)
-            }
+            value={formData.userAddress}
+            onChange={(e) => handleInputChange("userAddress", e.target.value)}
             required
           />
         </div>
