@@ -31,6 +31,7 @@ const OutLineButtonCPStlye = styled.span`
  * @param {string} color 글자와 테두리 색을 정한다. (기본값: #FFF)
  * @param {string} borderColor 테두리 색을 정한다. (기본값: "color"와 동일)
  * @param {string} width 버튼의 너비를 정한다. (기본값: 자동)
+ * @param {function} onClick 클릭 이벤트 핸들러
  * @returns OutLineButtonCP 는 _common에 속하며, 해당 태그로 감싼 글자를 span으로 color의 테두리와 글자색을 만드는 css 적용
  */
 
@@ -41,6 +42,7 @@ const OutLineButtonCP = ({
   color = "#FFF",
   borderColor,
   width,
+  onClick,
 }) => {
   const isPc = useMedia().isPc;
   return (
@@ -50,6 +52,7 @@ const OutLineButtonCP = ({
       color={color}
       borderColor={borderColor}
       width={width}
+      onClick={onClick}
     >
       {icon && (
         <span
