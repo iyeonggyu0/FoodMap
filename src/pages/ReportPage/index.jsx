@@ -218,12 +218,7 @@ const ReportPage = () => {
         mapAddress: day.mapAddress,
         userAddress: day.userAddress,
       })),
-      phone: formData.phone,
-      reporterName: formData.reporterName,
-      reporterEmail: formData.reporterEmail,
-      reporterPhone: formData.reporterPhone,
       photos: formData.photos,
-      agreeTerms: formData.agreeTerms,
     };
 
     // 서버에 submissionData 전송
@@ -312,12 +307,13 @@ const ReportPage = () => {
           <PhotoUploadCP formData={formData} setFormData={setFormData} />
 
           {/* 제보자 정보 카드 */}
-          <ReporterInfoCP
+          {/* <ReporterInfoCP
             formData={formData}
             handleInputChange={handleInputChange}
             errors={errors}
             ref={refs}
-          />
+          /> */}
+          {/* FIXME: 로그인 정보로 처리 예정 */}
 
           <div className="cards p-6">
             {/* 이용약관 */}
