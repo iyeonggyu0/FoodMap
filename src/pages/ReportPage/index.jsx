@@ -30,11 +30,64 @@ const ReportPage = () => {
     menuName: "",
     menuPrice: "",
     menuInfo: "",
-    location: "",
-    mapAddress: "",
-    userAddress: "",
-    openHours: "",
-    closeHours: "",
+    schedule: [
+      {
+        day: "월",
+        holiday: false,
+        start: "",
+        end: "",
+        mapAddress: "",
+        userAddress: "",
+      },
+      {
+        day: "화",
+        holiday: false,
+        start: "",
+        end: "",
+        mapAddress: "",
+        userAddress: "",
+      },
+      {
+        day: "수",
+        holiday: false,
+        start: "",
+        end: "",
+        mapAddress: "",
+        userAddress: "",
+      },
+      {
+        day: "목",
+        holiday: false,
+        start: "",
+        end: "",
+        mapAddress: "",
+        userAddress: "",
+      },
+      {
+        day: "금",
+        holiday: false,
+        start: "",
+        end: "",
+        mapAddress: "",
+        userAddress: "",
+      },
+      {
+        day: "토",
+        holiday: false,
+        start: "",
+        end: "",
+        mapAddress: "",
+        userAddress: "",
+      },
+      {
+        day: "일",
+        holiday: false,
+        start: "",
+        end: "",
+        mapAddress: "",
+        userAddress: "",
+      },
+    ],
     phone: "",
     reporterName: "",
     reporterEmail: "",
@@ -76,6 +129,7 @@ const ReportPage = () => {
     category: "카테고리를 선택해주세요.",
     intro: "푸드트럭 설명글을 10글자 이상 입력해주세요.",
     menu: "메뉴를 1개 이상 등록해주세요.",
+    schedule: "영업일과 시간을 정확히 입력해주세요.",
     location: "푸드트럭 위치를 선택해주세요.",
     mapAddress: "지도상 주소를 입력해주세요.",
     reporterName: "제보자 이름은 한글 또는 영문 2글자 이상만 입력 가능합니다.",
@@ -92,8 +146,16 @@ const ReportPage = () => {
     category: (v) => v, //존재하면 통과
     intro: (v) => v?.length > 10, //존재하고, 10글자 이상이면 통과
     menu: (v) => v.length > 0, //메뉴 1개 이상 등록해야 통과
-    location: (v) => v, //존재하면 통과
-    mapAddress: (v) => v, //존재하면 통과
+    schedule: (scheduleArray) => {
+      const hasOperatingDay = scheduleArray.some((day) => !day.holiday); //휴무일 아닌 날이 하나라도 있으면 통과
+      if (!hasOperatingDay) return false;
+
+      //영업하는 날은 시작시간, 종료시간, 지도상 주소가 모두 있어야 통과
+      return scheduleArray.every((day) => {
+        if (day.holiday) return true; //휴무일이면 통과
+        return day.start && day.end && day.mapAddress && day.userAddress;
+      });
+    },
     reporterName: (v) => {
       const nameRegex = /^[가-힣a-zA-Z]{2,}$/;
       return nameRegex.test(v);
@@ -148,11 +210,14 @@ const ReportPage = () => {
       category: formData.category,
       intro: formData.intro,
       menu: formData.menu,
-      location: formData.location,
-      mapAddress: formData.mapAddress,
-      userAddress: formData.userAddress,
-      openHours: formData.openHours,
-      closeHours: formData.closeHours,
+      schedule: formData.schedule.map((day) => ({
+        day: day.day,
+        holiday: day.holiday,
+        start: day.start,
+        end: day.end,
+        mapAddress: day.mapAddress,
+        userAddress: day.userAddress,
+      })),
       phone: formData.phone,
       reporterName: formData.reporterName,
       reporterEmail: formData.reporterEmail,
@@ -175,7 +240,7 @@ const ReportPage = () => {
     } catch (err) {
       console.error(err);
       alert("서버 오류");
-      console.log(formData); //FIXME: formData 확인용, 나중에 지우기
+      console.log(submissionData); //FIXME: formData 확인용, 나중에 지우기
     }
   };
 
