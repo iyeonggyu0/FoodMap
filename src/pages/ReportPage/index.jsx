@@ -116,8 +116,6 @@ const ReportPage = () => {
     category: useRef(null),
     intro: useRef(null),
     menu: useRef(null),
-    location: useRef(null),
-    detailedAddress: useRef(null),
     reporterName: useRef(null),
     reporterEmail: useRef(null),
     reporterPhone: useRef(null),
