@@ -202,7 +202,7 @@ const ReportPage = () => {
       return; // 오류 있을 경우 제출 중단
     }
 
-    // 임시 데이터 제거
+    // 서버에 제출할 데이터
     const submissionData = {
       name: formData.name,
       category: formData.category,
@@ -221,18 +221,22 @@ const ReportPage = () => {
 
     // 서버에 submissionData 전송
     try {
-      const res = await axios.post("서버 API 주소", submissionData, {
-        // withCredentials: true, // 필요시 사용
-        headers: { "Content-Type": "application/json" },
-      });
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/FIXME`,
+        submissionData,
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
       if (res.data.success) {
-        alert("성공!");
+        alert("푸드트럭 제보가 성공적으로 접수되었습니다. 감사합니다!");
       } else {
-        alert("실패: " + res.data.message);
+        alert("푸드트럭 제보 실패: " + res.data.message);
       }
     } catch (err) {
-      console.error(err);
-      alert("서버 오류");
+      console.error("푸드트럭 제보 중 오류 발생: ", err);
+      alert("푸드트럭 제보 중 오류가 발생했습니다. 다시 시도해주세요.");
       console.log(submissionData); //FIXME: formData 확인용, 나중에 지우기
     }
   };
