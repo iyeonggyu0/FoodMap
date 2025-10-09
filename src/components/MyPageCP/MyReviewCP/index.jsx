@@ -2,10 +2,15 @@ import { useEffect, useState } from "react";
 import { useMedia } from "../../../hooks/useMedia";
 import { MyReviewCPMainStyle } from "./style";
 import axios from "axios";
-import { reviewDummyData } from "../../../_dummyData/reviewDummyData";
 import TextAreaInputCP from "../../_common/TextAreaInputCP";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMinus, faPen, faPlus, faStar, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMinus,
+  faPen,
+  faPlus,
+  faStar,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { useInput } from "../../../hooks/useInput";
 import ButtonCP from "../../_common/ButtonCP";
 import OutLineButtonCP from "../../_common/OutLineButtonCP";
@@ -64,7 +69,9 @@ const MyReviewCPDiv = ({ rv }) => {
   const onDeleteReview = () => {
     if (window.confirm("리뷰를 삭제하시겠습니까?")) {
       axios
-        .delete(`${import.meta.env.VITE_API_URL}/api/review/${rv.id}`, { withCredentials: true })
+        .delete(`${import.meta.env.VITE_API_URL}/api/review/${rv.id}`, {
+          withCredentials: true,
+        })
         .then((res) => {
           if (res.status === 200) {
             alert("리뷰가 삭제되었습니다.");
@@ -81,9 +88,20 @@ const MyReviewCPDiv = ({ rv }) => {
   };
 
   return (
-    <div className="reviewItem flexCol" style={{ marginBottom: "3rem", padding: "2rem", border: "1px solid var(--gray-3)", borderRadius: "16px", gap: "1rem" }}>
+    <div
+      className="reviewItem flexCol"
+      style={{
+        marginBottom: "3rem",
+        padding: "2rem",
+        border: "1px solid var(--gray-3)",
+        borderRadius: "16px",
+        gap: "1rem",
+      }}
+    >
       <p className="flexBetween">
-        <span style={{ fontSize: "1.2rem", fontWeight: "600" }}>{rv.truckName}</span>
+        <span style={{ fontSize: "1.2rem", fontWeight: "600" }}>
+          {rv.truckName}
+        </span>
         <span>
           {upDateMode && (
             <FontAwesomeIcon
@@ -97,8 +115,17 @@ const MyReviewCPDiv = ({ rv }) => {
               }}
             />
           )}
-          <span style={{ display: "inline-block", width: "5rem", textAlign: "center" }}>
-            <FontAwesomeIcon icon={faStar} style={{ paddingRight: "0.5rem", color: "orange" }} />
+          <span
+            style={{
+              display: "inline-block",
+              width: "5rem",
+              textAlign: "center",
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faStar}
+              style={{ paddingRight: "0.5rem", color: "orange" }}
+            />
             {rating || rv.rating}
           </span>
           {upDateMode && (
@@ -115,15 +142,37 @@ const MyReviewCPDiv = ({ rv }) => {
           )}
         </span>
       </p>
-      <div style={{ fontFamily: "Noto Sans KR", fontSize: "0.9rem", color: "var(--gray-6)" }}>
-        <TextAreaInputCP title="" value={content} onChangeHandler={onChangeContent} essential={false} maxRows={5} minRows={2} lock={!upDateMode} />
+      <div
+        style={{
+          fontFamily: "Noto Sans KR",
+          fontSize: "0.9rem",
+          color: "var(--gray-6)",
+        }}
+      >
+        <TextAreaInputCP
+          title=""
+          value={content}
+          onChangeHandler={onChangeContent}
+          essential={false}
+          maxRows={5}
+          minRows={2}
+          lock={!upDateMode}
+        />
       </div>
       <p className="flexBetween">
         <span style={{ fontSize: "0.9rem", color: "gray" }}>{formatted}</span>
         {!upDateMode && (
           <span>
-            <FontAwesomeIcon icon={faPen} style={{ marginRight: "1rem", cursor: "pointer" }} onClick={() => setUpdateMode(true)} />
-            <FontAwesomeIcon icon={faTrash} style={{ cursor: "pointer", color: "var(--red)" }} onClick={onDeleteReview} />
+            <FontAwesomeIcon
+              icon={faPen}
+              style={{ marginRight: "1rem", cursor: "pointer" }}
+              onClick={() => setUpdateMode(true)}
+            />
+            <FontAwesomeIcon
+              icon={faTrash}
+              style={{ cursor: "pointer", color: "var(--red)" }}
+              onClick={onDeleteReview}
+            />
           </span>
         )}
         {upDateMode && (
@@ -133,7 +182,8 @@ const MyReviewCPDiv = ({ rv }) => {
                 setContent(rv.content);
                 setRating(rv.rating);
                 setUpdateMode(false);
-              }}>
+              }}
+            >
               <OutLineButtonCP color={"#A47764"} borderColor={"--brown-light"}>
                 취소
               </OutLineButtonCP>
@@ -155,7 +205,9 @@ const MyReviewCP = () => {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/api/review/mine`, { withCredentials: true })
+      .get(`${import.meta.env.VITE_API_URL}/api/review/mine`, {
+        withCredentials: true,
+      })
       .then((res) => {
         // API가 배열을 직접 반환하므로 success 체크 없이 바로 사용
         if (Array.isArray(res.data)) {
@@ -177,7 +229,15 @@ const MyReviewCP = () => {
   return (
     <MyReviewCPMainStyle isPc={isPc}>
       <h2>내 리뷰</h2>
-      <div>{reviewList.length === 0 ? <p>작성한 리뷰가 없습니다.</p> : reviewList.map((review) => <MyReviewCPDiv key={review.id} rv={review} />)}</div>
+      <div>
+        {reviewList.length === 0 ? (
+          <p>작성한 리뷰가 없습니다.</p>
+        ) : (
+          reviewList.map((review) => (
+            <MyReviewCPDiv key={review.id} rv={review} />
+          ))
+        )}
+      </div>
     </MyReviewCPMainStyle>
   );
 };

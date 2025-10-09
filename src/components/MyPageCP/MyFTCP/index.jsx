@@ -11,7 +11,6 @@ import InputCP from "../../_common/InputCP";
 import TextAreaInputCP from "../../_common/TextAreaInputCP";
 import OutLineButtonCP from "../../_common/OutLineButtonCP";
 import ButtonCP from "../../_common/ButtonCP";
-import { ftDummyData } from "../../../_dummyData/ftDummyData";
 
 const MyFTCP = ({ myTruckList = [] }) => {
   // 이미지 파일 상태
@@ -33,7 +32,9 @@ const MyFTCP = ({ myTruckList = [] }) => {
   const menuErrorRef = useRef();
   const termsErrorRef = useRef();
   // 요일별 에러는 동적으로 관리
-  const [scheduleErrors, setScheduleErrors] = useState(Array(7).fill({ open: false, close: false, address: false }));
+  const [scheduleErrors, setScheduleErrors] = useState(
+    Array(7).fill({ open: false, close: false, address: false })
+  );
   // 등록 신청 함수
   /**
    * 푸드트럭 수정 신청을 처리하는 함수
@@ -84,7 +85,11 @@ const MyFTCP = ({ myTruckList = [] }) => {
     }
     // 7. 요일 중 하나라도 영업 체크, 체크된 요일의 데이터 검사
     let hasOpenDay = false;
-    let newScheduleErrors = scheduleErrors.map(() => ({ open: false, close: false, address: false }));
+    let newScheduleErrors = scheduleErrors.map(() => ({
+      open: false,
+      close: false,
+      address: false,
+    }));
     scheduleList.forEach((item, idx) => {
       if (item.holiday) {
         hasOpenDay = true;
@@ -92,12 +97,16 @@ const MyFTCP = ({ myTruckList = [] }) => {
         const timeRegex = /^([01]\d|2[0-3]):[0-5]\d$/;
         if (!timeRegex.test(item.start)) {
           newScheduleErrors[idx].open = true;
-          errorMsgs.push(`${item.day}요일 오픈 시간은 00:00 형식(24시간제)으로 입력하세요.`);
+          errorMsgs.push(
+            `${item.day}요일 오픈 시간은 00:00 형식(24시간제)으로 입력하세요.`
+          );
           error = true;
         }
         if (!timeRegex.test(item.end)) {
           newScheduleErrors[idx].close = true;
-          errorMsgs.push(`${item.day}요일 클로징 시간은 00:00 형식(24시간제)으로 입력하세요.`);
+          errorMsgs.push(
+            `${item.day}요일 클로징 시간은 00:00 형식(24시간제)으로 입력하세요.`
+          );
           error = true;
         }
         // 7-2. 클로징 >= 오픈
@@ -108,7 +117,9 @@ const MyFTCP = ({ myTruckList = [] }) => {
           const endTotal = endH * 60 + endM;
           if (endTotal < startTotal) {
             newScheduleErrors[idx].close = true;
-            errorMsgs.push(`${item.day}요일 클로징 시간은 오픈 시간보다 빠를 수 없습니다.`);
+            errorMsgs.push(
+              `${item.day}요일 클로징 시간은 오픈 시간보다 빠를 수 없습니다.`
+            );
             error = true;
           }
         }
@@ -150,7 +161,8 @@ const MyFTCP = ({ myTruckList = [] }) => {
     const buildScheduleWithLatLng = async (list) => {
       return Promise.all(
         list.map(async (item) => {
-          const start = item.start.length === 2 ? item.start + ":00" : item.start;
+          const start =
+            item.start.length === 2 ? item.start + ":00" : item.start;
           const end = item.end.length === 2 ? item.end + ":00" : item.end;
           let lat = item.lat,
             lng = item.lng;
@@ -158,16 +170,30 @@ const MyFTCP = ({ myTruckList = [] }) => {
           // lat, lng가 없고 mapAddress가 있으면 카카오맵 API로 좌표 변환
           if (item.mapAddress && (!lat || !lng)) {
             try {
-              if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services) throw new Error("Kakao map not loaded");
+              if (
+                !window.kakao ||
+                !window.kakao.maps ||
+                !window.kakao.maps.services
+              )
+                throw new Error("Kakao map not loaded");
               const geocoder = new window.kakao.maps.services.Geocoder();
               const coords = await new Promise((resolve, reject) => {
-                geocoder.addressSearch(item.mapAddress, function (result, status) {
-                  if (status === window.kakao.maps.services.Status.OK && result.length > 0) {
-                    resolve({ lat: parseFloat(result[0].y), lng: parseFloat(result[0].x) });
-                  } else {
-                    reject("주소 변환 실패: " + item.mapAddress);
+                geocoder.addressSearch(
+                  item.mapAddress,
+                  function (result, status) {
+                    if (
+                      status === window.kakao.maps.services.Status.OK &&
+                      result.length > 0
+                    ) {
+                      resolve({
+                        lat: parseFloat(result[0].y),
+                        lng: parseFloat(result[0].x),
+                      });
+                    } else {
+                      reject("주소 변환 실패: " + item.mapAddress);
+                    }
                   }
-                });
+                );
               });
               lat = coords.lat;
               lng = coords.lng;
@@ -208,8 +234,10 @@ const MyFTCP = ({ myTruckList = [] }) => {
         sendData.schedule = await buildScheduleWithLatLng(scheduleList);
       } else {
         sendData.name = originData.name !== FTName ? FTName : originData.name;
-        sendData.category = originData.category !== FTCategory ? FTCategory : originData.category;
-        sendData.intro = originData.intro !== FTIntro ? FTIntro : originData.intro;
+        sendData.category =
+          originData.category !== FTCategory ? FTCategory : originData.category;
+        sendData.intro =
+          originData.intro !== FTIntro ? FTIntro : originData.intro;
         const cleanMenu = (menuArr) =>
           menuArr.map(({ name, price, info, num }) => ({
             name,
@@ -217,7 +245,11 @@ const MyFTCP = ({ myTruckList = [] }) => {
             info,
             num: String(num),
           }));
-        sendData.menu = cleanMenu(JSON.stringify(originData.menu) !== JSON.stringify(menuList) ? menuList : originData.menu);
+        sendData.menu = cleanMenu(
+          JSON.stringify(originData.menu) !== JSON.stringify(menuList)
+            ? menuList
+            : originData.menu
+        );
         sendData.schedule =
           JSON.stringify(originData.schedule) !== JSON.stringify(scheduleList)
             ? await buildScheduleWithLatLng(scheduleList)
@@ -238,27 +270,40 @@ const MyFTCP = ({ myTruckList = [] }) => {
       // 이미지 파일이 있으면 FormData에 추가
       if (file) {
         formData.append("image", file);
-        console.log("MyFTCP - 이미지 파일이 FormData에 추가됨:", file.name, file.size);
+        console.log(
+          "MyFTCP - 이미지 파일이 FormData에 추가됨:",
+          file.name,
+          file.size
+        );
       } else {
         console.log("MyFTCP - 선택된 이미지 파일이 없음");
       }
 
       axios
-        .put(`${import.meta.env.VITE_API_URL}/user/foodtruck/${truckId}`, formData, {
-          withCredentials: true,
-          headers: { Accept: "application/json" },
-        })
+        .put(
+          `${import.meta.env.VITE_API_URL}/user/foodtruck/${truckId}`,
+          formData,
+          {
+            withCredentials: true,
+            headers: { Accept: "application/json" },
+          }
+        )
         .then((res) => {
           if (res.status === 200) {
             alert("푸드트럭 정보가 수정되었습니다!");
             window.location.reload();
           } else {
-            alert(res.data.message || "푸드트럭 정보 수정에 실패했습니다. 다시 시도해주세요.");
+            alert(
+              res.data.message ||
+                "푸드트럭 정보 수정에 실패했습니다. 다시 시도해주세요."
+            );
           }
         })
         .catch((err) => {
           console.error("푸드트럭 정보 수정 중 오류 발생:", err);
-          alert("푸드트럭 정보 수정 중 오류가 발생했습니다. 다시 시도해주세요.");
+          alert(
+            "푸드트럭 정보 수정 중 오류가 발생했습니다. 다시 시도해주세요."
+          );
         });
     })();
   };
@@ -266,22 +311,35 @@ const MyFTCP = ({ myTruckList = [] }) => {
   // 푸드트럭 이름
   const [FTName, onChangeFTName, setFTName] = useInput(originData?.name || "");
   // 푸드트럭 카테고리
-  const [FTCategory, onChangeFTCategory, setFTCategory] = useInput(originData?.category || "");
+  const [FTCategory, onChangeFTCategory, setFTCategory] = useInput(
+    originData?.category || ""
+  );
 
   // 푸드트럭 카테고리 리스트
   const FTCategoryList = [
     { value: "분식", data: "분식 (어묵, 떡볶이, 순대)" },
     { value: "간식", data: "간식 (붕어빵, 타코야끼, 크레페, 츄러스, 와플)" },
-    { value: "튀김", data: "튀김 (감자튀김, 치즈볼, 오징어튀김, 새우튀김, 치킨)" },
+    {
+      value: "튀김",
+      data: "튀김 (감자튀김, 치즈볼, 오징어튀김, 새우튀김, 치킨)",
+    },
     { value: "꼬치", data: "꼬치 (닭꼬치, 소시지꼬치)" },
-    { value: "샌드위치/토스트", data: "샌드위치/토스트 (샌드위치, 토스트, 버거)" },
-    { value: "디저트/음료", data: "디저트/음료 (아이스크림, 커피, 음료, 팥빙수)" },
+    {
+      value: "샌드위치/토스트",
+      data: "샌드위치/토스트 (샌드위치, 토스트, 버거)",
+    },
+    {
+      value: "디저트/음료",
+      data: "디저트/음료 (아이스크림, 커피, 음료, 팥빙수)",
+    },
     { value: "식사", data: "식사 (덮밥, 초밥)" },
     { value: "기타", data: "기타" },
   ];
 
   // 푸드트럭 소개
-  const [FTIntro, onChangeFTIntro, setFTIntro] = useInput(originData?.intro || "");
+  const [FTIntro, onChangeFTIntro, setFTIntro] = useInput(
+    originData?.intro || ""
+  );
 
   const [menuList, setMenuList] = useState(originData?.menu || []);
 
@@ -335,7 +393,17 @@ const MyFTCP = ({ myTruckList = [] }) => {
     setMenuPrice("");
     setMenuInfo("");
     setMenuNum("");
-  }, [menuName, menuPrice, menuInfo, menuNum, menuList, setMenuName, setMenuPrice, setMenuInfo, setMenuNum]);
+  }, [
+    menuName,
+    menuPrice,
+    menuInfo,
+    menuNum,
+    menuList,
+    setMenuName,
+    setMenuPrice,
+    setMenuInfo,
+    setMenuNum,
+  ]);
 
   /**
    * 메뉴 수정 함수
@@ -356,12 +424,26 @@ const MyFTCP = ({ myTruckList = [] }) => {
       return;
     }
     // menuNum 중복 체크 (수정 중인 메뉴 제외)
-    if (menuList.some((menu) => menu.num === menuNum && menu.num !== editMenuNum)) {
+    if (
+      menuList.some((menu) => menu.num === menuNum && menu.num !== editMenuNum)
+    ) {
       alert("이미 해당 번호에 메뉴가 존재합니다.");
       return;
     }
     // menuList에서 해당 메뉴 정보 수정
-    setMenuList((prev) => prev.map((menu) => (menu.num === editMenuNum ? { ...menu, name: menuName, price: menuPrice, info: menuInfo, num: menuNum } : menu)));
+    setMenuList((prev) =>
+      prev.map((menu) =>
+        menu.num === editMenuNum
+          ? {
+              ...menu,
+              name: menuName,
+              price: menuPrice,
+              info: menuInfo,
+              num: menuNum,
+            }
+          : menu
+      )
+    );
     alert("메뉴가 수정되었습니다!");
     // 입력값 초기화 및 수정모드 해제
     setMenuName("");
@@ -370,7 +452,18 @@ const MyFTCP = ({ myTruckList = [] }) => {
     setMenuNum("");
     setMenuModify(false);
     setEditMenuNum("");
-  }, [editMenuNum, menuName, menuPrice, menuInfo, menuNum, menuList, setMenuInfo, setMenuName, setMenuNum, setMenuPrice]);
+  }, [
+    editMenuNum,
+    menuName,
+    menuPrice,
+    menuInfo,
+    menuNum,
+    menuList,
+    setMenuInfo,
+    setMenuName,
+    setMenuNum,
+    setMenuPrice,
+  ]);
 
   /**
    * 메뉴 삭제 함수
@@ -392,14 +485,24 @@ const MyFTCP = ({ myTruckList = [] }) => {
         setMenuNum("");
       }
     },
-    [menuModify, editMenuNum, setMenuInfo, setMenuName, setMenuNum, setMenuPrice]
+    [
+      menuModify,
+      editMenuNum,
+      setMenuInfo,
+      setMenuName,
+      setMenuNum,
+      setMenuPrice,
+    ]
   );
 
   /**
    * 운영 정보 상태를 요일별 객체 리스트로 관리
    * day: 요일명, holiday: 휴일 여부, start: 시작시간, end: 종료시간, mapAddress: 지도상 주소, userAddress: 안내주소
    */
-  const dayNames = useMemo(() => ["월", "화", "수", "목", "금", "토", "일"], []);
+  const dayNames = useMemo(
+    () => ["월", "화", "수", "목", "금", "토", "일"],
+    []
+  );
   const [scheduleList, setScheduleList] = useState(
     dayNames.map((day) => ({
       day,
@@ -420,7 +523,9 @@ const MyFTCP = ({ myTruckList = [] }) => {
    * - scheduleList의 특정 요일 객체의 key값을 value로 변경
    */
   const handleScheduleChange = (idx, key, value) => {
-    setScheduleList((prev) => prev.map((item, i) => (i === idx ? { ...item, [key]: value } : item)));
+    setScheduleList((prev) =>
+      prev.map((item, i) => (i === idx ? { ...item, [key]: value } : item))
+    );
   };
 
   /**
@@ -441,7 +546,13 @@ const MyFTCP = ({ myTruckList = [] }) => {
   const onCompletePost = (data) => {
     setModalState(false);
     if (selectedScheduleIdx !== null) {
-      setScheduleList((prev) => prev.map((item, i) => (i === selectedScheduleIdx ? { ...item, mapAddress: data.address } : item)));
+      setScheduleList((prev) =>
+        prev.map((item, i) =>
+          i === selectedScheduleIdx
+            ? { ...item, mapAddress: data.address }
+            : item
+        )
+      );
     }
   };
 
@@ -452,7 +563,9 @@ const MyFTCP = ({ myTruckList = [] }) => {
    */
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/user/foodtruck/mine`, { withCredentials: true })
+      .get(`${import.meta.env.VITE_API_URL}/user/foodtruck/mine`, {
+        withCredentials: true,
+      })
       .then((res) => {
         if (res.data?.length === 0) {
           alert("등록된 푸드트럭이 없습니다.");
@@ -510,7 +623,11 @@ const MyFTCP = ({ myTruckList = [] }) => {
       alert("푸드트럭 ID가 없습니다. 다시 시도해주세요.");
       return;
     }
-    if (window.confirm("정말로 푸드트럭을 삭제하시겠습니까? 삭제 시 복구할 수 없습니다.")) {
+    if (
+      window.confirm(
+        "정말로 푸드트럭을 삭제하시겠습니까? 삭제 시 복구할 수 없습니다."
+      )
+    ) {
       axios
         .delete(`${import.meta.env.VITE_API_URL}/user/foodtruck/${truckId}`, {
           withCredentials: true,
@@ -521,7 +638,10 @@ const MyFTCP = ({ myTruckList = [] }) => {
             alert("푸드트럭이 삭제되었습니다.");
             window.location.reload();
           } else {
-            alert(res.data.message || "푸드트럭 삭제에 실패했습니다.\n다시 시도해주세요.");
+            alert(
+              res.data.message ||
+                "푸드트럭 삭제에 실패했습니다.\n다시 시도해주세요."
+            );
           }
         })
         .catch((err) => {
@@ -535,19 +655,34 @@ const MyFTCP = ({ myTruckList = [] }) => {
       <section>
         <div>
           <h1>푸드트럭 정보 수정</h1>
-          <p>등록된 푸드트럭 정보를 수정할 수 있습니다. 변경하고 싶은 내용을 입력하고 수정 신청을 눌러주세요.</p>
+          <p>
+            등록된 푸드트럭 정보를 수정할 수 있습니다. 변경하고 싶은 내용을
+            입력하고 수정 신청을 눌러주세요.
+          </p>
         </div>
         <div>
           <h2>기본 정보</h2>
           <div className="col">
             <div>
-              <InputCP title="푸드트럭 이름" essential="true" value={FTName} ex="황금 잉어빵" onChangeHandler={onChangeFTName} />
+              <InputCP
+                title="푸드트럭 이름"
+                essential="true"
+                value={FTName}
+                ex="황금 잉어빵"
+                onChangeHandler={onChangeFTName}
+              />
               <span className="nameError error" ref={nameErrorRef}>
                 2글자 이상 입력하세요
               </span>
             </div>
             <div>
-              <SelectInputCP title="카테고리" essential="true" listData={FTCategoryList} value={FTCategory} onChangeHandler={onChangeFTCategory} />
+              <SelectInputCP
+                title="카테고리"
+                essential="true"
+                listData={FTCategoryList}
+                value={FTCategory}
+                onChangeHandler={onChangeFTCategory}
+              />
               <span className="categoryError error" ref={categoryErrorRef}>
                 카테고리를 선택하세요
               </span>
@@ -614,10 +749,14 @@ const MyFTCP = ({ myTruckList = [] }) => {
                               setMenuPrice(menu.price);
                               setMenuInfo(menu.info);
                               setMenuNum(menu.num);
-                            }}>
+                            }}
+                          >
                             <FontAwesomeIcon icon={faPen} />
                           </span>
-                          <span style={{ cursor: "pointer" }} onClick={() => menuDeleteHandler(menu.num)}>
+                          <span
+                            style={{ cursor: "pointer" }}
+                            onClick={() => menuDeleteHandler(menu.num)}
+                          >
                             <FontAwesomeIcon icon={faEraser} />
                           </span>
                         </p>
@@ -633,9 +772,24 @@ const MyFTCP = ({ myTruckList = [] }) => {
             <div className="menu-add">
               <p>메뉴 등록</p>
               <div>
-                <InputCP title="메뉴 이름" value={menuName} onChangeHandler={onChangeMenuName} essential="true" />
-                <InputCP title="가격" value={menuPrice} onChangeHandler={onChangeMenuPrice} essential="true" ex="숫자만 입력" />
-                <InputCP title="설명" value={menuInfo} onChangeHandler={onChangeMenuInfo} />
+                <InputCP
+                  title="메뉴 이름"
+                  value={menuName}
+                  onChangeHandler={onChangeMenuName}
+                  essential="true"
+                />
+                <InputCP
+                  title="가격"
+                  value={menuPrice}
+                  onChangeHandler={onChangeMenuPrice}
+                  essential="true"
+                  ex="숫자만 입력"
+                />
+                <InputCP
+                  title="설명"
+                  value={menuInfo}
+                  onChangeHandler={onChangeMenuInfo}
+                />
                 <InputCP
                   title="표시 순서"
                   value={menuNum}
@@ -673,43 +827,88 @@ const MyFTCP = ({ myTruckList = [] }) => {
                   <input
                     type="checkbox"
                     checked={item.holiday}
-                    onChange={(e) => handleScheduleChange(idx, "holiday", e.target.checked)}
+                    onChange={(e) =>
+                      handleScheduleChange(idx, "holiday", e.target.checked)
+                    }
                     id={`holiday-${item.day}`}
                   />
                 </span>
                 {isPc && (
                   <span
                     style={{ textAlign: "center", visibility: "hidden" }}
-                    className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.open ? "error-input" : ""}>
+                    className={
+                      !item.holiday
+                        ? "disabled-input"
+                        : scheduleErrors[idx]?.open
+                        ? "error-input"
+                        : ""
+                    }
+                  >
                     ~
                   </span>
                 )}
                 <InputCP
                   value={item.start}
-                  onChangeHandler={(e) => handleScheduleChange(idx, "start", e.target.value)}
+                  onChangeHandler={(e) =>
+                    handleScheduleChange(idx, "start", e.target.value)
+                  }
                   ex="영업 시작 시간 (ex: 15)"
-                  className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.open ? "error-input" : ""}
+                  className={
+                    !item.holiday
+                      ? "disabled-input"
+                      : scheduleErrors[idx]?.open
+                      ? "error-input"
+                      : ""
+                  }
                 />
-                <span style={{ textAlign: "center" }} className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.open ? "error-input" : ""}>
+                <span
+                  style={{ textAlign: "center" }}
+                  className={
+                    !item.holiday
+                      ? "disabled-input"
+                      : scheduleErrors[idx]?.open
+                      ? "error-input"
+                      : ""
+                  }
+                >
                   ~
                 </span>
                 <InputCP
                   value={item.end}
-                  onChangeHandler={(e) => handleScheduleChange(idx, "end", e.target.value)}
+                  onChangeHandler={(e) =>
+                    handleScheduleChange(idx, "end", e.target.value)
+                  }
                   ex="영업 종료 시간 (ex: 21)"
-                  className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.close ? "error-input" : ""}
+                  className={
+                    !item.holiday
+                      ? "disabled-input"
+                      : scheduleErrors[idx]?.close
+                      ? "error-input"
+                      : ""
+                  }
                 />
               </div>
               <div>
                 <div onClick={() => item.holiday && handleAddressSearch(idx)}>
-                  <OutLineButtonCP color="#A47764" borderColor="--brown-light" className={!item.holiday ? "disabled-input" : ""}>
+                  <OutLineButtonCP
+                    color="#A47764"
+                    borderColor="--brown-light"
+                    className={!item.holiday ? "disabled-input" : ""}
+                  >
                     주소찾기
                   </OutLineButtonCP>
                 </div>
                 {isPc && (
                   <span
                     style={{ textAlign: "center", visibility: "hidden" }}
-                    className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.open ? "error-input" : ""}>
+                    className={
+                      !item.holiday
+                        ? "disabled-input"
+                        : scheduleErrors[idx]?.open
+                        ? "error-input"
+                        : ""
+                    }
+                  >
                     ~
                   </span>
                 )}
@@ -718,20 +917,41 @@ const MyFTCP = ({ myTruckList = [] }) => {
                   // onChangeHandler={(e) => handleScheduleChange(idx, "mapAddress", e.target.value)}
                   lock={true}
                   ex="지도 상 주소"
-                  className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.address ? "error-input" : ""}
+                  className={
+                    !item.holiday
+                      ? "disabled-input"
+                      : scheduleErrors[idx]?.address
+                      ? "error-input"
+                      : ""
+                  }
                 />
                 {isPc && (
                   <span
                     style={{ textAlign: "center", visibility: "hidden" }}
-                    className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.open ? "error-input" : ""}>
+                    className={
+                      !item.holiday
+                        ? "disabled-input"
+                        : scheduleErrors[idx]?.open
+                        ? "error-input"
+                        : ""
+                    }
+                  >
                     ~
                   </span>
                 )}
                 <InputCP
                   value={item.userAddress}
-                  onChangeHandler={(e) => handleScheduleChange(idx, "userAddress", e.target.value)}
+                  onChangeHandler={(e) =>
+                    handleScheduleChange(idx, "userAddress", e.target.value)
+                  }
                   ex="사용자 안내용 주소"
-                  className={!item.holiday ? "disabled-input" : scheduleErrors[idx]?.address ? "error-input" : ""}
+                  className={
+                    !item.holiday
+                      ? "disabled-input"
+                      : scheduleErrors[idx]?.address
+                      ? "error-input"
+                      : ""
+                  }
                 />
               </div>
             </div>
@@ -754,7 +974,14 @@ const MyFTCP = ({ myTruckList = [] }) => {
         <span
           className="termsError error"
           ref={termsErrorRef}
-          style={{ display: "block", color: "red", fontSize: "0.9rem", margin: "0.5rem 0", visibility: "hidden" }}>
+          style={{
+            display: "block",
+            color: "red",
+            fontSize: "0.9rem",
+            margin: "0.5rem 0",
+            visibility: "hidden",
+          }}
+        >
           약관에 동의해야 합니다.
         </span>
         <div className="col-full">
@@ -783,7 +1010,8 @@ const MyFTCP = ({ myTruckList = [] }) => {
             alignItems: "center",
             justifyContent: "center",
           }}
-          onClick={() => setModalState(false)}>
+          onClick={() => setModalState(false)}
+        >
           <div
             style={{
               background: "#fff",
@@ -792,8 +1020,12 @@ const MyFTCP = ({ myTruckList = [] }) => {
               padding: 0,
               zIndex: 10001,
             }}
-            onClick={(e) => e.stopPropagation()}>
-            <DaumPostcode style={{ width: 400, height: 500 }} onComplete={onCompletePost} />
+            onClick={(e) => e.stopPropagation()}
+          >
+            <DaumPostcode
+              style={{ width: 400, height: 500 }}
+              onComplete={onCompletePost}
+            />
           </div>
         </div>
       )}

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { MyPageMainStyle } from "./style";
 import axios from "axios";
-import { userDummyData } from "../../_dummyData/userDummyData";
 import Error404Page from "../Error404Page";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faStar, faUser } from "@fortawesome/free-regular-svg-icons";
@@ -37,7 +36,9 @@ const MyPage = () => {
 
     // 2. 찜/알림 목록
     axios
-      .get(`${import.meta.env.VITE_API_URL}/map/ft/mine`, { withCredentials: true })
+      .get(`${import.meta.env.VITE_API_URL}/map/ft/mine`, {
+        withCredentials: true,
+      })
       .then((res) => {
         setLikeList(res.data.likes || []);
         setSmsList(res.data.sms || []);
@@ -49,7 +50,9 @@ const MyPage = () => {
 
     // 3. 내 푸드트럭 목록
     axios
-      .get(`${import.meta.env.VITE_API_URL}/user/foodtruck/mine`, { withCredentials: true })
+      .get(`${import.meta.env.VITE_API_URL}/user/foodtruck/mine`, {
+        withCredentials: true,
+      })
       .then((res) => {
         setMyTruckList(res.data || []);
       })
@@ -71,7 +74,9 @@ const MyPage = () => {
   const onLogoutClick = () => {
     // 로그아웃 API 호출
     axios
-      .post(`${import.meta.env.VITE_API_URL}/logout`, null, { withCredentials: true })
+      .post(`${import.meta.env.VITE_API_URL}/logout`, null, {
+        withCredentials: true,
+      })
       .then((res) => {
         if (res.data.message) {
           alert(res.data.message);
@@ -94,16 +99,36 @@ const MyPage = () => {
       {!userData && <Error404Page />}
       {userData && (
         <MyPageMainStyle isPc={isPc} onMenu={onMenu}>
-          {!isPc && !onMenu && <FontAwesomeIcon icon={faBars} className="menuBars" onClick={() => setOnMenu(true)} />}
+          {!isPc && !onMenu && (
+            <FontAwesomeIcon
+              icon={faBars}
+              className="menuBars"
+              onClick={() => setOnMenu(true)}
+            />
+          )}
 
           <section className="menu flexCol">
-            {!isPc && <FontAwesomeIcon icon={faXmark} className="menuXmark" onClick={() => setOnMenu(false)} />}
+            {!isPc && (
+              <FontAwesomeIcon
+                icon={faXmark}
+                className="menuXmark"
+                onClick={() => setOnMenu(false)}
+              />
+            )}
             {isPc && (
               <div className="flexCenter image">
-                {paging === 0 && <FontAwesomeIcon icon={faUser} className="icon" />}
-                {paging === 1 && <div className="ftIcon">{/* 푸드트럭 아이콘 */}</div>}
-                {paging === 2 && <FontAwesomeIcon icon={faBell} className="icon" />}
-                {paging === 3 && <FontAwesomeIcon icon={faStar} className="icon" />}
+                {paging === 0 && (
+                  <FontAwesomeIcon icon={faUser} className="icon" />
+                )}
+                {paging === 1 && (
+                  <div className="ftIcon">{/* 푸드트럭 아이콘 */}</div>
+                )}
+                {paging === 2 && (
+                  <FontAwesomeIcon icon={faBell} className="icon" />
+                )}
+                {paging === 3 && (
+                  <FontAwesomeIcon icon={faStar} className="icon" />
+                )}
               </div>
             )}
             <ul>
@@ -112,7 +137,8 @@ const MyPage = () => {
                 onClick={() => {
                   setPaging(0);
                   setOnMenu(false);
-                }}>
+                }}
+              >
                 내 정보
               </li>
               <div className="margin" />
@@ -121,7 +147,8 @@ const MyPage = () => {
                 onClick={() => {
                   setPaging(1);
                   setOnMenu(false);
-                }}>
+                }}
+              >
                 내 푸드트럭
               </li>
               <div className="margin" />
@@ -130,7 +157,8 @@ const MyPage = () => {
                 onClick={() => {
                   setPaging(2);
                   setOnMenu(false);
-                }}>
+                }}
+              >
                 알림/찜 목록
               </li>
               <div className="margin" />
@@ -139,14 +167,16 @@ const MyPage = () => {
                 onClick={() => {
                   setPaging(3);
                   setOnMenu(false);
-                }}>
+                }}
+              >
                 리뷰 목록
               </li>
               <li
                 className="homeButton"
                 onClick={() => {
                   window.location.href = "/"; // 홈으로 이동
-                }}>
+                }}
+              >
                 HOME
               </li>
               {/* 로그아웃 */}
