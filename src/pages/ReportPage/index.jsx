@@ -222,7 +222,7 @@ const ReportPage = () => {
     // 서버에 submissionData 전송
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/FIXME`,
+        `${import.meta.env.VITE_API_URL}/api/report`,
         submissionData,
         {
           withCredentials: true,
