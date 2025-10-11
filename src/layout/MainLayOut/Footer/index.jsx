@@ -29,6 +29,7 @@ const MainLayOutFooter = () => {
               <li className="ul-title">서비스</li>
               <li onClick={() => nav("/map")}>푸드트럭 지도</li>
               <li onClick={() => nav("/register")}>푸드트럭 등록</li>
+              <li onClick={() => nav("/report")}>푸드트럭 제보</li>
             </ul>
             <ul>
               <li className="ul-title">고객지원</li>
