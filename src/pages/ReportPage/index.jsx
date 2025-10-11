@@ -187,31 +187,40 @@ const ReportPage = () => {
       return; // 오류 있을 경우 제출 중단
     }
 
-    // 서버에 제출할 데이터
-    const submissionData = {
-      name: formData.name,
-      category: formData.category,
-      intro: formData.intro,
-      menu: formData.menu,
-      schedule: formData.schedule.map((day) => ({
-        day: day.day,
-        holiday: day.holiday,
-        start: day.start,
-        end: day.end,
-        mapAddress: day.mapAddress,
-        userAddress: day.userAddress,
-      })),
-      photos: formData.photos,
-    };
-
-    // 서버에 submissionData 전송
     try {
+      const submissionData = new FormData();
+
+      formData.photos.forEach((file) => {
+        submissionData.append("photos", file);
+      }); // 사진은 FormData로 전송
+
+      const jsonPayload = {
+        // 나머지 formData는 JSON으로 변환하여 전송
+        name: formData.name,
+        category: formData.category,
+        intro: formData.intro,
+        menu: formData.menu,
+        schedule: formData.schedule.map((day) => ({
+          day: day.day,
+          holiday: day.holiday,
+          start: day.start,
+          end: day.end,
+          mapAddress: day.mapAddress,
+          userAddress: day.userAddress,
+        })),
+      };
+
+      submissionData.append(
+        "data",
+        new Blob([JSON.stringify(jsonPayload)], { type: "application/json" })
+      );
+
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/report`,
         submissionData,
         {
           withCredentials: true,
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "multipart/form-data" },
         }
       );
       if (res.data.success) {
@@ -222,7 +231,6 @@ const ReportPage = () => {
     } catch (err) {
       console.error("푸드트럭 제보 중 오류 발생: ", err);
       alert("푸드트럭 제보 중 오류가 발생했습니다. 다시 시도해주세요.");
-      console.log(submissionData); //FIXME: formData 확인용, 나중에 지우기
     }
   };
 
