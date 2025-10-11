@@ -130,9 +130,6 @@ const ReportPage = () => {
     schedule: "영업일과 시간을 정확히 입력해주세요.",
     location: "푸드트럭 위치를 선택해주세요.",
     mapAddress: "지도상 주소를 입력해주세요.",
-    reporterName: "제보자 이름은 한글 또는 영문 2글자 이상만 입력 가능합니다.",
-    reporterEmail: "유효한 이메일 주소를 입력해주세요.",
-    reporterPhone: "연락처는 숫자만 입력 가능하며, 10~11자리여야 합니다.",
   };
 
   /** 유효성 검사 함수들
@@ -154,18 +151,6 @@ const ReportPage = () => {
         return day.start && day.end && day.mapAddress && day.userAddress;
       });
     },
-    reporterName: (v) => {
-      const nameRegex = /^[가-힣a-zA-Z]{2,}$/;
-      return nameRegex.test(v);
-    }, //한글, 영문만 입력 가능(자음, 모음도 안됨), 빈값이면 안되고 2글자 이상이어야 함
-    reporterEmail: (v) => {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailRegex.test(v);
-    }, //이메일 형식이면 통과
-    reporterPhone: (v) => {
-      const phoneRegex = /^\d{10,11}$/;
-      return phoneRegex.test(v);
-    }, //숫자만 입력 가능, 10~11자리여야 함
   };
 
   /**
