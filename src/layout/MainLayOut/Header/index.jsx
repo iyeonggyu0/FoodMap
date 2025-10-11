@@ -23,6 +23,9 @@ const MainLayOutHeader = () => {
             <a href="/register">
               <li>등록하기</li>
             </a>
+            <a href="/report">
+              <li>제보하기</li>
+            </a>
             <a href="/faq">
               <li>FAQ</li>
             </a>
