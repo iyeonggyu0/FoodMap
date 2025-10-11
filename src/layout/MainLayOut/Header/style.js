@@ -32,7 +32,7 @@ export const MainLayOutHeaderStyled = styled.header`
 
   & nav {
     width: 100%;
-    max-width: 400px;
+    max-width: 420px;
     display: flex;
     align-items: center;
   }
@@ -40,7 +40,7 @@ export const MainLayOutHeaderStyled = styled.header`
   & nav ul {
     font-size: 0.95rem;
     width: 100%;
-    max-width: 400px;
+    max-width: 420px;
     display: flex;
     justify-content: space-between;
     align-items: center;
