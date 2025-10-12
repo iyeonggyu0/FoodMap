@@ -84,6 +84,7 @@ export default function ReportApprovalPage() {
     if (!selectedReport) return;
     if (!window.confirm("선택한 제보를 승인하시겠습니까?")) return;
 
+    console.log("Current cookies:", document.cookie);
     try {
       setIsProcessing(true);
       const res = await axios.post(
@@ -111,6 +112,7 @@ export default function ReportApprovalPage() {
     if (!selectedReport) return;
     if (!window.confirm("선택한 제보를 거절하시겠습니까?")) return;
 
+    console.log("Current cookies:", document.cookie);
     try {
       setIsProcessing(true);
       const res = await axios.post(
