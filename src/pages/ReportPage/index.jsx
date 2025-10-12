@@ -298,15 +298,6 @@ const ReportPage = () => {
           {/* 사진 업로드 카드 */}
           <PhotoUploadCP formData={formData} setFormData={setFormData} />
 
-          {/* 제보자 정보 카드 */}
-          {/* <ReporterInfoCP
-            formData={formData}
-            handleInputChange={handleInputChange}
-            errors={errors}
-            ref={refs}
-          /> */}
-          {/* FIXME: 로그인 정보로 처리 예정 */}
-
           <div className="cards p-6">
             {/* 이용약관 */}
             <div className="flex gap-2">

@@ -54,7 +54,7 @@ function App() {
 
         {/* 푸드트럭 제보 */}
         <Route path="/report" element={<ReportPage />} />
-        {/* 관리자 페이지 - 제보 승인/거절 */}
+        {/* 관리자 - 제보 승인/거절 페이지*/}
         <Route path="/admin/approve" element={<ReportApprovalPage />} />
 
         <Route path="/test" element={<ApiTestPage />} />
