@@ -23,6 +23,7 @@ import {
   AlertCircle,
   Loader2,
 } from "lucide-react";
+import axios from "axios";
 
 export default function ReportApprovalPage() {
   const [reports, setReports] = useState([]);
@@ -30,28 +31,27 @@ export default function ReportApprovalPage() {
   const [isLoadingList, setIsLoadingList] = useState(true);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+
+  const API_BASE = import.meta.env.VITE_API_URL;
+  const IMG_BASE = `${API_BASE}`; // 이미지 절대 경로 기본 값
 
   // 대기중 목록 불러오기
   useEffect(() => {
     const fetchReports = async () => {
       try {
         setIsLoadingList(true);
-        const res = await fetch(
+        const res = await axios.get(
           `${import.meta.env.VITE_API_URL}/api/admin/reports`,
-          {},
           { withCredentials: true }
         );
-        if (!res.ok) throw new Error("서버 응답 오류");
-        const data = await res.json();
-        setReports(data);
+        setReports(res.data);
       } catch (err) {
         console.error("승인 대기 목록 불러오기 실패:", err);
-        setErrorMessage("제보 목록을 불러오는 중 오류가 발생했습니다.");
       } finally {
         setIsLoadingList(false);
       }
     };
+
     fetchReports();
   }, []);
 
@@ -59,17 +59,17 @@ export default function ReportApprovalPage() {
   const fetchReportDetail = async (reportId) => {
     try {
       setIsLoadingDetail(true);
-      const res = await fetch(
+      const res = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/admin/reports/${reportId}`,
-        {},
         { withCredentials: true }
       );
-      if (!res.ok) throw new Error("상세 정보를 불러오지 못했습니다.");
-      const data = await res.json();
-      setSelectedReport(data);
+      const detail = res.data;
+      detail.photoUrls = detail.photoUrls?.map((url) =>
+        url.startsWith("http") ? url : `${IMG_BASE}${url}`
+      );
+      setSelectedReport(detail);
     } catch (err) {
       console.error("상세 정보 불러오기 실패:", err);
-      setErrorMessage("제보 상세 정보를 불러오는 중 오류가 발생했습니다.");
     } finally {
       setIsLoadingDetail(false);
     }
@@ -82,22 +82,18 @@ export default function ReportApprovalPage() {
   /** 승인 처리 */
   const handleApprove = async () => {
     if (!selectedReport) return;
+    if (!window.confirm("선택한 제보를 승인하시겠습니까?")) return;
 
     try {
       setIsProcessing(true);
-      const res = await fetch(
+      const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/admin/reports/${
           selectedReport.reportId
         }/approve`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-        }
+        {},
+        { withCredentials: true }
       );
-      if (!res.ok) throw new Error("승인 처리에 실패했습니다.");
-      const result = await res.json();
-      console.log("승인 결과:", result);
-      alert("제보가 승인되었습니다.");
+      alert(res.data.message || "제보가 승인되었습니다.");
       setReports((prev) =>
         prev.filter((r) => r.reportId !== selectedReport.reportId)
       );
@@ -113,22 +109,18 @@ export default function ReportApprovalPage() {
   /** 거부 처리 */
   const handleReject = async () => {
     if (!selectedReport) return;
+    if (!window.confirm("선택한 제보를 거절하시겠습니까?")) return;
 
     try {
       setIsProcessing(true);
-      const res = await fetch(
+      const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/admin/reports/${
           selectedReport.reportId
-        }/status`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-        }
+        }/reject`,
+        {},
+        { withCredentials: true }
       );
-      if (!res.ok) throw new Error("거절 처리에 실패했습니다.");
-      const result = await res.json();
-      console.log("거절 결과:", result);
-      alert("제보가 거절되었습니다.");
+      alert(res.data.message || "제보가 거절되었습니다.");
       setReports((prev) =>
         prev.filter((r) => r.reportId !== selectedReport.reportId)
       );
@@ -461,7 +453,8 @@ export default function ReportApprovalPage() {
                           <h4 className="font-semibold text-gray-700 flex items-center space-x-2">
                             <ImageIcon className="h-4 w-4 text-brown-5" />
                             <span>
-                              첨부된 사진 ({selectedReport?.photoUrls.length}장)
+                              첨부된 사진 (
+                              {selectedReport?.photoUrls?.length || 0}장)
                             </span>
                           </h4>
                           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
