@@ -187,47 +187,44 @@ const ReportPage = () => {
       return; // 오류 있을 경우 제출 중단
     }
 
-    try {
-      const submissionData = new FormData();
+    // JSON으로 묶을 데이터
+    const requestData = {
+      name: formData.name,
+      category: formData.category,
+      intro: formData.intro,
+      menu: formData.menu,
+      schedule: formData.schedule.map((day) => ({
+        day: day.day,
+        holiday: day.holiday,
+        start: day.start,
+        end: day.end,
+        mapAddress: day.mapAddress,
+        userAddress: day.userAddress,
+      })),
+    };
 
+    const submissionData = new FormData();
+
+    submissionData.append(
+      "request",
+      new Blob([JSON.stringify(requestData)], { type: "application/json" })
+    );
+
+    if (formData.photos && formData.photos.length > 0) {
       formData.photos.forEach((file) => {
         submissionData.append("photos", file);
-      }); // 사진은 FormData로 전송
+      });
+    }
 
-      const jsonPayload = {
-        // 나머지 formData는 JSON으로 변환하여 전송
-        name: formData.name,
-        category: formData.category,
-        intro: formData.intro,
-        menu: formData.menu,
-        schedule: formData.schedule.map((day) => ({
-          day: day.day,
-          holiday: day.holiday,
-          start: day.start,
-          end: day.end,
-          mapAddress: day.mapAddress,
-          userAddress: day.userAddress,
-        })),
-      };
-
-      submissionData.append(
-        "data",
-        new Blob([JSON.stringify(jsonPayload)], { type: "application/json" })
-      );
-
+    try {
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/report`,
         submissionData,
-        {
-          withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+        { withCredentials: true }
       );
-      if (res.data.success) {
-        alert("푸드트럭 제보가 성공적으로 접수되었습니다. 감사합니다!");
-      } else {
-        alert("푸드트럭 제보 실패: " + res.data.message);
-      }
+
+      console.log("푸드트럭 제보 성공: ", res.data);
+      alert("푸드트럭 제보가 성공적으로 접수되었습니다. 감사합니다!");
     } catch (err) {
       console.error("푸드트럭 제보 중 오류 발생: ", err);
       alert("푸드트럭 제보 중 오류가 발생했습니다. 다시 시도해주세요.");
