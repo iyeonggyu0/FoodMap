@@ -37,7 +37,9 @@ export default function ReportApprovalPage() {
     const fetchReports = async () => {
       try {
         setIsLoadingList(true);
-        const res = await fetch("/api/admin/reports");
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/admin/reports`
+        );
         if (!res.ok) throw new Error("서버 응답 오류");
         const data = await res.json();
         setReports(data);
@@ -55,7 +57,9 @@ export default function ReportApprovalPage() {
   const fetchReportDetail = async (reportId) => {
     try {
       setIsLoadingDetail(true);
-      const res = await fetch(`/api/admin/reports/${reportId}`);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/admin/reports/${reportId}`
+      );
       if (!res.ok) throw new Error("상세 정보를 불러오지 못했습니다.");
       const data = await res.json();
       setSelectedReport(data);
@@ -78,7 +82,9 @@ export default function ReportApprovalPage() {
     try {
       setIsProcessing(true);
       const res = await fetch(
-        `/api/admin/reports/${selectedReport.reportId}/approve`,
+        `${import.meta.env.VITE_API_URL}/api/admin/reports/${
+          selectedReport.reportId
+        }/approve`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -107,7 +113,9 @@ export default function ReportApprovalPage() {
     try {
       setIsProcessing(true);
       const res = await fetch(
-        `/api/admin/reports/${selectedReport.reportId}/status`,
+        `${import.meta.env.VITE_API_URL}/api/admin/reports/${
+          selectedReport.reportId
+        }/status`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
