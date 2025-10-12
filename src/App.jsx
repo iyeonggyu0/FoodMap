@@ -17,6 +17,7 @@ import MyPage from "./pages/MyPage";
 import PrivateRoute from "./util/privateRoute.jsx";
 import ApiTestPage from "./ApiTestPage.jsx";
 import ReportPage from "./pages/ReportPage";
+import ReportApprovalPage from "./pages/ReportApprovalPage.jsx";
 
 function App() {
   console.log(import.meta.env.VITE_API_URL);
@@ -53,6 +54,8 @@ function App() {
 
         {/* 푸드트럭 제보 */}
         <Route path="/report" element={<ReportPage />} />
+        {/* 관리자 페이지 - 제보 승인/거절 */}
+        <Route path="/admin/approve" element={<ReportApprovalPage />} />
 
         <Route path="/test" element={<ApiTestPage />} />
 

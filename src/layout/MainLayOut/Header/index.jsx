@@ -26,6 +26,10 @@ const MainLayOutHeader = () => {
             <a href="/report">
               <li>제보하기</li>
             </a>
+            <a href="/admin/approve">
+              <li>제보관리</li>
+            </a>
+            {/* FIXME: 테스트용 임시 버튼 */}
             <a href="/faq">
               <li>FAQ</li>
             </a>
