@@ -38,7 +38,9 @@ export default function ReportApprovalPage() {
       try {
         setIsLoadingList(true);
         const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/admin/reports`
+          `${import.meta.env.VITE_API_URL}/api/admin/reports`,
+          {},
+          { withCredentials: true }
         );
         if (!res.ok) throw new Error("서버 응답 오류");
         const data = await res.json();
@@ -58,7 +60,9 @@ export default function ReportApprovalPage() {
     try {
       setIsLoadingDetail(true);
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/admin/reports/${reportId}`
+        `${import.meta.env.VITE_API_URL}/api/admin/reports/${reportId}`,
+        {},
+        { withCredentials: true }
       );
       if (!res.ok) throw new Error("상세 정보를 불러오지 못했습니다.");
       const data = await res.json();
@@ -223,7 +227,7 @@ export default function ReportApprovalPage() {
                         key={report.reportId}
                         className={`cursor-pointer transition-all hover:shadow-md ${
                           selectedReport?.reportId === report.reportId
-                            ? "ring-2 ring-brown-5 bg-brown-1"
+                            ? "border border-solid border-brown-5 bg-brown-1"
                             : "hover:bg-gray-50"
                         }`}
                         onClick={() => handleReportClick(report.reportId)}
@@ -506,7 +510,7 @@ export default function ReportApprovalPage() {
                         onClick={handleReject}
                         disabled={isProcessing}
                         variant="outline"
-                        className="flex-1 border-red-300 text-red-600 hover:bg-red-50 h-12 bg-transparent"
+                        className="flex-1 border-red-300 text-red-600 hover:bg-red-400 h-12 bg-transparent"
                       >
                         {isProcessing ? (
                           <Loader2 className="h-5 w-5 animate-spin mr-2" />
